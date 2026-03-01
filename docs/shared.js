@@ -23,15 +23,6 @@
   // Apply immediately (before paint)
   applyTheme(getPreferred());
 
-  // ─── GoatCounter Analytics (privacy-first, no cookies) ────────────────
-  (function () {
-    var s = document.createElement('script');
-    s.async = true;
-    s.dataset.goatcounter = 'https://pcp.goatcounter.com/count';
-    s.src = '//gc.zgo.at/count.js';
-    document.head.appendChild(s);
-  })();
-
   document.addEventListener('DOMContentLoaded', function () {
     // Re-apply in case of race
     applyTheme(getPreferred());
