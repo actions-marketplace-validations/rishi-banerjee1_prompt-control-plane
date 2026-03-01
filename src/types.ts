@@ -332,7 +332,7 @@ export interface SessionExport {
     complexity: ReasoningComplexity;
     risk_score: number;
     custom_rules_applied: string[];      // IDs of custom rules applied
-    custom_rule_set_hash: string;        // SHA256 of custom rules (Phase 3 prep)
+    custom_rule_set_hash: string;        // SHA256 of custom rules applied
   };
 }
 

@@ -27,6 +27,7 @@ export {
   runRules, extractBlockingQuestions, extractAssumptions, getElevatedRisk,
   computeRiskScore, computeRiskScoreWithCustomRules,
   RISK_WEIGHTS, RISK_ESCALATION_THRESHOLD, deriveRiskLevel,
+  RULES_VERSION, calculateBuiltInRuleSetHash,
 } from './rules.js';
 
 // ─── Profiles ────────────────────────────────────────────────────────────────

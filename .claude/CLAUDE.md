@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 A prompt linter for LLM applications — deterministic scoring, analysis, and standardization of AI prompts. Acts as a **deterministic prompt compiler + contract enforcer** — turns raw user intent into a structured, constrained, reviewable prompt bundle. Ships as an MCP server, programmatic API, CLI linter (`prompt-lint`), and GitHub Action.
 
-**v3.2: Production-ready freemium product** with 4-tier access (Free/Pro ₹499\/mo/Power ₹899\/mo/Enterprise custom), multi-LLM output (Claude/OpenAI/generic), async StorageInterface for Phase B migration, rate limiting, monthly usage metering with calendar-month reset, Ed25519 offline license activation, 15 tools, programmatic API (`import { optimize }`), dual entry points (API + MCP server), CLI linter (`prompt-lint`), GitHub Action, **reasoning complexity classifier**, **5 optimization profiles**, **deterministic model routing with decision_path audit trail**, **dimensional risk scoring**, **Perplexity support** (recommendation-only), **smart compression pipeline (H1-H5 heuristics)**, **zone scanner**, **preserve patterns**, **tool pruning engine**, **pre-flight deltas**, and **multi-page docs site with dark/light mode**.
+**v3.2.1: Production-ready freemium product** with 4-tier access (Free/Pro ₹499\/mo/Power ₹899\/mo/Enterprise custom), multi-LLM output (Claude/OpenAI/generic), async StorageInterface for Phase B migration, rate limiting, monthly usage metering with calendar-month reset, Ed25519 offline license activation, 15 tools, programmatic API (`import { optimize }`), dual entry points (API + MCP server), CLI linter (`prompt-lint`), GitHub Action, **reasoning complexity classifier**, **5 optimization profiles**, **deterministic model routing with decision_path audit trail**, **dimensional risk scoring**, **Perplexity support** (recommendation-only), **smart compression pipeline (H1-H5 heuristics)**, **zone scanner**, **preserve patterns**, **tool pruning engine**, **pre-flight deltas**, **multi-page docs site with dark/light mode**, **custom rules** (`~/.prompt-optimizer/custom-rules/`), and **reproducible session exports** (auto-calculated `rule_set_hash` + `rule_set_version` + `risk_score`).
 
 **Zero LLM calls inside the MCP.** All intelligence comes from the host Claude. The MCP provides structure, rules, and discipline.
 
@@ -14,7 +14,7 @@ A prompt linter for LLM applications — deterministic scoring, analysis, and st
 
 ```bash
 npm run build    # tsc → dist/
-npm test         # node --test dist/test/*.test.js (27 test files, 527 tests)
+npm test         # node --test dist/test/*.test.js (28 test files, 595 tests)
 npm run start    # node dist/src/index.js
 ```
 
@@ -141,6 +141,8 @@ These are immutable coding rules. If implementation drifts from any, it's a bug.
 | `src/deltas.ts` | Pre-flight delta calculation for compression and pruning token savings estimates. |
 | `src/pruner.ts` | Deterministic tool relevance scorer and pruner. Task-type-aware scoring, mention protection, always-relevant tools. |
 | `src/lint-cli.ts` | Standalone CLI linter (`prompt-lint` binary). No MCP dependency — reuses `api.ts` functions directly. |
+| `src/sessionHistory.ts` | Session persistence, export with auto-calculated `rule_set_hash`, `rule_set_version`, `risk_score`. |
+| `src/customRules.ts` | Read-only custom rules loader from `~/.prompt-optimizer/custom-rules/`. Hash calculation, evaluation, validation. |
 | `docs/index.html` | Landing page — hero, providers strip, how-it-works, 4-tier pricing, install |
 | `docs/features.html` | Features sub-page — capabilities, all 15 tools, use cases, comparison, API |
 | `docs/models.html` | Supported models page — 4 providers, 11 models, routing, output formats |
@@ -181,6 +183,8 @@ These are immutable coding rules. If implementation drifts from any, it's a bug.
 | `test/preservePatterns.test.ts` | Preserve pattern marking, invalid regex handling |
 | `test/constants.test.ts` | Frozen constants validation, stableStringify determinism |
 | `test/compression-overloads.test.ts` | 5 compressContext overload signatures, type detection, backward compatibility |
+| `test/sessionHistory.test.ts` | Session persistence, export auto-calculation, CRUD, filtering, edge cases |
+| `test/reproducibility.test.ts` | RULES_VERSION format, hash stability, risk score in exports, auto-calculation, API barrel exports |
 
 ## Key Type Contracts
 

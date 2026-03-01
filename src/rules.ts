@@ -1,6 +1,7 @@
 // rules.ts — Deterministic ambiguity detection rules. No LLM calls.
 // Rules are task-type aware: code-only rules skip for prose/research tasks.
 
+import { createHash } from 'node:crypto';
 import type { RuleResult, RiskLevel, RiskScore, RiskDimensions, TaskType, IntentSpec, RuleMatch } from './types.js';
 import { isCodeTask, isProseTask } from './types.js';
 import { customRules } from './customRules.js';
@@ -324,6 +325,7 @@ const rules: Rule[] = [
   {
     name: 'hallucination_risk',
     applies_to: 'all',
+    // ⚠ If you change regexes below, update inlineFingerprints in calculateBuiltInRuleSetHash().
     check(prompt) {
       // Detects prompts requesting ungrounded factual claims (stats, dates, quotes)
       // without providing source context
@@ -353,6 +355,7 @@ const rules: Rule[] = [
   {
     name: 'agent_underspec',
     applies_to: 'all',
+    // ⚠ If you change regexes below, update inlineFingerprints in calculateBuiltInRuleSetHash().
     check(prompt) {
       // Detects prompts that request autonomous agent behavior without constraints
       const requestsAgent = /\b(autonomous(ly)?|agent|auto[\s-]?(run|execute|deploy)|run\s+without\s+(me|supervision|oversight)|unattended|hands[\s-]?off)\b/i.test(prompt);
@@ -378,6 +381,7 @@ const rules: Rule[] = [
   {
     name: 'conflicting_constraints',
     applies_to: 'all',
+    // ⚠ If you change regexes below, update inlineFingerprints in calculateBuiltInRuleSetHash().
     check(prompt) {
       // Detects contradictory constraint patterns
       const hasOnlyX = /\b(only|exclusively|solely)\s+(modify|change|update|touch|edit)\b/i.test(prompt);
@@ -418,6 +422,7 @@ const rules: Rule[] = [
   {
     name: 'token_budget_mismatch',
     applies_to: 'all',
+    // ⚠ If you change regexes below, update inlineFingerprints in calculateBuiltInRuleSetHash().
     check(prompt) {
       // Detects prompts requesting large output with a small/fast model mention
       const mentionsSmallModel = /\b(haiku|gpt[\s-]?4o[\s-]?mini|flash|nano|small\s+model|fast\s+model|cheap\s+model)\b/i.test(prompt);
@@ -492,6 +497,52 @@ export function getElevatedRisk(results: RuleResult[]): RiskLevel | undefined {
 
 /** Threshold at which risk escalates routing tier (G11: no magic numbers). */
 export const RISK_ESCALATION_THRESHOLD = 40;
+
+/** Built-in rules version. Rule count derived from the rules array — never hardcoded. */
+export const RULES_VERSION = `3.2.1-${rules.length}r`;
+
+/**
+ * Deterministic SHA-256 hash of all built-in rules.
+ *
+ * Hash input per rule: name + applies_to + RISK_WEIGHTS entry (or 'elevation').
+ * Plus a global fingerprint of all shared pattern libraries and v3.1 inline regex
+ * sources. Uses RegExp.toString() (ECMA-262 §22.2.5.12, spec-stable across V8
+ * versions) instead of Function.toString() (V8-dependent whitespace/comments).
+ *
+ * Sorted by rule name → joined with \n → SHA-256 UTF-8 hex lowercase.
+ */
+export function calculateBuiltInRuleSetHash(): string {
+  // 1. Per-rule metadata (name + applies_to + weight signature)
+  const sorted = [...rules].sort((a, b) => a.name.localeCompare(b.name));
+  const ruleMetadata = sorted
+    .map(r => {
+      const weight = RISK_WEIGHTS[r.name];
+      const weightSig = weight
+        ? `${weight.dimension}:${weight.base}:${weight.blockingMultiplier}`
+        : 'elevation';
+      return `${r.name}\n${r.applies_to}\n${weightSig}`;
+    })
+    .join('\n');
+
+  // 2. Shared pattern library fingerprint (RegExp.toString() is spec-stable)
+  const sharedPatterns = [
+    VAGUE_CODE_PATTERNS, FILE_PATH_PATTERNS, CODE_REF_PATTERNS,
+    SCOPE_EXPLOSION_CODE, HIGH_RISK_KEYWORDS, FORMAT_REFS,
+    TASK_SEPARATORS, VAGUE_GENERIC_PATTERNS, SPECIFICS_PATTERNS,
+  ].flat().map(r => r.toString()).join(',');
+
+  // 3. v3.1 inline regex fingerprints (not in shared libraries — listed explicitly)
+  //    Update these when the corresponding rule's trigger logic changes.
+  const inlineFingerprints = [
+    'hallucination_risk:exact|specific|precise,give\\s+me\\s+the,list\\s+all,based\\s+on|according\\s+to',
+    'agent_underspec:autonomous|agent|auto[\\s-]?,limit|budget|max|cap|stop\\s+after',
+    'conflicting_constraints:only|exclusively|solely,also|additionally,must\\s+not|never,must|always|ensure',
+    'token_budget_mismatch:haiku|gpt.*mini|flash|nano,comprehensive|exhaustive|detailed\\s+analysis,entire|all|every',
+  ].join('\n');
+
+  const hashInput = `${ruleMetadata}\n---\n${sharedPatterns}\n---\n${inlineFingerprints}`;
+  return createHash('sha256').update(hashInput, 'utf8').digest('hex');
+}
 
 /** Explicit risk weights for each rule. Dimension + base + blocking multiplier.
  *  G4: unknown rules are ignored with a decision_path warning. */

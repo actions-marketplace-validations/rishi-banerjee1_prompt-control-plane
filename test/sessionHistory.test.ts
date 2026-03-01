@@ -221,13 +221,16 @@ test('sessionHistory', async (t) => {
     const session = createMockSession({ raw_prompt: 'Export test' });
 
     await mgr.saveSession(session);
-    const exported = await mgr.exportSession(session.id, 'hash-123', '3.2.1');
+    const exported = await mgr.exportSession(session.id);
 
     assert.ok(exported);
     assert.equal(exported?.schema_version, 1);
     assert.equal(exported?.raw_prompt, 'Export test');
-    assert.equal(exported?.rule_set_hash, 'hash-123');
-    assert.equal(exported?.rule_set_version, '3.2.1');
+    // Phase 3: auto-calculated — SHA-256 hex (64 chars), derived version
+    assert.ok(exported?.rule_set_hash.length === 64, 'rule_set_hash should be 64-char hex');
+    assert.ok(/^[0-9a-f]{64}$/.test(exported!.rule_set_hash), 'rule_set_hash should be lowercase hex');
+    assert.ok(exported?.rule_set_version.startsWith('3.2.1-'), 'rule_set_version should start with 3.2.1-');
+    assert.ok(exported?.rule_set_version.endsWith('r'), 'rule_set_version should end with r');
 
     await fs.rm(tempDir, { recursive: true });
   });

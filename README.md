@@ -1026,7 +1026,7 @@ Reason:         Balanced task — Sonnet offers the best
 ## Security & Privacy Posture (Offline-First)
 
 - **Offline-first by default:** the core optimizer runs locally and does not require network access.
-- **Deterministic and reproducible:** given the same inputs, version, and configuration, outputs are stable. All heuristics and pruning decisions are deterministic (no randomness, no runtime learning).
+- **Deterministic and reproducible:** given the same inputs, version, and configuration, outputs are stable. All heuristics and pruning decisions are deterministic (no randomness, no runtime learning). Session exports include `rule_set_hash` (SHA-256 of all built-in rules) and `rule_set_version` for full reproducibility — any rule change produces a different hash.
 - **No LLM calls inside the MCP:** compression, tool pruning, and risk scoring are local transforms.
 - **No telemetry:** the core engine does not send usage or prompt data anywhere.
 - **Local-only state:** persisted artifacts (sessions, usage, config, stats, license) live under `~/.prompt-optimizer/`.
@@ -1082,14 +1082,14 @@ Reason:         Balanced task — Sonnet offers the best
 - [x] v3.1 Tool Pruning: task-aware relevance scoring, mention protection, always-relevant tools
 - [x] v3.1 4 new ambiguity rules: hallucination_risk, agent_underspec, conflicting_constraints, token_budget_mismatch (14 total)
 - [x] v3.1 Pre-flight deltas: compression_delta conditionally surfaced when context provided
-- [x] 15 MCP tools, 14 rules, 527 tests across 21 test suites
+- [x] v3.2.0 Enterprise Unlock: 4-tier system with Enterprise (unlimited, 120/min, dedicated support), contact form, updated gating
+- [x] v3.2.1 Custom Rules: user-defined regex rules in `~/.prompt-optimizer/custom-rules/`, risk dimension integration, CLI validation
+- [x] v3.2.1 Reproducible Exports: auto-calculated `rule_set_hash`, `rule_set_version`, `risk_score` in session exports — no placeholders
+- [x] 15 MCP tools, 14 rules, 595 tests across 28 test suites
 - [ ] Optional Haiku pass for nuanced ambiguity detection
 - [ ] Prompt template library (common patterns)
-- [ ] History/export of past sessions
-- [ ] Custom rule definitions via config file
 - [ ] Integration with Claude Code hooks for auto-trigger on complex tasks
 - [x] Always-on mode for Power tier (auto-optimize every prompt)
-- [x] v3.2.0 Enterprise Unlock: 4-tier system with Enterprise (unlimited, 120/min, dedicated support), contact form, updated gating
 
 ## Contributors
 

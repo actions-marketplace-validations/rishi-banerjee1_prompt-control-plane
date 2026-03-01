@@ -7,6 +7,7 @@ import * as path from 'node:path';
 import { createHash } from 'node:crypto';
 import { log } from './logger.js';
 import { customRules } from './customRules.js';
+import { runRules, computeRiskScore, calculateBuiltInRuleSetHash, RULES_VERSION } from './rules.js';
 import type {
   Session,
   SessionRecord,
@@ -161,7 +162,7 @@ export class SessionHistoryManager {
    * Export full session details (including raw prompt).
    * Returns null if not found.
    */
-  async exportSession(sessionId: string, ruleSetHash?: string, ruleSetVersion?: string): Promise<SessionExport | null> {
+  async exportSession(sessionId: string): Promise<SessionExport | null> {
     try {
       const session = await this.loadSession(sessionId);
       if (!session) return null;
@@ -185,6 +186,14 @@ export class SessionHistoryManager {
       // Calculate custom rule-set hash (deterministic format)
       const customRuleSetHash = customRules.calculateRuleSetHash(customRulesList);
 
+      // Auto-calculate built-in rule-set hash and version
+      const ruleSetHash = calculateBuiltInRuleSetHash();
+      const ruleSetVersion = RULES_VERSION;
+
+      // Compute risk score using stored taskType from the session (not re-derived)
+      const ruleResults = runRules(session.raw_prompt, undefined, session.intent_spec.task_type);
+      const riskScore = computeRiskScore(ruleResults).score;
+
       return {
         schema_version: 1,
         session_id: session.id,
@@ -194,13 +203,13 @@ export class SessionHistoryManager {
         compiled_prompt: session.compiled_prompt,
         quality_before: session.quality_before.total,
         quality_after: session.state === 'APPROVED' ? session.quality_before.total : undefined,
-        rule_set_hash: ruleSetHash || '',
-        rule_set_version: ruleSetVersion || '3.2.1',
+        rule_set_hash: ruleSetHash,
+        rule_set_version: ruleSetVersion,
         metadata: {
           target: session.target,
           task_type: session.intent_spec.task_type,
           complexity,
-          risk_score: 0, // Will be populated from risk.ts in Phase 3
+          risk_score: riskScore,
           custom_rules_applied: customRulesApplied,
           custom_rule_set_hash: customRuleSetHash,
         },

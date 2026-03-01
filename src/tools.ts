@@ -1311,7 +1311,7 @@ export function registerTools(
         session_id = hardenInput(session_id);
         const { sessionHistory } = await import('./sessionHistory.js');
 
-        const exported = await sessionHistory.exportSession(session_id, '', '3.2.1');
+        const exported = await sessionHistory.exportSession(session_id);
         if (!exported) {
           return errorResponse({
             request_id: requestId,

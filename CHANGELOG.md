@@ -1,5 +1,24 @@
 # Changelog
 
+## [3.2.1] - 2026-03-01
+
+### Added
+- **Reproducible session exports**: `exportSession()` now auto-calculates `rule_set_hash` (SHA-256 of all 14 built-in rules), `rule_set_version` (derived from rule count), and `risk_score` (computed from stored task type). No more placeholder values.
+- **`RULES_VERSION` constant**: `3.2.1-${rules.length}r` — rule count derived from the rules array, never hardcoded. Changes automatically if rules are added or removed.
+- **`calculateBuiltInRuleSetHash()`**: Deterministic SHA-256 hash of all built-in rules. Captures rule metadata + shared regex pattern libraries + v3.1 inline regex fingerprints. Uses `RegExp.toString()` (ECMA-262 §22.2.5.12, spec-stable) for cross-Node portability.
+- **Custom rules integration** (Phase 2): `computeRiskScoreWithCustomRules()` async wrapper, custom rule loading from `~/.prompt-optimizer/custom-rules/`, `--validate-custom-rules` CLI flag, API exports for `CustomRule`, `RuleMatch`, `CustomRulesConfig` types.
+- **15 reproducibility tests** (`test/reproducibility.test.ts`): Version format, hash stability, risk score verification, export auto-calculation, API barrel exports.
+
+### Changed
+- `exportSession()` signature simplified: removed optional `ruleSetHash`/`ruleSetVersion` parameters — all values auto-calculated.
+- Test count: 579 → 595
+- Test files: 27 → 28
+
+### Notes
+- **No breaking changes** to MCP tools, CLI, or programmatic API.
+- Hash is portable across Node 18/20/22 — uses explicit regex metadata, not `Function.prototype.toString()`.
+- Architecture constraint preserved: **zero LLM calls inside. Deterministic. Offline. Reproducible.**
+
 ## [3.1.0] - 2026-03-01
 
 ### Added
