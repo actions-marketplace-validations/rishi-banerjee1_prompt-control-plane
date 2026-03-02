@@ -1,0 +1,31 @@
+# Prompt Control Plane
+
+> Deterministic prompt governance for production LLM systems.
+
+Prompt Control Plane is a governance engine that enforces structure on every prompt before it reaches a model. It scores risk, enforces policies, compiles structured prompts, and logs every action to a tamper-evident audit trail. Zero LLM calls run inside the engine. Fully deterministic, offline-first, reproducible.
+
+## Key Facts
+- 19 MCP tools for prompt governance
+- Policy enforcement with advisory and enforce modes
+- Risk scoring across hallucination, ambiguity, scope expansion, and constraint conflict
+- Deterministic cross-provider routing (Anthropic, OpenAI, Google Gemini, Perplexity)
+- Tamper-evident hash-chained audit trail
+- Config lock with passphrase protection
+- Custom rules with regex patterns and risk dimensions
+- Ships as MCP server, CLI linter (prompt-lint), and GitHub Action
+- Works with any codebase (Python, Java, Go, Rust, etc.)
+- Four tiers: Free, Pro, Power, Enterprise
+
+## Pages
+- Homepage: https://prompt-control-plane.pages.dev/
+- Features: https://prompt-control-plane.pages.dev/features.html
+- Pricing: https://prompt-control-plane.pages.dev/plans.html
+- Documentation: https://prompt-control-plane.pages.dev/docs.html
+- Supported Models: https://prompt-control-plane.pages.dev/models.html
+- How We're Different: https://prompt-control-plane.pages.dev/different.html
+- Changelog: https://prompt-control-plane.pages.dev/changelog.html
+
+## Install
+npm: claude-prompt-optimizer-mcp
+GitHub: https://github.com/rishiatlan/Prompt-Optimizer-MCP
+GitHub Action: https://github.com/marketplace/actions/prompt-lint
