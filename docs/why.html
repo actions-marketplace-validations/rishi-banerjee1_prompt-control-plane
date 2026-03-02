@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Why Prompt Control Plane — Governance for AI Prompts</title>
+  <meta name="description" content="Ungoverned prompts cause compliance gaps, cost waste, and non-reproducible outputs. Prompt Control Plane adds deterministic scoring, policy enforcement, and tamper-evident audit trails with zero LLM calls.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://prompt-control-plane.pages.dev/why.html">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Why Prompt Control Plane — Governance for AI Prompts">
+  <meta property="og:description" content="Deterministic prompt governance. What it does, how it helps, and why teams adopt it from free tier to full compliance.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://prompt-control-plane.pages.dev/why.html">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Why Prompt Control Plane">
+  <meta name="twitter:description" content="Deterministic prompt governance. Zero LLM calls. Tamper-evident audit. Policy enforcement built in.">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Why Prompt Control Plane — Governance for AI Prompts",
+    "description": "Ungoverned prompts cause compliance gaps, cost waste, and non-reproducible outputs. Prompt Control Plane adds deterministic scoring, policy enforcement, and tamper-evident audit trails.",
+    "url": "https://prompt-control-plane.pages.dev/why.html"
+  }
+  </script>
+
+  <link rel="stylesheet" href="shared.css">
+
+  <style>
+    /* ─── Hero ─────────────────────────────────────────────────────────────── */
+    .why-hero {
+      padding: 80px 0 56px;
+      text-align: center;
+    }
+    .why-hero h1 {
+      font-size: 38px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.2;
+      margin-bottom: 14px;
+    }
+    .why-hero .subtitle {
+      font-size: 17px;
+      color: var(--text-muted);
+      max-width: 560px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+    @media (max-width: 700px) {
+      .why-hero { padding: 56px 0 36px; }
+      .why-hero h1 { font-size: 28px; }
+    }
+
+    /* ─── Problem cards ────────────────────────────────────────────────────── */
+    .problem-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-top: 3px solid var(--orange);
+      border-radius: 12px;
+      padding: 24px;
+    }
+    .problem-card .p-icon { font-size: 24px; margin-bottom: 12px; }
+    .problem-card h3 { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+    .problem-card p { font-size: 14px; color: var(--text-muted); line-height: 1.7; margin: 0; }
+
+    /* ─── Governance control cards ─────────────────────────────────────────── */
+    .control-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-top: 3px solid var(--accent);
+      border-radius: 12px;
+      padding: 24px;
+    }
+    .control-card .c-icon { font-size: 24px; margin-bottom: 12px; }
+    .control-card h3 { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+    .control-card p { font-size: 14px; color: var(--text-muted); line-height: 1.7; margin: 0; }
+
+    /* ─── Approach cards ──────────────────────────────────────────────────── */
+    .approach-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      text-align: center;
+    }
+    .approach-card .a-icon { font-size: 28px; margin-bottom: 12px; }
+    .approach-card h3 { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+    .approach-card p { font-size: 14px; color: var(--text-muted); line-height: 1.7; margin: 0; }
+
+    /* ─── Tier journey ─────────────────────────────────────────────────────── */
+    .tier-journey {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+    .tier-step {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--green);
+      border-radius: 12px;
+      padding: 24px 28px;
+    }
+    .tier-step.pro { border-left-color: var(--blue); }
+    .tier-step.power { border-left-color: var(--accent); }
+    .tier-step.enterprise { border-left-color: var(--accent); }
+    .tier-name {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 3px 10px;
+      border-radius: 20px;
+      margin-bottom: 10px;
+    }
+    .tier-step .tier-name { background: rgba(52, 211, 153, 0.15); color: var(--green); }
+    .tier-step.pro .tier-name { background: rgba(96, 165, 250, 0.15); color: var(--blue); }
+    .tier-step.power .tier-name { background: var(--accent-glow); color: var(--accent); }
+    .tier-step.enterprise .tier-name { background: var(--accent-glow); color: var(--accent); }
+    .tier-step h3 { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+    .tier-step p { font-size: 14px; color: var(--text-muted); line-height: 1.7; margin: 0; }
+    .tier-step .tier-trigger {
+      display: block;
+      margin-top: 10px;
+      font-size: 13px;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    /* ─── Footer grid ──────────────────────────────────────────────────────── */
+    .footer-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+      text-align: left;
+      margin-bottom: 24px;
+    }
+    .footer-col h4 {
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text);
+      margin-bottom: 12px;
+    }
+    .footer-col a {
+      display: block;
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+    .footer-col a:hover { color: var(--text); }
+    .footer-copy {
+      font-size: 12px;
+      color: var(--text-muted);
+      border-top: 1px solid var(--border);
+      padding-top: 16px;
+      text-align: center;
+    }
+    @media (max-width: 500px) {
+      .footer-grid { grid-template-columns: 1fr; gap: 24px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Nav -->
+  <nav>
+    <div class="container">
+      <a href="./" class="logo">Prompt Control <span>Plane</span></a>
+      <button class="nav-toggle" aria-label="Menu">
+        <svg viewBox="0 0 24 24"><path d="M3 12h18M3 6h18M3 18h18" stroke-linecap="round"/></svg>
+      </button>
+      <div class="nav-links">
+        <a href="features.html">Features</a>
+        <a href="models.html">Models</a>
+        <a href="docs.html">Docs</a>
+        <a href="plans.html">Pricing</a>
+        <button class="theme-toggle" aria-label="Toggle theme">
+          <svg class="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+          <svg class="icon-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="why-hero">
+    <div class="container">
+      <span class="badge badge-accent">Why Prompt Control Plane</span>
+      <h1>Your prompts deserve the same rigor as your code</h1>
+      <p class="subtitle">Code gets linters, tests, and CI gates. Prompts get copy-paste and hope. Prompt Control Plane brings deterministic governance to the part of your AI stack that matters most.</p>
+    </div>
+  </section>
+
+  <!-- The Problem -->
+  <section class="section section-alt">
+    <div class="container">
+      <h2 class="section-title text-center">What happens without prompt governance</h2>
+      <p class="section-subtitle text-center">Every ungoverned prompt is a silent liability.</p>
+
+      <div class="grid-2" style="gap: 16px;">
+        <div class="problem-card">
+          <div class="p-icon">📋</div>
+          <h3>No audit trail</h3>
+          <p>There is no record of what prompts were used, when they were authored, or what they scored. When compliance asks for evidence, there is nothing to review.</p>
+        </div>
+        <div class="problem-card">
+          <div class="p-icon">🚧</div>
+          <h3>No policy gates</h3>
+          <p>There is no mechanism to enforce quality standards before prompts reach production. Ambiguous instructions, missing constraints, and scope explosion ship unchecked.</p>
+        </div>
+        <div class="problem-card">
+          <div class="p-icon">🔓</div>
+          <h3>Data transit risk</h3>
+          <p>Without offline tooling, prompt content may transit through third-party services for analysis. Sensitive context leaves your network before you know whether the prompt is even well-structured.</p>
+        </div>
+        <div class="problem-card">
+          <div class="p-icon">🎲</div>
+          <h3>Non-reproducible governance</h3>
+          <p>If prompt analysis depends on an LLM, the same prompt can receive different assessments on different runs. You cannot prove that the same governance was applied consistently.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- What It Does -->
+  <section class="section">
+    <div class="container">
+      <h2 class="section-title text-center">What it does</h2>
+      <p class="section-subtitle text-center">One engine. Three capabilities. All deterministic, all offline, all in under a second.</p>
+
+      <div>
+        <div class="flow-step">
+          <div class="flow-num">1</div>
+          <div class="flow-content">
+            <h3>Scores and diagnoses</h3>
+            <p>Every prompt receives a reproducible quality score (0&ndash;100) across five dimensions. Deterministic rules flag specific structural problems: scope explosion, missing constraints, hallucination risk, conflicting instructions, and more. The same prompt always produces the same score.</p>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-num">2</div>
+          <div class="flow-content">
+            <h3>Compiles and structures</h3>
+            <p>Raw intent is transformed into a structured prompt with role, goal, constraints, workflow, and output format. Three output targets: Claude XML, OpenAI system/user split, or generic Markdown. What was missing gets added; what was already there gets preserved.</p>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-num">3</div>
+          <div class="flow-content">
+            <h3>Routes and estimates cost</h3>
+            <p>Task complexity is classified, and the prompt is routed to the appropriate model tier. Token count and cost are estimated across multiple models from multiple providers, before a single API call is made. A full decision trail explains every routing choice.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Why This Approach -->
+  <section class="section section-alt">
+    <div class="container">
+      <h2 class="section-title text-center">Why this approach</h2>
+      <p class="section-subtitle text-center">Three architectural commitments that shape every decision in the engine.</p>
+
+      <div class="grid-3" style="gap: 16px;">
+        <div class="approach-card">
+          <div class="a-icon">🚫</div>
+          <h3>Zero LLM calls inside</h3>
+          <p>The engine itself never calls a model. All scoring, routing, compilation, and policy enforcement is a deterministic rule engine. No added inference cost. No variance between runs. No API keys consumed by the governance layer.</p>
+        </div>
+        <div class="approach-card">
+          <div class="a-icon">📡</div>
+          <h3>Fully offline</h3>
+          <p>Runs on your machine. No cloud services, no telemetry, no phone-home. Works behind corporate VPNs and air-gapped networks. After install, the engine has zero network dependency.</p>
+        </div>
+        <div class="approach-card">
+          <div class="a-icon">🔁</div>
+          <h3>Deterministic and auditable</h3>
+          <p>Same prompt produces the same score, the same compiled output, and the same routing decision, every time. Session exports include rule-set hashes, engine version, and risk scores for full reproducibility.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Governance Controls -->
+  <section class="section">
+    <div class="container">
+      <h2 class="section-title text-center">Governance controls</h2>
+      <p class="section-subtitle text-center">The controls that matter when AI governance is a requirement, not a suggestion.</p>
+
+      <div class="grid-2" style="gap: 16px;">
+        <div class="control-card">
+          <div class="c-icon">🛡️</div>
+          <h3>Policy enforcement</h3>
+          <p>Run in advisory mode for visibility, or enforce mode to block. Prompts that fail quality gates or exceed risk thresholds are stopped before they reach any model. Both built-in and custom rules can be set to blocking severity.</p>
+        </div>
+        <div class="control-card">
+          <div class="c-icon">📜</div>
+          <h3>Tamper-evident audit trail</h3>
+          <p>Every governance action generates a JSONL audit entry with SHA-256 hash chaining. If any entry is modified or deleted, all subsequent hashes break. Local-only, opt-in, and prompt content is never stored in the trail.</p>
+        </div>
+        <div class="control-card">
+          <div class="c-icon">🔐</div>
+          <h3>Config lock</h3>
+          <p>Governance settings are locked with a passphrase. No one can change policy mode, strictness, or audit configuration without the correct secret. Every attempt, successful or blocked, is logged.</p>
+        </div>
+        <div class="control-card">
+          <div class="c-icon">📏</div>
+          <h3>Custom rules</h3>
+          <p>Define up to 25 organization-specific rules with severity levels (blocking or non-blocking), risk dimensions, and pattern matching. Rules are hashed for reproducibility and included in session exports.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Tier Journey -->
+  <section class="section section-alt">
+    <div class="container">
+      <h2 class="section-title text-center">Start free. Scale when you need to.</h2>
+      <p class="section-subtitle text-center">Every plan includes the full scoring engine, all 19 tools, and all 3 output formats. What changes is volume and governance depth.</p>
+
+      <div class="tier-journey">
+        <div class="tier-step">
+          <span class="tier-name">Free</span>
+          <h3>Visibility</h3>
+          <p>See what is wrong with your prompts. Score, check, classify, route, and estimate cost with no time limit. 10 full optimizations included.</p>
+          <span class="tier-trigger">When you need more than 10 optimizations or want always-on analysis.</span>
+        </div>
+        <div class="tier-step pro">
+          <span class="tier-name">Pro</span>
+          <h3>Consistency</h3>
+          <p>Enforce quality across daily workflows. 100 optimizations per month, offline license key (no account needed), and always-on mode for continuous governance.</p>
+          <span class="tier-trigger">When volume grows or you need unlimited analysis.</span>
+        </div>
+        <div class="tier-step power">
+          <span class="tier-name">Power</span>
+          <h3>Scale</h3>
+          <p>Unlimited optimizations with no monthly cap. Higher rate limits and priority support for high-volume workflows.</p>
+          <span class="tier-trigger">When governance becomes a compliance requirement.</span>
+        </div>
+        <div class="tier-step enterprise">
+          <span class="tier-name">Enterprise</span>
+          <h3>Compliance</h3>
+          <p>Everything in Power, plus policy enforcement (advisory and enforce modes), tamper-evident audit trail with hash chaining, config lock with passphrase, custom rules engine, session lifecycle management with retention policies, and dedicated support.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="section">
+    <div class="container text-center">
+      <h2 class="section-title">Add the governance layer</h2>
+      <p class="section-subtitle">Install in 10 seconds. Free tier included. No credit card, no account, no network dependency.</p>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:24px;">
+        <a href="./#install" class="btn btn-primary">Get Started Free</a>
+        <a href="plans.html" class="btn btn-secondary">See Full Pricing</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <h4>Product</h4>
+          <a href="./">Home</a>
+          <a href="why.html">Why PCP</a>
+          <a href="features.html">Features</a>
+          <a href="docs.html">Docs</a>
+          <a href="plans.html">Plans</a>
+          <a href="different.html">How We're Different</a>
+        </div>
+        <div class="footer-col">
+          <h4>Resources</h4>
+          <a href="changelog.html">Changelog</a>
+          <a href="https://github.com/rishiatlan/Prompt-Optimizer-MCP">GitHub</a>
+          <a href="https://www.npmjs.com/package/claude-prompt-optimizer-mcp">npm</a>
+        </div>
+        <div class="footer-col">
+          <h4>Legal</h4>
+          <a href="privacy.html">Privacy</a>
+          <a href="terms.html">Terms</a>
+          <a href="security.html">Security</a>
+          <a href="contact.html">Contact</a>
+        </div>
+      </div>
+      <p class="footer-copy">&copy; 2025-2026 Rishi Banerjee. Elastic License 2.0 (ELv2).</p>
+    </div>
+  </footer>
+
+  <script src="shared.js"></script>
+</body>
+</html>
