@@ -213,7 +213,7 @@ Changes Made:
 | **MCP Config** (recommended) | Add to `.mcp.json` or `~/.claude/settings.json` — see below |
 | **npx** | `npx -y claude-prompt-optimizer-mcp` |
 | **npm global** | `npm install -g claude-prompt-optimizer-mcp` |
-| **curl** | `curl -fsSL https://getpcp.pages.dev/install.sh \| bash` |
+| **curl** | `curl -fsSL https://getpcp.site/install.sh \| bash` |
 
 ### MCP Config (Claude Code / Claude Desktop)
 
@@ -266,7 +266,7 @@ Then use in your MCP config:
 <summary><strong>Curl installer (installs globally + prints MCP config)</strong></summary>
 
 ```bash
-curl -fsSL https://getpcp.pages.dev/install.sh | bash
+curl -fsSL https://getpcp.site/install.sh | bash
 ```
 
 Checks Node.js ≥ 18, installs the package globally, and prints the MCP config JSON for your platform.
@@ -330,15 +330,42 @@ pcp config --show --json
 
 # Validate environment
 pcp doctor --json
+
+# Install auto-check hook (checks every prompt before it hits the LLM)
+pcp hook install --threshold 70
+
+# Check hook status / uninstall
+pcp hook status
+pcp hook uninstall
 ```
 
 **Exit codes:** `0` = success, `1` = threshold fail (check/doctor), `2` = input error, `3` = policy blocked (enforce mode).
 
-**All subcommands:** preflight, optimize, check, score, classify, route, cost, compress, config, doctor.
+**All subcommands:** preflight, optimize, check, score, classify, route, cost, compress, config, doctor, hook.
 
 **Global flags:** `--json`, `--quiet`, `--pretty`, `--target`, `--file`, `--context`, `--context-file`, `--intent`, `--strict`, `--relaxed`, `--threshold`.
 
 > **Backward compat:** `prompt-lint` still works and maps to `pcp check`.
+
+### Auto-Check Hooks
+
+Hooks automatically check every prompt before it reaches the LLM. Works with any MCP client that supports `UserPromptSubmit` hooks — Claude Code, Cursor, Windsurf, and others.
+
+```bash
+# Install for this project (reads threshold from governance config)
+pcp hook install
+
+# Install globally for all projects with a custom threshold
+pcp hook install --global --threshold 70
+
+# Check if hook is installed
+pcp hook status --json
+
+# Remove hook
+pcp hook uninstall
+```
+
+When a prompt scores below the threshold, inline feedback is injected into the conversation context. Prompts above the threshold pass through silently. Hooks respect the same governance config that the CLI and MCP read.
 
 ### GitHub Action
 
@@ -488,19 +515,19 @@ console.log(withCtx.cost);   // Higher token count (context included)
 
 **Free tier** gives you 10 optimizations to experience the full pipeline. No credit card required.
 
-**Enterprise** includes unlimited usage, custom integrations, and dedicated support. [Contact sales](https://getpcp.pages.dev/contact.html) for pricing and details.
+**Enterprise** includes unlimited usage, custom integrations, and dedicated support. [Contact sales](https://getpcp.site/contact.html) for pricing and details.
 
 ### Activate a License
 
 1. **Free**: No action needed — you get 10 optimizations immediately.
-2. **Pro/Power**: Purchase at the [Prompt Control Plane store](https://getpcp.pages.dev/) and you receive a license key starting with `pcp_...`
+2. **Pro/Power**: Purchase at the [Prompt Control Plane store](https://getpcp.site/) and you receive a license key starting with `pcp_...`
 3. Tell Claude: "Use set_license with key: pcp_YOUR_KEY_HERE"
 4. Done — your tier upgrades instantly. Verify with `license_status`.
-5. **Enterprise**: [Contact sales](https://getpcp.pages.dev/contact.html) for custom license key generation.
+5. **Enterprise**: [Contact sales](https://getpcp.site/contact.html) for custom license key generation.
 
 ## Enterprise Features
 
-Enterprise features are gated by an Enterprise license key. All features below are managed through the **[Enterprise Console](https://getpcp.pages.dev/admin.html)** — a web-based admin interface with one-click toggles.
+Enterprise features are gated by an Enterprise license key. All features below are managed through the **[Enterprise Console](https://getpcp.site/admin.html)** — a web-based admin interface with one-click toggles.
 
 ### Enterprise Console
 
@@ -1139,7 +1166,7 @@ Reason:         Balanced task — Sonnet offers the best
 - [x] Ed25519 offline license key activation — no phone-home, no backend
 - [x] Monthly usage enforcement with calendar-month reset
 - [x] Rate limiting — tier-keyed sliding window (5/30/60 per minute)
-- [x] 11 MCP tools including `check_prompt`, `configure_optimizer`, `get_usage`, `prompt_stats`, `set_license`, `license_status`
+- [x] v2.0 11 MCP tools including `check_prompt`, `configure_optimizer`, `get_usage`, `prompt_stats`, `set_license`, `license_status`
 - [x] Usage metering, statistics tracking, and cost savings aggregation
 - [x] Programmatic API — `import { optimize } from 'claude-prompt-optimizer-mcp'` for library use
 - [x] Dual entry points — `"."` (API) + `"./server"` (MCP server)
@@ -1156,9 +1183,10 @@ Reason:         Balanced task — Sonnet offers the best
 - [x] v3.2.1 Reproducible Exports: auto-calculated `rule_set_hash`, `rule_set_version`, `risk_score` in session exports — no placeholders
 - [x] v3.3.0 Enterprise Operations: policy enforcement, config lock mode, hash-chained audit trail, session lifecycle management
 - [x] 20 capabilities including custom governance rules (Enterprise), comprehensive test suite
+- [x] v5.0.0 Full CLI suite: 11 subcommands (`pcp preflight`, `optimize`, `check`, `score`, `classify`, `route`, `cost`, `compress`, `config`, `doctor`, `hook`), consistent JSON envelope, policy enforcement (exit 3)
+- [x] Auto-check hooks: `pcp hook install/uninstall/status` — silently checks every prompt before it reaches the LLM
 - [ ] Optional Haiku pass for nuanced ambiguity detection
 - [ ] Prompt template library (common patterns)
-- [ ] Integration with Claude Code hooks for auto-trigger on complex tasks
 - [x] Always-on mode for Power tier (auto-optimize every prompt)
 
 ## Contributors

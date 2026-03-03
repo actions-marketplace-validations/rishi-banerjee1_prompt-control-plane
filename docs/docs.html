@@ -11,13 +11,13 @@
   <title>Documentation — Prompt Control Plane | Developer Reference</title>
   <meta name="description" content="Complete developer documentation for Prompt Control Plane. 20 MCP tools, CLI linter, GitHub Action, programmatic API, enterprise features, and architecture reference. Zero LLM calls, fully deterministic.">
   <meta name="keywords" content="prompt control plane docs, MCP documentation, prompt linter API, prompt-lint CLI, prompt governance tools, enterprise prompt policy, audit trail, config lock, developer reference">
-  <link rel="canonical" href="https://getpcp.pages.dev/docs.html">
+  <link rel="canonical" href="https://getpcp.site/docs.html">
 
   <!-- Open Graph -->
   <meta property="og:title" content="Documentation — Prompt Control Plane">
   <meta property="og:description" content="Complete developer documentation for Prompt Control Plane. 20 tools, CLI, GitHub Action, API, enterprise features.">
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://getpcp.pages.dev/docs.html">
+  <meta property="og:url" content="https://getpcp.site/docs.html">
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
@@ -31,11 +31,11 @@
     "@type": "TechArticle",
     "name": "Documentation — Prompt Control Plane",
     "description": "Complete developer documentation for Prompt Control Plane — 20 MCP tools, CLI linter, GitHub Action, programmatic API, enterprise features.",
-    "url": "https://getpcp.pages.dev/docs.html",
+    "url": "https://getpcp.site/docs.html",
     "isPartOf": {
       "@type": "WebSite",
       "name": "Prompt Control Plane",
-      "url": "https://getpcp.pages.dev/"
+      "url": "https://getpcp.site/"
     }
   }
   </script>
@@ -522,6 +522,7 @@
         <li><a href="#verification">Verification</a></li>
         <li><a href="#enterprise">Enterprise Features</a></li>
         <li><a href="#cli">CLI (<code>pcp</code>)</a></li>
+        <li><a href="#hooks">Auto-Check Hooks</a></li>
         <li><a href="#github-action">GitHub Action</a></li>
         <li><a href="#api">Programmatic API</a></li>
         <li><a href="#env-vars">Environment Variables</a></li>
@@ -562,10 +563,17 @@
       <div class="code-block">npm install -g claude-prompt-optimizer-mcp</div>
 
       <h4><span class="step-num">4</span> curl</h4>
-      <div class="code-block">curl -fsSL https://getpcp.pages.dev/install.sh | bash</div>
+      <div class="code-block">curl -fsSL https://getpcp.site/install.sh | bash</div>
 
       <h3>Your First Prompt</h3>
-      <p>Once installed, use the <code>optimize_prompt</code> tool in any MCP-compatible client (Claude Code, Cursor, Windsurf). Here is a step-by-step walkthrough:</p>
+      <p>Three ways to start &mdash; pick the one that fits your workflow:</p>
+
+      <h4>Option A: CLI (fastest)</h4>
+      <div class="code-block"><span class="comment"># Pre-flight: classify + score + route + policy check in one call</span>
+pcp preflight <span class="string">"Write something about our product launch"</span> --json</div>
+
+      <h4>Option B: MCP (inside Claude Code, Cursor, Windsurf)</h4>
+      <p>Use <code>pre_flight</code> (recommended) or <code>optimize_prompt</code> in any MCP-compatible client:</p>
 
       <p><span class="step-num">1</span> <strong>Send a raw prompt</strong> to <code>optimize_prompt</code>:</p>
       <div class="code-block"><span class="comment">// In your MCP client, call:</span>
@@ -573,6 +581,12 @@ optimize_prompt({
   raw_prompt: <span class="string">"Write something about our product launch"</span>,
   target: <span class="string">"claude"</span>
 })</div>
+
+      <h4>Option C: Auto-check Hook (hands-free)</h4>
+      <p>Install a hook that auto-checks every prompt before it reaches the LLM:</p>
+      <div class="code-block"><span class="comment"># Install for this project (or add --global for all projects)</span>
+pcp hook install --threshold 70</div>
+      <p>Every prompt submitted in your MCP client is silently scored. Low-quality prompts get inline feedback. See <a href="#hooks">Hooks</a> for details.</p>
 
       <p><span class="step-num">2</span> <strong>Review the PreviewPack</strong> response. It contains:</p>
       <ul>
@@ -1579,6 +1593,7 @@ pcp optimize --file prompt.txt --json --target claude</div>
           <tr><td><code>compress</code></td><td>Context compression</td><td>0, 2</td></tr>
           <tr><td><code>config</code></td><td>Show current governance config (read-only)</td><td>0, 2</td></tr>
           <tr><td><code>doctor</code></td><td>Validate environment health</td><td>0, 1</td></tr>
+          <tr><td><code>hook</code></td><td>Install/uninstall/status for auto-check hooks</td><td>0</td></tr>
         </tbody>
       </table>
 
@@ -1640,6 +1655,47 @@ echo <span class="string">"Write a blog post"</span> | pcp check --threshold 70<
 
 
       <!-- ════════════════════════════════════════════════════════════════════ -->
+      <!-- HOOKS                                                                -->
+      <!-- ════════════════════════════════════════════════════════════════════ -->
+      <h2 id="hooks">Auto-Check Hooks</h2>
+      <p>Hooks automatically check every prompt before it reaches the LLM. Works with any MCP client that supports <code>UserPromptSubmit</code> hooks &mdash; Claude Code, Cursor, Windsurf, and others.</p>
+
+      <h3>How It Works</h3>
+      <p>When you submit a prompt in your MCP client, the hook silently runs <code>pcp check</code> on it. If the score falls below your threshold, inline feedback is injected into the conversation context &mdash; telling the LLM what to improve. Prompts above the threshold pass through untouched.</p>
+
+      <h3>Install</h3>
+      <div class="code-block"><span class="comment"># Install for this project</span>
+pcp hook install
+
+<span class="comment"># Install globally (all projects)</span>
+pcp hook install --global
+
+<span class="comment"># Set a custom threshold (0-100)</span>
+pcp hook install --threshold 70</div>
+      <p>If you omit <code>--threshold</code>, it reads from your governance config strictness setting (relaxed=40, standard=60, strict=75).</p>
+
+      <h3>Check Status</h3>
+      <div class="code-block">pcp hook status           <span class="comment"># human-readable</span>
+pcp hook status --json    <span class="comment"># structured output</span>
+pcp hook status --global  <span class="comment"># check global scope</span></div>
+
+      <h3>Uninstall</h3>
+      <div class="code-block">pcp hook uninstall         <span class="comment"># remove from this project</span>
+pcp hook uninstall --global  <span class="comment"># remove global hook</span></div>
+
+      <h3>What Gets Created</h3>
+      <p>The <code>install</code> command creates two files:</p>
+      <ul>
+        <li><strong>Hook script</strong> (<code>.claude/hooks/pcp-preflight.mjs</code>) &mdash; runs <code>pcp check</code> on every prompt</li>
+        <li><strong>Settings entry</strong> (<code>.claude/settings.json</code>) &mdash; registers the hook with your MCP client</li>
+      </ul>
+      <p>Both are cleaned up completely by <code>uninstall</code>.</p>
+
+      <h3>Governance Integration</h3>
+      <p>Hooks respect the same config that the CLI and MCP read. If the Enterprise Console sets a higher strictness level, the hook&rsquo;s default threshold adjusts automatically on next install.</p>
+
+
+      <!-- ════════════════════════════════════════════════════════════════════ -->
       <!-- GITHUB ACTION                                                       -->
       <!-- ════════════════════════════════════════════════════════════════════ -->
       <h2 id="github-action">GitHub Action</h2>
@@ -1657,18 +1713,20 @@ echo <span class="string">"Write a blog post"</span> | pcp check --threshold 70<
       - uses: actions/checkout@v4
 
       - name: Lint prompts
-        uses: rishiatlan/Prompt-Optimizer-MCP@v4
+        uses: rishiatlan/Prompt-Optimizer-MCP@v5
         with:
           files: <span class="string">"prompts/**/*.md"</span>
           strictness: strict        <span class="comment"># or: standard, relaxed</span>
+          <span class="comment"># subcommand: preflight   # check (default), score, preflight</span>
           <span class="comment"># threshold: 80           # overrides strictness if set</span>
-          <span class="comment"># version: "4.0.0"        # pin to specific npm version</span></div>
+          <span class="comment"># version: "5.0.0"        # pin to specific npm version</span></div>
 
       <h3>Action Inputs</h3>
       <table class="data-table">
         <thead><tr><th>Input</th><th>Required</th><th>Default</th><th>Description</th></tr></thead>
         <tbody>
           <tr><td><code>files</code></td><td>Yes</td><td>&mdash;</td><td>Glob pattern for prompt files</td></tr>
+          <tr><td><code>subcommand</code></td><td>No</td><td>check</td><td>CLI subcommand: check (default), score, preflight</td></tr>
           <tr><td><code>threshold</code></td><td>No</td><td>&mdash;</td><td>Minimum score (0&ndash;100). Overrides strictness.</td></tr>
           <tr><td><code>strictness</code></td><td>No</td><td>standard</td><td>Preset: standard (60), strict (75), relaxed (40)</td></tr>
           <tr><td><code>version</code></td><td>No</td><td>tag ref</td><td>npm version to install</td></tr>

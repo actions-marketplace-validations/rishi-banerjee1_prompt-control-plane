@@ -894,3 +894,121 @@ describe('18. --context-file', () => {
     assert.equal(exitCode, 0);
   });
 });
+
+// ─── 17. Hook Subcommand (10 tests) ─────────────────────────────────────────
+
+describe('17. Hook subcommand', () => {
+  let hookDir: string;
+
+  /** Run CLI with custom cwd for hook tests. */
+  function runInDir(
+    args: string[],
+    cwd: string,
+    opts?: { env?: Record<string, string> },
+  ): { stdout: string; stderr: string; exitCode: number } {
+    const result = spawnSync('node', [BIN, ...args], {
+      encoding: 'utf-8',
+      cwd,
+      timeout: 15_000,
+      env: { ...process.env, ...opts?.env },
+    });
+    return {
+      stdout: result.stdout ?? '',
+      stderr: result.stderr ?? '',
+      exitCode: result.status ?? 1,
+    };
+  }
+
+  before(() => {
+    hookDir = mkdtempSync(join(tmpdir(), 'pcp-hook-'));
+  });
+
+  after(() => {
+    try { rmSync(hookDir, { recursive: true, force: true }); } catch { /* ignore */ }
+  });
+
+  it('hook with no action shows help', () => {
+    const { stdout, exitCode } = runInDir(['hook'], hookDir);
+    assert.equal(exitCode, 0);
+    assert.ok(stdout.includes('hook install'), 'Help mentions install');
+    assert.ok(stdout.includes('hook uninstall'), 'Help mentions uninstall');
+    assert.ok(stdout.includes('hook status'), 'Help mentions status');
+  });
+
+  it('hook --help shows hook-specific help (not main help)', () => {
+    const { stdout, exitCode } = runInDir(['hook', '--help'], hookDir);
+    assert.equal(exitCode, 0);
+    assert.ok(stdout.includes('hook install'), 'Shows hook help, not main help');
+    assert.ok(!stdout.includes('preflight'), 'Does not show main help commands');
+  });
+
+  it('hook status before install → not installed', () => {
+    const { stdout, exitCode } = runInDir(['hook', 'status', '--json'], hookDir);
+    assert.equal(exitCode, 0);
+    const json = JSON.parse(stdout.trim());
+    assert.equal(json.subcommand, 'hook');
+    assert.equal(json.installed, false);
+    assert.equal(json.hook_script_exists, false);
+    assert.equal(json.settings_configured, false);
+  });
+
+  it('hook install creates script + settings', () => {
+    const { stdout, exitCode } = runInDir(['hook', 'install', '--json'], hookDir);
+    assert.equal(exitCode, 0);
+    const json = JSON.parse(stdout.trim());
+    assert.equal(json.action, 'install');
+    assert.equal(json.status, 'installed');
+    assert.equal(json.scope, 'project');
+    assert.equal(typeof json.threshold, 'number');
+    assert.ok(json.hook_script.includes('pcp-preflight.mjs'));
+  });
+
+  it('hook status after install → installed', () => {
+    const { stdout, exitCode } = runInDir(['hook', 'status', '--json'], hookDir);
+    assert.equal(exitCode, 0);
+    const json = JSON.parse(stdout.trim());
+    assert.equal(json.installed, true);
+    assert.equal(json.hook_script_exists, true);
+    assert.equal(json.settings_configured, true);
+  });
+
+  it('hook install with --threshold 70', () => {
+    const { stdout, exitCode } = runInDir(['hook', 'install', '--threshold', '70', '--json'], hookDir);
+    assert.equal(exitCode, 0);
+    const json = JSON.parse(stdout.trim());
+    assert.equal(json.threshold, 70);
+  });
+
+  it('hook uninstall removes everything', () => {
+    const { stdout, exitCode } = runInDir(['hook', 'uninstall', '--json'], hookDir);
+    assert.equal(exitCode, 0);
+    const json = JSON.parse(stdout.trim());
+    assert.equal(json.action, 'uninstall');
+    assert.equal(json.status, 'removed');
+  });
+
+  it('hook status after uninstall → not installed', () => {
+    const { stdout, exitCode } = runInDir(['hook', 'status', '--json'], hookDir);
+    assert.equal(exitCode, 0);
+    const json = JSON.parse(stdout.trim());
+    assert.equal(json.installed, false);
+    assert.equal(json.hook_script_exists, false);
+  });
+
+  it('hook uninstall when not installed → not_found', () => {
+    const { stdout, exitCode } = runInDir(['hook', 'uninstall', '--json'], hookDir);
+    assert.equal(exitCode, 0);
+    const json = JSON.parse(stdout.trim());
+    assert.equal(json.status, 'not_found');
+  });
+
+  it('hook JSON envelope has standard fields', () => {
+    const { stdout } = runInDir(['hook', 'status', '--json'], hookDir);
+    const json = JSON.parse(stdout.trim());
+    assert.ok(json.request_id, 'Has request_id');
+    assert.equal(json.version, '5.0.0');
+    assert.equal(json.schema_version, 1);
+    assert.equal(json.subcommand, 'hook');
+    assert.ok('policy_mode' in json, 'Has policy_mode');
+  });
+});

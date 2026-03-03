@@ -11,13 +11,13 @@
   <title>Prompt Control Plane | Deterministic Prompt Governance, Policy Enforcement &amp; Audit</title>
   <meta name="description" content="The control plane for AI prompts. Score, enforce policy, lock config, and audit every prompt decision. Zero LLM calls. Runs locally. Works with Claude, OpenAI, and any LLM.">
   <meta name="keywords" content="prompt control plane, prompt governance, prompt policy enforcement, LLM prompt standards, prompt quality score, audit trail, config lock, MCP server, AI prompt governance engine, prompt compiler, Claude prompt governance, enterprise prompt governance, deterministic prompt scoring">
-  <link rel="canonical" href="https://getpcp.pages.dev/">
+  <link rel="canonical" href="https://getpcp.site/">
 
   <!-- Open Graph -->
   <meta property="og:title" content="Prompt Control Plane | Deterministic Linting, Policy &amp; Audit">
   <meta property="og:description" content="The control plane for AI prompts. Score, enforce policy, lock config, and audit every prompt decision. Zero LLM calls. Runs locally.">
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://getpcp.pages.dev/">
+  <meta property="og:url" content="https://getpcp.site/">
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
@@ -39,7 +39,7 @@
       { "@type": "Offer", "price": "899", "priceCurrency": "INR", "description": "Power — unlimited" },
       { "@type": "Offer", "price": "0", "priceCurrency": "INR", "description": "Enterprise — custom pricing, dedicated support, SLA" }
     ],
-    "url": "https://getpcp.pages.dev/",
+    "url": "https://getpcp.site/",
     "downloadUrl": "https://www.npmjs.com/package/claude-prompt-optimizer-mcp"
   }
   </script>
@@ -253,7 +253,7 @@
       <p class="subtitle">
         Score, enforce policy, lock config, and audit every prompt decision &mdash; before it reaches any LLM.
       </p>
-      <p class="sub-subtitle">Deterministic. Offline. Hash-chained audit trail. Policy enforcement built in.</p>
+      <p class="sub-subtitle">20 MCP tools. 11 CLI commands. Auto-check hooks. Deterministic. Offline. Zero LLM calls inside.</p>
       <div class="badge-strip" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:24px;">
         <a href="https://www.npmjs.com/package/claude-prompt-optimizer-mcp"><img src="https://img.shields.io/npm/v/claude-prompt-optimizer-mcp?style=flat-square&color=6366f1" alt="npm version"></a>
         <a href="https://www.npmjs.com/package/claude-prompt-optimizer-mcp"><img src="https://img.shields.io/npm/dm/claude-prompt-optimizer-mcp?style=flat-square&color=6366f1" alt="npm downloads"></a>
@@ -340,7 +340,7 @@
   <section class="section section-alt" id="how">
     <div class="container">
       <h2 class="section-title">How It Works</h2>
-      <p class="section-subtitle">Five steps from rough prompt to production-ready. All analysis is deterministic &mdash; no AI calls inside.</p>
+      <p class="section-subtitle">Three interfaces, one engine. All analysis is deterministic &mdash; no AI calls inside.</p>
       <div>
         <div class="flow-step">
           <div class="flow-num">1</div>
@@ -677,8 +677,18 @@
             <code style="color:var(--accent);font-size:12px;">pcp cost</code> &mdash; cost estimation<br>
             <code style="color:var(--accent);font-size:12px;">pcp compress</code> &mdash; context compression<br>
             <code style="color:var(--accent);font-size:12px;">pcp config</code> &mdash; show governance config<br>
-            <code style="color:var(--accent);font-size:12px;">pcp doctor</code> &mdash; validate environment
+            <code style="color:var(--accent);font-size:12px;">pcp doctor</code> &mdash; validate environment<br>
+            <code style="color:var(--accent);font-size:12px;">pcp hook</code> &mdash; manage auto-check hooks
           </div>
+        </div>
+      </div>
+
+      <!-- Auto-Check Hooks -->
+      <div style="margin-top:24px;">
+        <div class="card" style="padding:20px;">
+          <h3 style="margin-top:0;font-size:15px;">Auto-Check Hooks &mdash; hands-free quality gates</h3>
+          <p style="font-size:13px;color:var(--text-muted);margin-bottom:12px;">Install a hook that silently checks every prompt before it reaches the LLM. Works with Claude Code, Cursor, Windsurf, and any MCP client that supports <code>UserPromptSubmit</code> hooks.</p>
+          <div style="background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:12px 14px;font-family:'SF Mono','Fira Code',monospace;font-size:12px;color:var(--green);line-height:1.7;overflow-x:auto;">$ pcp hook install --threshold 70<br><span style="color:var(--text-muted);">PCP hook installed for this project.</span><br><span style="color:var(--text-muted);">Every prompt will be auto-checked before it reaches the LLM.</span></div>
         </div>
       </div>
 
@@ -700,14 +710,21 @@
             <div style="font-size:11px;color:var(--text-muted);">Reads config, respects enforce</div>
           </div>
           <div style="font-size:28px;color:var(--accent);font-weight:bold;">&rarr;</div>
-          <div style="background:var(--surface);border:2px solid var(--blue);border-radius:12px;padding:16px 24px;text-align:center;min-width:180px;">
+          <div style="background:var(--surface);border:2px solid var(--blue);border-radius:12px;padding:16px 24px;text-align:center;min-width:160px;">
             <div style="font-size:22px;margin-bottom:4px;">&#x1F916;</div>
             <div style="font-size:14px;font-weight:700;">MCP</div>
             <div style="font-size:11px;color:var(--text-muted);margin-top:4px;">AI integration</div>
             <div style="font-size:11px;color:var(--text-muted);">Same policy gates as CLI</div>
           </div>
+          <div style="font-size:28px;color:var(--accent);font-weight:bold;">&rarr;</div>
+          <div style="background:var(--surface);border:2px solid var(--yellow, #eab308);border-radius:12px;padding:16px 24px;text-align:center;min-width:160px;">
+            <div style="font-size:22px;margin-bottom:4px;">&#x26A1;</div>
+            <div style="font-size:14px;font-weight:700;">Hooks</div>
+            <div style="font-size:11px;color:var(--text-muted);margin-top:4px;">Auto-check prompts</div>
+            <div style="font-size:11px;color:var(--text-muted);">Hands-free quality gate</div>
+          </div>
         </div>
-        <p style="font-size:12px;color:var(--text-muted);margin-top:16px;">CLI and MCP respect the same governance config. Policy enforcement applies identically across all interfaces.</p>
+        <p style="font-size:12px;color:var(--text-muted);margin-top:16px;">All interfaces read the same governance config. Policy enforcement applies identically across Console, CLI, MCP, and Hooks.</p>
       </div>
     </div>
   </section>
@@ -731,7 +748,7 @@
       </div>
       <div class="install">
         <div class="install-label">Or one-line curl install</div>
-        <code>curl -fsSL https://getpcp.pages.dev/install.sh | bash</code>
+        <code>curl -fsSL https://getpcp.site/install.sh | bash</code>
       </div>
     </div>
   </section>

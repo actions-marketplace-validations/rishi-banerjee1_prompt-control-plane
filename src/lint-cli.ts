@@ -1,9 +1,9 @@
 // src/lint-cli.ts — Prompt Control Plane CLI (v5.0.0).
-// Full subcommand suite: optimize, classify, route, compress, cost, check, score, preflight, config, doctor.
+// Full subcommand suite: optimize, classify, route, compress, cost, check, score, preflight, config, doctor, hook.
 // Reuses pure API functions from api.ts. No MCP server, no sessions.
 // CLI reads governance config (written by Enterprise Console) — never writes it.
 
-import { readFileSync, statSync, readdirSync, existsSync } from 'node:fs';
+import { readFileSync, writeFileSync, statSync, readdirSync, existsSync, mkdirSync, chmodSync, unlinkSync } from 'node:fs';
 import { resolve, extname, dirname, basename, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { randomUUID } from 'node:crypto';
@@ -47,7 +47,7 @@ const CONTEXT_SIZE_WARNING_BYTES = 500 * 1024; // 500KB
 
 const SUBCOMMANDS = new Set([
   'optimize', 'classify', 'route', 'compress', 'cost',
-  'check', 'score', 'preflight', 'config', 'doctor',
+  'check', 'score', 'preflight', 'config', 'doctor', 'hook',
 ]);
 
 // ─── Types ──────────────────────────────────────────────────────────────────
@@ -859,6 +859,257 @@ async function handleCheck(args: SubcommandArgs): Promise<void> {
   process.exit(failed > 0 ? 1 : 0);
 }
 
+// ─── Hook Management ────────────────────────────────────────────────────────
+
+const HOOK_ACTIONS = new Set(['install', 'uninstall', 'status']);
+const HOOK_SCRIPT_NAME = 'pcp-preflight.mjs';
+
+function getHookDir(isGlobal: boolean): string {
+  const base = isGlobal
+    ? join(process.env.HOME || process.env.USERPROFILE || '/tmp', '.claude')
+    : join(process.cwd(), '.claude');
+  return join(base, 'hooks');
+}
+
+function getSettingsPath(isGlobal: boolean): string {
+  const base = isGlobal
+    ? join(process.env.HOME || process.env.USERPROFILE || '/tmp', '.claude')
+    : join(process.cwd(), '.claude');
+  return join(base, 'settings.json');
+}
+
+function generateHookScript(threshold: number): string {
+  const lines = [
+    '#!/usr/bin/env node',
+    '// PCP Quality Gate — auto-checks prompts before they reach the LLM',
+    '// Installed by: pcp hook install | Threshold: ' + threshold + '/100',
+    '// Works with any MCP client that supports UserPromptSubmit hooks.',
+    '',
+    'import { execFileSync } from "node:child_process";',
+    '',
+    'let input = "";',
+    'process.stdin.on("data", chunk => { input += chunk; });',
+    'process.stdin.on("end", () => {',
+    '  try {',
+    '    const data = JSON.parse(input);',
+    '    const prompt = data.prompt || "";',
+    '    if (prompt.length < 20) process.exit(0);',
+    '',
+    '    const result = execFileSync("pcp", ["check", "--json", prompt], {',
+    '      encoding: "utf-8", timeout: 10000, stdio: ["pipe", "pipe", "pipe"],',
+    '    });',
+    '    const parsed = JSON.parse(result);',
+    '    const score = parsed.score || 0;',
+    '    const pass = parsed.pass !== false;',
+    '',
+    '    if (!pass || score < ' + threshold + ') {',
+    '      const issues = (parsed.issues || []).slice(0, 2).map(i => i.message).join("; ");',
+    '      const msg = "PCP Quality Gate: " + score + "/100. " + issues;',
+    '      process.stdout.write(JSON.stringify({',
+    '        hookSpecificOutput: {',
+    '          hookEventName: "UserPromptSubmit",',
+    '          additionalContext: msg,',
+    '        },',
+    '      }));',
+    '    }',
+    '  } catch {',
+    '    // Silent fail — never block the user',
+    '  }',
+    '  process.exit(0);',
+    '});',
+    '',
+  ];
+  return lines.join('\n');
+}
+
+function buildHookEntry(scriptPath: string): Record<string, unknown> {
+  return {
+    matcher: '',
+    hooks: [{ type: 'command', command: 'node ' + scriptPath }],
+  };
+}
+
+function isPcpHook(entry: Record<string, unknown>): boolean {
+  const inner = entry.hooks as Array<Record<string, unknown>> | undefined;
+  if (!Array.isArray(inner)) return false;
+  return inner.some(h => typeof h.command === 'string' && h.command.includes(HOOK_SCRIPT_NAME));
+}
+
+async function handleHookCommand(rawArgs: string[]): Promise<void> {
+  const isGlobal = rawArgs.includes('--global');
+  const isJson = rawArgs.includes('--json');
+  const isQuiet = rawArgs.includes('--quiet') || rawArgs.includes('-q');
+  const isPretty = rawArgs.includes('--pretty');
+  const isHelp = rawArgs.includes('--help') || rawArgs.includes('-h');
+
+  const action = rawArgs.find(a => HOOK_ACTIONS.has(a));
+
+  // Parse threshold
+  let thresholdOverride: number | null = null;
+  const thIdx = rawArgs.indexOf('--threshold');
+  if (thIdx >= 0 && thIdx + 1 < rawArgs.length) {
+    const val = Number(rawArgs[thIdx + 1]);
+    if (Number.isInteger(val) && val >= 0 && val <= 100) thresholdOverride = val;
+  }
+
+  const fmtArgs = { pretty: isPretty };
+
+  if (!action || isHelp) {
+    const helpLines = [
+      BIN_NAME + ' hook — Manage auto-check hooks for MCP clients',
+      '',
+      'Usage:',
+      '  ' + BIN_NAME + ' hook install [--global] [--threshold <n>]',
+      '  ' + BIN_NAME + ' hook uninstall [--global]',
+      '  ' + BIN_NAME + ' hook status [--global]',
+      '',
+      'Actions:',
+      '  install     Install UserPromptSubmit hook (auto-checks every prompt)',
+      '  uninstall   Remove hook and clean up',
+      '  status      Check if hook is configured',
+      '',
+      'Options:',
+      '  --global      Install to ~/.claude/ (all projects) instead of ./.claude/ (this project)',
+      '  --threshold   Quality threshold 0-100 (default: from config strictness)',
+      '  --json        JSON output',
+      '',
+      'Works with any MCP client that supports UserPromptSubmit hooks (Claude Code, Cursor, Windsurf).',
+      '',
+    ];
+    process.stdout.write(helpLines.join('\n'));
+    process.exit(0);
+  }
+
+  const hookDir = getHookDir(isGlobal);
+  const settingsPath = getSettingsPath(isGlobal);
+  const scriptPath = join(hookDir, HOOK_SCRIPT_NAME);
+  const relativeScriptPath = isGlobal ? scriptPath : '.claude/hooks/' + HOOK_SCRIPT_NAME;
+
+  switch (action) {
+    case 'install': {
+      // Determine threshold from config or override
+      const strictness = getStrictness() as keyof typeof THRESHOLDS;
+      const threshold = thresholdOverride ?? THRESHOLDS[strictness] ?? THRESHOLDS.standard;
+
+      // Create hooks directory + write script
+      mkdirSync(hookDir, { recursive: true });
+      writeFileSync(scriptPath, generateHookScript(threshold), 'utf-8');
+      try { chmodSync(scriptPath, 0o755); } catch { /* Windows */ }
+
+      // Read or create settings.json
+      let settings: Record<string, unknown> = {};
+      try {
+        if (existsSync(settingsPath)) {
+          settings = JSON.parse(readFileSync(settingsPath, 'utf-8'));
+        }
+      } catch { /* start fresh */ }
+
+      // Merge hook — remove old PCP entries first, then add
+      if (!settings.hooks) settings.hooks = {};
+      const hooks = settings.hooks as Record<string, unknown>;
+      if (Array.isArray(hooks.UserPromptSubmit)) {
+        hooks.UserPromptSubmit = (hooks.UserPromptSubmit as Array<Record<string, unknown>>)
+          .filter(h => !isPcpHook(h));
+      }
+      if (!Array.isArray(hooks.UserPromptSubmit)) hooks.UserPromptSubmit = [];
+      (hooks.UserPromptSubmit as unknown[]).push(buildHookEntry(relativeScriptPath));
+
+      mkdirSync(dirname(settingsPath), { recursive: true });
+      writeFileSync(settingsPath, JSON.stringify(settings, null, 2) + '\n', 'utf-8');
+
+      if (isJson) {
+        writeJson(envelope('hook', {
+          action: 'install', status: 'installed',
+          scope: isGlobal ? 'global' : 'project',
+          threshold, hook_script: scriptPath, settings_file: settingsPath,
+        }), fmtArgs);
+      } else if (!isQuiet) {
+        const scope = isGlobal ? 'globally' : 'for this project';
+        process.stdout.write('PCP hook installed ' + scope + '.\n');
+        process.stdout.write('  Hook script: ' + scriptPath + '\n');
+        process.stdout.write('  Settings:    ' + settingsPath + '\n');
+        process.stdout.write('  Threshold:   ' + threshold + '/100\n\n');
+        process.stdout.write('Every prompt will be auto-checked before it reaches the LLM.\n');
+      }
+      process.exit(0);
+    }
+
+    case 'uninstall': {
+      let removed = false;
+
+      // Remove hook script
+      if (existsSync(scriptPath)) {
+        unlinkSync(scriptPath);
+        removed = true;
+      }
+
+      // Remove from settings.json
+      if (existsSync(settingsPath)) {
+        try {
+          const settings = JSON.parse(readFileSync(settingsPath, 'utf-8')) as Record<string, unknown>;
+          const hooks = settings.hooks as Record<string, unknown> | undefined;
+          if (hooks && Array.isArray(hooks.UserPromptSubmit)) {
+            hooks.UserPromptSubmit = (hooks.UserPromptSubmit as Array<Record<string, unknown>>)
+              .filter(h => !isPcpHook(h));
+            if ((hooks.UserPromptSubmit as unknown[]).length === 0) delete hooks.UserPromptSubmit;
+            if (Object.keys(hooks).length === 0) delete settings.hooks;
+            writeFileSync(settingsPath, JSON.stringify(settings, null, 2) + '\n', 'utf-8');
+            removed = true;
+          }
+        } catch { /* ignore */ }
+      }
+
+      if (isJson) {
+        writeJson(envelope('hook', {
+          action: 'uninstall', status: removed ? 'removed' : 'not_found',
+          scope: isGlobal ? 'global' : 'project',
+        }), fmtArgs);
+      } else if (!isQuiet) {
+        process.stdout.write(removed ? 'PCP hook removed.\\n' : 'PCP hook was not installed.\\n');
+      }
+      process.exit(0);
+    }
+
+    case 'status': {
+      const hookScriptExists = existsSync(scriptPath);
+      let settingsConfigured = false;
+      if (existsSync(settingsPath)) {
+        try {
+          const settings = JSON.parse(readFileSync(settingsPath, 'utf-8')) as Record<string, unknown>;
+          const hooks = settings.hooks as Record<string, unknown> | undefined;
+          if (hooks && Array.isArray(hooks.UserPromptSubmit)) {
+            settingsConfigured = (hooks.UserPromptSubmit as Array<Record<string, unknown>>).some(isPcpHook);
+          }
+        } catch { /* ignore */ }
+      }
+
+      const installed = hookScriptExists && settingsConfigured;
+
+      if (isJson) {
+        writeJson(envelope('hook', {
+          action: 'status', installed,
+          scope: isGlobal ? 'global' : 'project',
+          hook_script_exists: hookScriptExists,
+          settings_configured: settingsConfigured,
+        }), fmtArgs);
+      } else if (!isQuiet) {
+        if (installed) {
+          process.stdout.write('PCP hook is installed (' + (isGlobal ? 'global' : 'project') + ').\n');
+          process.stdout.write('  Hook script: ' + scriptPath + '\n');
+          process.stdout.write('  Settings:    ' + settingsPath + '\n');
+        } else if (hookScriptExists && !settingsConfigured) {
+          process.stdout.write('PCP hook script exists but is not configured in settings.\nRun \'pcp hook install\' to fix.\n');
+        } else if (!hookScriptExists && settingsConfigured) {
+          process.stdout.write('PCP hook is configured but script is missing.\nRun \'pcp hook install\' to fix.\n');
+        } else {
+          process.stdout.write('PCP hook is not installed.\nRun \'pcp hook install\' to set up auto-checking.\n');
+        }
+      }
+      process.exit(0);
+    }
+  }
+}
+
 // ─── Validate Custom Rules Mode ─────────────────────────────────────────────
 
 async function handleValidateCustomRules(): Promise<void> {
@@ -914,6 +1165,7 @@ Commands:
   check       Quick pass/fail quality gate (default if no command)
   config      Show current governance configuration (read-only)
   doctor      Validate environment health
+  hook        Manage auto-check hooks (install/uninstall/status)
 
 Options:
   --json                 Structured JSON output with request_id envelope
@@ -948,6 +1200,9 @@ Environment:
 // ─── Subcommand Router ──────────────────────────────────────────────────────
 
 async function handleSubcommand(subcmd: string, subArgs: string[]): Promise<void> {
+  // Hook has its own arg parsing (sub-actions: install/uninstall/status)
+  if (subcmd === 'hook') return handleHookCommand(subArgs);
+
   const args = parseSubcommandArgs(subArgs);
 
   if (args.help) {
@@ -975,8 +1230,10 @@ async function handleSubcommand(subcmd: string, subArgs: string[]): Promise<void
 async function main(): Promise<void> {
   const rawArgs = process.argv.slice(2);
 
-  // --help and --version at top level
-  if (rawArgs.includes('--help') || rawArgs.includes('-h')) {
+  // --help and --version at top level (only if no subcommand precedes them)
+  const firstArg0 = rawArgs[0];
+  const hasSubcommand = firstArg0 != null && SUBCOMMANDS.has(firstArg0);
+  if (!hasSubcommand && (rawArgs.includes('--help') || rawArgs.includes('-h'))) {
     process.stdout.write(HELP);
     process.exit(0);
   }
@@ -990,10 +1247,9 @@ async function main(): Promise<void> {
     return handleValidateCustomRules();
   }
 
-  // Detect subcommand
-  const firstArg = rawArgs[0];
-  if (firstArg && SUBCOMMANDS.has(firstArg)) {
-    return handleSubcommand(firstArg, rawArgs.slice(1));
+  // Detect subcommand (firstArg0 already set above)
+  if (hasSubcommand && firstArg0) {
+    return handleSubcommand(firstArg0, rawArgs.slice(1));
   }
 
   // Legacy path: no subcommand → treat as "check"
