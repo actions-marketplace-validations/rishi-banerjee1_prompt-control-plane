@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Prompt Control Plane — Quick Installer
-# Usage: curl -fsSL https://getpcp.pages.dev/install.sh | bash
+# Usage: curl -fsSL https://getpcp.site/install.sh | bash
 
 set -euo pipefail
 
@@ -47,8 +47,17 @@ echo ""
 echo -e "${GREEN}${BOLD}✓ Installed successfully!${NC}"
 echo ""
 
-# ─── MCP Config ───────────────────────────────────────────────────────────────
-echo -e "Add this to your ${BOLD}claude_desktop_config.json${NC}:"
+# ─── Quick Start ─────────────────────────────────────────────────────────────
+echo -e "${BOLD}Quick start:${NC}"
+echo ""
+echo -e "  ${CYAN}pcp preflight \"Your prompt here\" --json${NC}"
+echo -e "  ${CYAN}pcp check \"Write a REST API\" --json${NC}"
+echo -e "  ${CYAN}pcp hook install${NC}  ${GREEN}# auto-check every prompt${NC}"
+echo ""
+
+# ─── MCP Config (optional) ───────────────────────────────────────────────────
+echo -e "${BOLD}Optional:${NC} Add MCP integration for AI-assisted workflows."
+echo -e "Add this to your ${BOLD}.mcp.json${NC} or ${BOLD}claude_desktop_config.json${NC}:"
 echo ""
 echo -e "${CYAN}"
 cat << 'CONFIG'
@@ -62,17 +71,5 @@ cat << 'CONFIG'
 }
 CONFIG
 echo -e "${NC}"
-
-# ─── Config file location ────────────────────────────────────────────────────
-if [[ "$OSTYPE" == "darwin"* ]]; then
-  CONFIG_PATH="$HOME/Library/Application Support/Claude/claude_desktop_config.json"
-elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
-  CONFIG_PATH="${XDG_CONFIG_HOME:-$HOME/.config}/Claude/claude_desktop_config.json"
-else
-  CONFIG_PATH="%APPDATA%\\Claude\\claude_desktop_config.json"
-fi
-
-echo -e "Config location: ${BOLD}${CONFIG_PATH}${NC}"
-echo ""
-echo -e "Run ${BOLD}claude-prompt-optimizer-mcp${NC} to start the MCP server."
+echo -e "Docs: ${BOLD}https://getpcp.site/docs.html${NC}"
 echo ""
