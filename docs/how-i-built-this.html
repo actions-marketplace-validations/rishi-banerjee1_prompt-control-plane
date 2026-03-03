@@ -996,9 +996,17 @@
         <strong>Lesson learned:</strong> Centralize versioning in a single source (one JSON file), then have a build step propagate it everywhere: README, docs site, API references, and changelogs. Never manually edit version numbers in 15 places. Reduce cognitive load; reduce mistakes. The version is the single source of truth—everything else derives from it.
       </div>
 
+      <h3>Content Filtering Across 15+ Public Surfaces</h3>
+
+      <p>For v4.1.0, I stripped internal references (source paths, function names, type names, test counts) from README, CHANGELOG, docs site (11 pages), and API reference to keep public documentation business-focused. The challenge: ensuring consistency across all surfaces. I found outdated paths in one doc, exposed function names in another, and test counts scattered across three pages. Fixing them manually was tedious and error-prone. Almost shipped with internal jargon mixed into marketing copy.</p>
+
+      <div class="lesson">
+        <strong>Lesson learned:</strong> Content filters for "public vs internal" should be applied early in the docs pipeline, not retroactively. Consider separate source files for internal vs public content, or use build-time templating to strip sensitive details. One missing filter in one file defeats the entire exercise.
+      </div>
+
       <div class="tldr">
         <div class="tldr-label">TL;DR</div>
-        npm tokens are confusing, key rotation is irreversible, not all directories support modern JavaScript, always RTFM before registries, git push doesn&rsquo;t mean live on Cloudflare Pages, and version numbers in 15 places is a recipe for inconsistency. Centralize and automate.
+        npm tokens are confusing, key rotation is irreversible, not all directories support modern JavaScript, always RTFM before registries, git push doesn&rsquo;t mean live on Cloudflare Pages, version numbers in 15 places is a recipe for inconsistency, and content filtering across 15 surfaces is error-prone unless templated. Centralize, automate, and template.
       </div>
 
       <hr>
