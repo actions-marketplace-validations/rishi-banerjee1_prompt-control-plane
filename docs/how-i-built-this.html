@@ -1153,12 +1153,12 @@
             </thead>
             <tbody>
               <tr><td>First commit</td><td>Feb 26, 2026 at 1:18am IST</td></tr>
-              <tr><td>Last commit</td><td>Feb 28, 2026 at 2:16am IST</td></tr>
-              <tr><td>Wall clock elapsed</td><td>~49 hours</td></tr>
-              <tr><td>Active coding sessions</td><td>3</td></tr>
-              <tr><td>Total active time</td><td>~10 hours 26 minutes</td></tr>
-              <tr><td>Total commits</td><td>21</td></tr>
-              <tr><td>Avg time between commits</td><td>~14 minutes (during active sessions)</td></tr>
+              <tr><td>Last commit (v4.1.0)</td><td>Mar 3, 2026 at ~2am IST</td></tr>
+              <tr><td>Wall clock elapsed (MVP to v4.1)</td><td>~5 days</td></tr>
+              <tr><td>Initial build (Feb 26–28)</td><td>~49 hours active time: ~10 hours coding</td></tr>
+              <tr><td>Post-launch evolution (Feb 28–Mar 3)</td><td>5 releases shipped: v4.0, v4.0.2, v4.0.3, v4.1.0</td></tr>
+              <tr><td>Total commits (MVP)</td><td>21 (Feb 26–28)</td></tr>
+              <tr><td>Total commits (post-launch)</td><td>40+ (Feb 28–Mar 3)</td></tr>
             </tbody>
           </table>
         </div>
@@ -1199,8 +1199,8 @@
           <div class="metric-label">Monthly infrastructure cost</div>
         </div>
         <div class="metric-card">
-          <div class="metric-value">19</div>
-          <div class="metric-label">MCP tools</div>
+          <div class="metric-value"><span class="accent">20</span></div>
+          <div class="metric-label">MCP tools (Tool 20: save_custom_rules, v4.1.0)</div>
         </div>
         <div class="metric-card">
           <div class="metric-value">5 &times; 20</div>
@@ -1257,9 +1257,18 @@
         <h3>v4.0: Prompt Control Plane</h3>
         <p>Renamed the product. Updated every surface: npm, GitHub, docs site, directories. The rebrand reflected what the product had become. Not a linter. Not an optimizer. A control plane for how organizations manage AI prompts. Enterprise tier gates enforced in code. Reproducible session exports with auto-calculated rule-set hashes. Professional documentation site at <a href="https://prompt-control-plane.pages.dev">prompt-control-plane.pages.dev</a>.</p>
 
+        <h3>v4.0.2: Cloudflare Pages Migration</h3>
+        <p>Migrated hosting from GitHub Pages to Cloudflare Pages for global edge delivery and enhanced security. Added custom headers, redirect rules, and a 404 page. Expanded website from 5 pages to 11+ pages, including a dedicated blog, privacy policy, terms of service, and security documentation. Shipped trust signals: Shields.io badges for version, license, and security status. Three-column footer with product, resources, and legal links across all pages. Zero downtime migration completed within 24 hours of v4.0 launch.</p>
+
+        <h3>v4.0.3: Privacy & Contact Infrastructure</h3>
+        <p>Replaced all exposed email addresses in documentation, legal pages, and footer with a general contact form (privacy-first, no SMTP exposure). Added dedicated "Contact" link to footer across all pages. Broadened the contact form from enterprise-only to general audience, with a subject dropdown (General, Support, Enterprise). Implemented post-submission confirmation page and email integration via Formspree. Security-hardened legal pages (privacy.html, terms.html, security.html) to remove internal references and operational details.</p>
+
+        <h3>v4.1.0: Enterprise Console Integration</h3>
+        <p>Shipped <strong>Tool 20 — <code>save_custom_rules</code></strong> (March 3, 2026). Enterprises can now build custom governance rules in the Enterprise Console (admin panel), then click "Copy & Deploy" to paste directly into any MCP-connected AI assistant. Rules are validated, sorted deterministically, written with secure file permissions (chmod 600), and return a rule-set hash for reproducibility. Works with any LLM — not Claude-specific. Enterprise Console provides a visual rule editor, policy enforcement dashboard, audit trail viewer, and role-based governance controls. Consolidated all Enterprise Features (Policy Enforcement, Config Lock, Audit Trails, Custom Rules, Session Management) into a dedicated section on the website. Updated terminology across all 15+ public docs: "tamper-evident" → "hash-chained" to describe the integrity verification mechanism. Content filter applied: stripped internal source paths, function names, type names, test counts, and implementation details from README, CHANGELOG, and all website pages to keep the public documentation focused on business value, not implementation.</p>
+
         <div class="tldr">
           <div class="tldr-label">TL;DR</div>
-          Five releases grew the product from a 4-tool linter to a 20-tool governance platform. The core principle never changed: zero LLM calls inside. Everything is deterministic, offline, and reproducible. The product grew from "lint your prompts" to "govern your entire prompt pipeline."
+          Six releases evolved the product from a 4-tool linter (Feb 26) to a 20-tool governance platform (Mar 3). The core principle never changed: zero LLM calls inside. Everything is deterministic, offline, and reproducible. From "lint your prompts" → "govern your entire prompt pipeline" → "Prompt Control Plane: the governance infrastructure for AI at scale."
         </div>
       </section>
 
