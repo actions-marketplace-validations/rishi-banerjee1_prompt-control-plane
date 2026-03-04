@@ -38,7 +38,7 @@ function makeSession(overrides: Partial<Session> = {}): Session {
       blocking_questions: [],
     },
     compiled_prompt: '<role>test</role>',
-    quality_before: { total: 50, max: 100, dimensions: [] },
+    quality_before: { total: 50, max: 100, dimensions: [], confidence: 'medium' as const, confidence_note: 'Moderate improvement expected — optimization will add structure and fill gaps.' },
     compilation_checklist: { items: [], summary: '0/0' },
     cost_estimate: {
       input_tokens: 100,

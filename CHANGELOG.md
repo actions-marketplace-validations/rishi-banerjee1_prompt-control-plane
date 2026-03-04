@@ -1,5 +1,26 @@
 # Changelog
 
+## [5.1.0] - 2026-03-04
+
+### Changed — Full Package Rebrand
+- **npm package renamed**: `prompt-control-plane` -> `pcp-engine`
+- **MCP registry name**: `io.github.rishiatlan/claude-prompt-optimizer` -> `io.github.rishiatlan/pcp-engine`
+- **Binary**: `prompt-control-plane` bin entry replaced with `pcp-engine` (existing `pcp` and `prompt-lint` bins unchanged)
+- **All public docs, HTML pages, install scripts, CI workflows, and README updated** to reference the new package name
+- **Version reset to 5.1.0** as a clean major version for the rebrand
+- **GitHub repository URL unchanged**: `rishiatlan/Prompt-Optimizer-MCP`
+
+### Migration
+- `npm install -g pcp-engine` (was `npm install -g prompt-control-plane`)
+- Update MCP config `args` from `["-y", "prompt-control-plane"]` to `["-y", "pcp-engine"]`
+- Update programmatic imports from `import { optimize } from 'prompt-control-plane'` to `import { optimize } from 'pcp-engine'`
+- `pcp` and `prompt-lint` CLI binaries are unchanged
+
+### Notes
+- **No behavioral changes** to any tools, scoring, routing, compilation, or governance features.
+- Zero users on the old package name — this is a clean break with no backward-compatibility concerns.
+- Architecture constraint preserved: **zero LLM calls inside. Deterministic. Offline. Reproducible.**
+
 ## [5.0.0] - 2026-03-03
 
 ### Added — Full CLI Suite (`pcp`)
@@ -85,7 +106,7 @@
 
 ### Changed — Rebrand
 - **Product brand**: "Prompt Optimizer MCP" → **Prompt Control Plane** (display name only)
-- **npm package**: remains `claude-prompt-optimizer-mcp` (unchanged)
+- **npm package**: remains `prompt-control-plane` (unchanged)
 - **GitHub repo**: remains `rishiatlan/Prompt-Optimizer-MCP` (unchanged)
 - **MCP config key**: remains `"prompt-optimizer"` (unchanged)
 - **Environment variables**: `PROMPT_OPTIMIZER_*` → `PROMPT_CONTROL_PLANE_*` (legacy fallback supported)
@@ -224,7 +245,7 @@
 
 ### Migration
 - No breaking changes. All 11 MCP tools, programmatic API, and install commands are unchanged.
-- New `prompt-lint` binary ships alongside existing `claude-prompt-optimizer-mcp` binary.
+- New `prompt-lint` binary ships alongside existing `prompt-control-plane` binary.
 - New dependency: `fast-glob` (for CLI file globbing in CI environments).
 
 ## [2.2.3] - 2026-02-28
@@ -253,7 +274,7 @@
 ## [2.2.0] - 2026-02-27
 
 ### Added
-- **Programmatic API**: `import { createOptimizer } from 'claude-prompt-optimizer-mcp'` for direct integration.
+- **Programmatic API**: `import { createOptimizer } from 'prompt-control-plane'` for direct integration.
 - **Dual entry points**: MCP server (stdio) + programmatic API from single package.
 - **Curl installer**: `curl -fsSL https://getpcp.site/install.sh | bash`
 - **E2E tests**: End-to-end tests covering the full optimize → refine → approve flow.

@@ -1,28 +1,21 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
-  "name": "io.github.rishiatlan/claude-prompt-optimizer",
+  "name": "io.github.rishiatlan/pcp-engine",
   "description": "Prompt Control Plane — deterministic prompt linting, scoring, policy enforcement & audit. Zero AI calls inside. Freemium.",
   "repository": {
     "url": "https://github.com/rishiatlan/Prompt-Optimizer-MCP",
     "source": "github"
   },
-  "version": "4.1.0",
+  "version": "5.1.0",
   "packages": [
     {
       "registryType": "npm",
-      "identifier": "claude-prompt-optimizer-mcp",
-      "version": "4.1.0",
+      "identifier": "pcp-engine",
+      "version": "5.1.0",
       "transport": {
         "type": "stdio"
       },
       "environmentVariables": [
-        {
-          "description": "Set to 'true' to enable Pro tier via environment variable (alternative to license key)",
-          "isRequired": false,
-          "format": "string",
-          "isSecret": false,
-          "name": "PROMPT_CONTROL_PLANE_PRO"
-        },
         {
           "description": "Log verbosity level: debug, info, warn, error",
           "isRequired": false,

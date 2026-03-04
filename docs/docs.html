@@ -546,7 +546,7 @@
       </div>
 
       <h4><span class="step-num">1</span> npm global (recommended)</h4>
-      <div class="code-block">npm install -g claude-prompt-optimizer-mcp
+      <div class="code-block">npm install -g pcp-engine
 pcp preflight <span class="string">"Your prompt here"</span> --json</div>
 
       <h4><span class="step-num">2</span> MCP Config (for AI-assisted workflows)</h4>
@@ -555,7 +555,7 @@ pcp preflight <span class="string">"Your prompt here"</span> --json</div>
   <span class="string">"mcpServers"</span>: {
     <span class="string">"prompt-optimizer"</span>: {
       <span class="string">"command"</span>: <span class="string">"npx"</span>,
-      <span class="string">"args"</span>: [<span class="string">"-y"</span>, <span class="string">"claude-prompt-optimizer-mcp"</span>]
+      <span class="string">"args"</span>: [<span class="string">"-y"</span>, <span class="string">"pcp-engine"</span>]
     }
   }
 }</div>
@@ -1643,7 +1643,7 @@ pcp preflight <span class="string">"vague prompt"</span> --json  <span class="co
 
       <h3>CI Usage</h3>
       <div class="code-block"><span class="comment"># In your CI pipeline</span>
-npx claude-prompt-optimizer-mcp pcp check --file <span class="string">"prompts/**/*.md"</span> --strict --json
+npx pcp-engine pcp check --file <span class="string">"prompts/**/*.md"</span> --strict --json
 
 <span class="comment"># Read from stdin</span>
 echo <span class="string">"Write a blog post"</span> | pcp check --threshold 70</div>
@@ -1739,7 +1739,7 @@ pcp hook uninstall --global  <span class="comment"># remove global hook</span></
       <p>Import the optimization pipeline directly into your Node.js application. Pure, synchronous, deterministic. No I/O, no side effects, no MCP server required.</p>
 
       <h3>Quick Start</h3>
-      <div class="code-block"><span class="keyword">import</span> { optimize } <span class="keyword">from</span> <span class="string">'claude-prompt-optimizer-mcp'</span>;
+      <div class="code-block"><span class="keyword">import</span> { optimize } <span class="keyword">from</span> <span class="string">'pcp-engine'</span>;
 
 <span class="keyword">const</span> result = <span class="fn">optimize</span>(<span class="string">'Write a blog post about AI governance'</span>);
 
@@ -1765,7 +1765,7 @@ console.<span class="fn">log</span>(result.cost.costs);         <span class="com
 }</div>
 
       <h3>Available Exports</h3>
-      <p>The barrel export at <code>claude-prompt-optimizer-mcp</code> provides access to all core functions:</p>
+      <p>The barrel export at <code>pcp-engine</code> provides access to all core functions:</p>
       <table class="data-table">
         <thead><tr><th>Category</th><th>What&rsquo;s Available</th></tr></thead>
         <tbody>
@@ -1786,8 +1786,8 @@ console.<span class="fn">log</span>(result.cost.costs);         <span class="com
       <table class="data-table">
         <thead><tr><th>Import</th><th>Effect</th></tr></thead>
         <tbody>
-          <tr><td><code>import { optimize } from 'claude-prompt-optimizer-mcp'</code></td><td>Pure API &mdash; no side effects, no server</td></tr>
-          <tr><td><code>import 'claude-prompt-optimizer-mcp/server'</code></td><td>Starts MCP stdio server (side-effect import)</td></tr>
+          <tr><td><code>import { optimize } from 'pcp-engine'</code></td><td>Pure API &mdash; no side effects, no server</td></tr>
+          <tr><td><code>import 'pcp-engine/server'</code></td><td>Starts MCP stdio server (side-effect import)</td></tr>
         </tbody>
       </table>
 
@@ -1860,7 +1860,7 @@ console.<span class="fn">log</span>(result.cost.costs);         <span class="com
           <h4>Resources</h4>
           <a href="changelog.html">Changelog</a>
           <a href="https://github.com/rishiatlan/Prompt-Optimizer-MCP">GitHub</a>
-          <a href="https://www.npmjs.com/package/claude-prompt-optimizer-mcp">npm</a>
+          <a href="https://www.npmjs.com/package/pcp-engine">npm</a>
         </div>
         <div class="footer-col">
           <h4>Legal</h4>

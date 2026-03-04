@@ -34,13 +34,13 @@
     "applicationCategory": "DeveloperApplication",
     "operatingSystem": "Cross-platform",
     "offers": [
-      { "@type": "Offer", "price": "0", "priceCurrency": "INR", "description": "Free tier — 10 optimizations" },
+      { "@type": "Offer", "price": "0", "priceCurrency": "INR", "description": "Free tier — 50 optimizations/month" },
       { "@type": "Offer", "price": "499", "priceCurrency": "INR", "description": "Pro — 100/month" },
       { "@type": "Offer", "price": "899", "priceCurrency": "INR", "description": "Power — unlimited" },
       { "@type": "Offer", "price": "0", "priceCurrency": "INR", "description": "Enterprise — custom pricing, dedicated support, SLA" }
     ],
     "url": "https://getpcp.site/",
-    "downloadUrl": "https://www.npmjs.com/package/claude-prompt-optimizer-mcp"
+    "downloadUrl": "https://www.npmjs.com/package/pcp-engine"
   }
   </script>
 
@@ -255,8 +255,8 @@
       </p>
       <p class="sub-subtitle">20 MCP tools. 11 CLI commands. Auto-check hooks. Deterministic. Offline. Zero LLM calls inside.</p>
       <div class="badge-strip" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:24px;">
-        <a href="https://www.npmjs.com/package/claude-prompt-optimizer-mcp"><img src="https://img.shields.io/npm/v/claude-prompt-optimizer-mcp?style=flat-square&color=6366f1" alt="npm version"></a>
-        <a href="https://www.npmjs.com/package/claude-prompt-optimizer-mcp"><img src="https://img.shields.io/npm/dm/claude-prompt-optimizer-mcp?style=flat-square&color=6366f1" alt="npm downloads"></a>
+        <a href="https://www.npmjs.com/package/pcp-engine"><img src="https://img.shields.io/npm/v/pcp-engine?style=flat-square&color=6366f1" alt="npm version"></a>
+        <a href="https://www.npmjs.com/package/pcp-engine"><img src="https://img.shields.io/npm/dm/pcp-engine?style=flat-square&color=6366f1" alt="npm downloads"></a>
         <a href="https://github.com/rishiatlan/Prompt-Optimizer-MCP/releases"><img src="https://img.shields.io/github/v/tag/rishiatlan/Prompt-Optimizer-MCP?style=flat-square&color=6366f1&label=release" alt="GitHub release"></a>
         <img src="https://img.shields.io/badge/License-ELv2-6366f1?style=flat-square" alt="License">
       </div>
@@ -590,15 +590,15 @@
   <section class="section" id="pricing">
     <div class="container-wide text-center">
       <h2 class="section-title">Pricing</h2>
-      <p class="section-subtitle">Free tier includes 10 optimizations, unlimited scoring, and all 20 tools. No credit card required.</p>
+      <p class="section-subtitle">Free tier includes 50 optimizations/month, unlimited scoring, and all 20 tools. No credit card required.</p>
 
       <div class="pricing-grid">
         <div class="pricing-card">
           <div class="tier">Free</div>
-          <div class="price">&#x20b9;0</div>
+          <div class="price">&#x20b9;0 <span style="font-size:14px;color:var(--text-muted);">/ $0</span></div>
           <div class="price-note">forever</div>
           <ul>
-            <li>10 optimizations total</li>
+            <li>50 optimizations / month</li>
             <li>Unlimited scoring &amp; checking</li>
             <li>5 per minute rate limit</li>
             <li>All 20 tools</li>
@@ -608,7 +608,7 @@
         </div>
         <div class="pricing-card featured">
           <div class="tier">Pro</div>
-          <div class="price">&#x20b9;499</div>
+          <div class="price">&#x20b9;499 <span style="font-size:14px;color:var(--text-muted);">/ ~$6</span></div>
           <div class="price-note">per month</div>
           <ul>
             <li>100 optimizations / month</li>
@@ -621,7 +621,7 @@
         </div>
         <div class="pricing-card">
           <div class="tier">Power</div>
-          <div class="price">&#x20b9;899</div>
+          <div class="price">&#x20b9;899 <span style="font-size:14px;color:var(--text-muted);">/ ~$11</span></div>
           <div class="price-note">per month</div>
           <ul>
             <li>Unlimited optimizations</li>
@@ -736,13 +736,13 @@
       <p class="section-subtitle">Works with any codebase &mdash; Python, Java, Go, Rust, or any language.</p>
       <div class="install" style="margin-top: 0;">
         <div class="install-label">npm global (recommended)</div>
-        <code>npm install -g claude-prompt-optimizer-mcp && pcp preflight "Your prompt"</code>
+        <code>npm install -g pcp-engine && pcp preflight "Your prompt"</code>
       </div>
       <div class="install">
         <div class="install-label">Or add MCP integration for AI-assisted workflows</div>
         <code>{ "mcpServers": { "prompt-optimizer": {
     "command": "npx",
-    "args": ["-y", "claude-prompt-optimizer-mcp"]
+    "args": ["-y", "pcp-engine"]
   }}}</code>
       </div>
       <div class="install">
@@ -769,7 +769,7 @@
           <h4>Resources</h4>
           <a href="changelog.html">Changelog</a>
           <a href="https://github.com/rishiatlan/Prompt-Optimizer-MCP">GitHub</a>
-          <a href="https://www.npmjs.com/package/claude-prompt-optimizer-mcp">npm</a>
+          <a href="https://www.npmjs.com/package/pcp-engine">npm</a>
         </div>
         <div class="footer-col">
           <h4>Legal</h4>

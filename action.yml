@@ -71,7 +71,7 @@ runs:
         # Install to deterministic path and use node_modules/.bin
         INSTALL_DIR="${RUNNER_TEMP:-/tmp}/pcp-$$"
         rm -rf "$INSTALL_DIR"
-        npm install --prefix "$INSTALL_DIR" "claude-prompt-optimizer-mcp@${VERSION}" --no-save --ignore-scripts 2>&1
+        npm install --prefix "$INSTALL_DIR" "pcp-engine@${VERSION}" --no-save --ignore-scripts 2>&1
         # Try pcp first (v5+), fall back to prompt-lint (v4)
         if [ -x "$INSTALL_DIR/node_modules/.bin/pcp" ]; then
           "$INSTALL_DIR/node_modules/.bin/pcp" "${ARGS[@]}"

@@ -41,7 +41,7 @@ function createMockSession(overrides?: Partial<Session>): Session {
       blocking_questions: [],
     },
     compiled_prompt: 'Write a Fibonacci function...',
-    quality_before: { total: 75, max: 100, dimensions: [] },
+    quality_before: { total: 75, max: 100, dimensions: [], confidence: 'medium' as const, confidence_note: 'Moderate improvement expected — optimization will add structure and fill gaps.' },
     compilation_checklist: { items: [], summary: 'Good' },
     cost_estimate: {
       input_tokens: 100,

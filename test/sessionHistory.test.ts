@@ -33,7 +33,7 @@ function createMockSession(overrides?: Partial<Session>): Session {
       blocking_questions: [],
     },
     compiled_prompt: 'Write a Fibonacci function...',
-    quality_before: { total: 75, max: 100, dimensions: [] },
+    quality_before: { total: 75, max: 100, dimensions: [], confidence: 'medium' as const, confidence_note: 'Moderate improvement expected — optimization will add structure and fill gaps.' },
     compilation_checklist: { items: [], summary: 'Good' },
     cost_estimate: {
       input_tokens: 100,
@@ -403,7 +403,7 @@ test('sessionHistory', async (t) => {
     await fs.rm(tempDir, { recursive: true });
   });
 
-  await t.test('21. quality_after: undefined when not APPROVED', async () => {
+  await t.test('21. confidence: reflects quality_before score level', async () => {
     const tempDir = path.join(tmpdir(), `session-test-${randomUUID()}`);
     await fs.mkdir(tempDir, { recursive: true });
 
@@ -413,7 +413,7 @@ test('sessionHistory', async (t) => {
     await mgr.saveSession(session);
 
     const list = await mgr.listSessions();
-    assert.equal(list.sessions[0].quality_after, undefined);
+    assert.equal(list.sessions[0].confidence, 'medium');
 
     await fs.rm(tempDir, { recursive: true });
   });

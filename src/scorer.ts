@@ -239,10 +239,24 @@ export function scorePrompt(spec: IntentSpec, context?: string): QualityScore {
     scoreEfficiency(spec.user_intent, context),
   ];
 
+  const total = dimensions.reduce((sum, d) => sum + d.score, 0);
+
+  // Confidence reflects how much room there is for improvement.
+  // High-scoring prompts are already well-structured — optimization adds scaffolding
+  // but the core quality is strong, so confidence in meaningful improvement is low.
+  const confidence: 'low' | 'medium' | 'high' = total >= 80 ? 'low' : total >= 50 ? 'medium' : 'high';
+  const confidence_note = total >= 80
+    ? 'Prompt is already well-structured — optimization will add scaffolding but core quality is strong.'
+    : total >= 50
+      ? 'Moderate improvement expected — optimization will add structure and fill gaps.'
+      : 'Significant improvement expected — prompt lacks structure, specificity, or constraints.';
+
   return {
-    total: dimensions.reduce((sum, d) => sum + d.score, 0),
+    total,
     max: 100,
     dimensions,
+    confidence,
+    confidence_note,
   };
 }
 

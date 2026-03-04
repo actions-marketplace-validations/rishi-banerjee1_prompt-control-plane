@@ -141,8 +141,8 @@ export type OutputTarget = 'claude' | 'openai' | 'generic';
 // ─── Tier System ──────────────────────────────────────────────────────────────
 
 export interface TierLimits {
-  lifetime: number;          // total uses ever (free=10, pro/power=Infinity)
-  monthly: number;           // per calendar month (free=10, pro=100, power=Infinity)
+  lifetime: number;          // total uses ever (free/pro/power=Infinity)
+  monthly: number;           // per calendar month (free=50, pro=100, power=Infinity)
   rate_per_minute: number;   // sliding window rate limit (free=5, pro=30, power=60)
   always_on: boolean;        // can use always-on mode (free/pro=false, power=true)
 }
@@ -156,7 +156,7 @@ export interface SerializedTierLimits {
 }
 
 export const PLAN_LIMITS: Record<string, TierLimits> = {
-  free:       { lifetime: 10,       monthly: 10,        rate_per_minute: 5,   always_on: false },
+  free:       { lifetime: Infinity, monthly: 50,        rate_per_minute: 5,   always_on: false },
   pro:        { lifetime: Infinity, monthly: 100,       rate_per_minute: 30,  always_on: false },
   power:      { lifetime: Infinity, monthly: Infinity,  rate_per_minute: 60,  always_on: true },
   enterprise: { lifetime: Infinity, monthly: Infinity,  rate_per_minute: 120, always_on: true },
@@ -226,6 +226,8 @@ export interface QualityScore {
   total: number;
   max: 100;
   dimensions: QualityDimension[];
+  confidence: 'low' | 'medium' | 'high';
+  confidence_note: string;
 }
 
 // ─── Compilation Checklist (replaces quality_after) ──────────────────────────
@@ -309,7 +311,7 @@ export interface SessionRecord {
   state: SessionState;                   // ANALYZING, COMPILED, APPROVED
   task_type: TaskType;
   quality_before: number;                // 0-100
-  quality_after?: number;                // Present if optimization completed
+  confidence: 'low' | 'medium' | 'high'; // Improvement confidence level
   prompt_hash: string;                   // SHA256 of raw prompt
   prompt_length: number;                 // Character count
   target: OutputTarget;                  // claude, openai, generic
@@ -323,7 +325,7 @@ export interface SessionExport {
   raw_prompt: string;
   compiled_prompt: string;
   quality_before: number;
-  quality_after?: number;
+  confidence: 'low' | 'medium' | 'high'; // Improvement confidence level
   rule_set_hash: string;                 // SHA256 of rule set
   rule_set_version: string;              // e.g., '3.2.1'
   metadata: {
@@ -550,11 +552,11 @@ export interface StatsEvent {
 
 export interface EnforcementResult {
   allowed: boolean;
-  enforcement: 'lifetime' | 'monthly' | 'rate' | 'always_on' | null;
+  enforcement: 'lifetime' | 'monthly' | 'rate' | 'always_on' | 'error' | null;
   usage: UsageData;
   limits: SerializedTierLimits;       // Serialized (Infinity → null for JSON safety)
   remaining: {
-    lifetime: number;
+    lifetime: number | null;   // null when lifetime is unlimited (Infinity not JSON-serializable)
     monthly: number;
   };
   retry_after_seconds?: number;      // present ONLY when enforcement='rate'

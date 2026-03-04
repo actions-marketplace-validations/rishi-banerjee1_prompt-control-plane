@@ -103,6 +103,8 @@ describe('optimize()', () => {
     assert.equal(typeof result.quality.total, 'number');
     assert.equal(result.quality.max, 100);
     assert.equal(result.quality.dimensions.length, 5);
+    assert.ok(['low', 'medium', 'high'].includes(result.quality.confidence), 'should have confidence level');
+    assert.equal(typeof result.quality.confidence_note, 'string', 'should have confidence_note');
 
     // CostEstimate shape
     assert.ok(result.cost.input_tokens > 0, 'should estimate tokens');

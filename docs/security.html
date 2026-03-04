@@ -278,8 +278,8 @@
             <div class="desc">Prompt content in audit logs</div>
           </div>
           <div class="summary-item">
-            <div class="num">1</div>
-            <div class="desc">Runtime dependency</div>
+            <div class="num">3</div>
+            <div class="desc">Runtime dependencies</div>
           </div>
         </div>
       </div>
@@ -368,7 +368,7 @@
       <!-- Supply Chain -->
       <div class="sec-card">
         <h2>Supply Chain</h2>
-        <p>Prompt Control Plane has a minimal dependency footprint. The only runtime dependency is the MCP SDK (<code>@modelcontextprotocol/sdk</code>) for the server transport layer. All business logic &mdash; scoring, compilation, routing, compression, policy enforcement, and audit logging &mdash; is implemented with zero external dependencies.</p>
+        <p>Prompt Control Plane has a minimal dependency footprint. The three runtime dependencies are the MCP SDK (<code>@modelcontextprotocol/sdk</code>), <code>zod</code>, and <code>express</code>. All business logic &mdash; scoring, compilation, routing, compression, policy enforcement, and audit logging &mdash; is implemented with zero external dependencies.</p>
         <p>Source maps are stripped from the published npm tarball to prevent exposure of internal implementation details. All business logic is compiled from TypeScript to standard JavaScript. There is no use of <code>eval()</code>, no dynamic imports, and no runtime code generation.</p>
         <p>The npm package ships only compiled output, entry point scripts, the README, and the LICENSE file. Test files, source TypeScript, configuration files, and development tooling are excluded from the published package.</p>
       </div>
@@ -400,7 +400,7 @@
           <h4>Resources</h4>
           <a href="changelog.html">Changelog</a>
           <a href="https://github.com/rishiatlan/Prompt-Optimizer-MCP">GitHub</a>
-          <a href="https://www.npmjs.com/package/claude-prompt-optimizer-mcp">npm</a>
+          <a href="https://www.npmjs.com/package/pcp-engine">npm</a>
         </div>
         <div class="footer-col">
           <h4>Legal</h4>

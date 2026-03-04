@@ -146,7 +146,7 @@
     <div class="container">
       <span class="badge badge-accent">Features</span>
       <h1>Built for people who take prompts seriously</h1>
-      <p class="subtitle">Everything runs locally. Two runtime dependencies. No API keys consumed by the engine itself.</p>
+      <p class="subtitle">Everything runs locally. Three runtime dependencies. No API keys consumed by the engine itself.</p>
     </div>
   </section>
 
@@ -801,18 +801,18 @@
 
       <div class="install mb-32">
         <div class="install-label">Install</div>
-        <code>npm install claude-prompt-optimizer-mcp</code>
+        <code>npm install pcp-engine</code>
       </div>
 
-      <div class="code-block mb-32"><span class="keyword">import</span> { optimize } <span class="keyword">from</span> <span class="string">'claude-prompt-optimizer-mcp'</span>;
+      <div class="code-block mb-32"><span class="keyword">import</span> { optimize } <span class="keyword">from</span> <span class="string">'pcp-engine'</span>;
 
-<span class="keyword">const</span> result = <span class="keyword">await</span> optimize(<span class="string">'Summarize this document'</span>);
+<span class="keyword">const</span> result = optimize(<span class="string">'Summarize this document'</span>);
 console.log(result.quality_score, result.compiled);</div>
 
       <div class="code-block"><span class="comment">// Target any LLM</span>
-<span class="keyword">const</span> forOpenAI = <span class="keyword">await</span> optimize(<span class="string">'Analyze sales data'</span>, { target: <span class="string">'openai'</span> });
-<span class="keyword">const</span> forClaude = <span class="keyword">await</span> optimize(<span class="string">'Analyze sales data'</span>, { target: <span class="string">'claude'</span> });
-<span class="keyword">const</span> generic  = <span class="keyword">await</span> optimize(<span class="string">'Analyze sales data'</span>, { target: <span class="string">'generic'</span> });</div>
+<span class="keyword">const</span> forOpenAI = optimize(<span class="string">'Analyze sales data'</span>, { target: <span class="string">'openai'</span> });
+<span class="keyword">const</span> forClaude = optimize(<span class="string">'Analyze sales data'</span>, { target: <span class="string">'claude'</span> });
+<span class="keyword">const</span> generic  = optimize(<span class="string">'Analyze sales data'</span>, { target: <span class="string">'generic'</span> });</div>
     </div>
   </section>
 
@@ -845,7 +845,7 @@ console.log(result.quality_score, result.compiled);</div>
           <h4>Resources</h4>
           <a href="changelog.html">Changelog</a>
           <a href="https://github.com/rishiatlan/Prompt-Optimizer-MCP">GitHub</a>
-          <a href="https://www.npmjs.com/package/claude-prompt-optimizer-mcp">npm</a>
+          <a href="https://www.npmjs.com/package/pcp-engine">npm</a>
         </div>
         <div class="footer-col">
           <h4>Legal</h4>

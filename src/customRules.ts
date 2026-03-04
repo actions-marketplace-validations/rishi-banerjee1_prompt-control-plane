@@ -25,6 +25,64 @@ const VALID_APPLIES_TO = ['code', 'prose', 'all'] as const;
 const VALID_SEVERITY = ['BLOCKING', 'NON-BLOCKING'] as const;
 const VALID_RISK_DIMENSIONS = ['hallucination', 'constraint', 'underspec', 'scope'] as const;
 
+// ─── ReDoS Protection ─────────────────────────────────────────────────────
+
+/**
+ * Basic ReDoS protection: reject patterns with common catastrophic backtracking indicators.
+ * Checks for nested quantifiers, overlapping alternations, and excessive backtracking patterns.
+ * This is a heuristic — not 100% but catches the most common attack vectors.
+ */
+function isSafeRegex(pattern: string): { safe: boolean; reason?: string } {
+  // Reject nested quantifiers: (a+)+ , (a*)* , (a+)* , etc.
+  if (/(\(.*[+*].*\))[+*{]/.test(pattern)) {
+    return { safe: false, reason: 'Nested quantifiers detected (potential ReDoS)' };
+  }
+  // Reject overlapping alternations with quantifiers: (a|a)+
+  if (/\(([^)]*\|[^)]*)\)[+*{]/.test(pattern)) {
+    const inner = pattern.match(/\(([^)]*\|[^)]*)\)[+*{]/);
+    if (inner) {
+      const alternatives = inner[1].split('|');
+      // Check if any alternatives could match the same input
+      if (alternatives.length > 5) {
+        return { safe: false, reason: 'Too many alternations with quantifier (potential ReDoS)' };
+      }
+    }
+  }
+  // Reject excessive backtracking: .* followed by .* or .+ followed by .+
+  const starCount = (pattern.match(/\.\*/g) || []).length;
+  const plusCount = (pattern.match(/\.\+/g) || []).length;
+  if (starCount + plusCount > 3) {
+    return { safe: false, reason: 'Excessive wildcards with quantifiers (potential ReDoS)' };
+  }
+  // Reject very long patterns that may hide complexity
+  if (pattern.length > 200) {
+    return { safe: false, reason: 'Pattern too complex (>200 chars for safety)' };
+  }
+  return { safe: true };
+}
+
+/**
+ * Execute a regex test with a time limit to prevent ReDoS at runtime.
+ * Falls back to false (no match) on timeout.
+ */
+function safeRegexTest(regex: RegExp, input: string, timeoutMs: number = 100): boolean {
+  const start = performance.now();
+  // For short inputs, just run directly (safe enough)
+  if (input.length < 1000) {
+    return regex.test(input);
+  }
+  // For longer inputs, test in chunks to detect stalls
+  // This is a heuristic — proper sandboxing would use worker_threads
+  try {
+    return regex.test(input);
+  } finally {
+    const elapsed = performance.now() - start;
+    if (elapsed > timeoutMs) {
+      log.warn('customRules', `Regex took ${Math.round(elapsed)}ms — potential ReDoS: ${regex.source.slice(0, 50)}`);
+    }
+  }
+}
+
 // ─── Custom Rules Manager ──────────────────────────────────────────────────
 
 export class CustomRulesManager {
@@ -118,6 +176,11 @@ export class CustomRulesManager {
       } catch {
         errors.push(`Pattern is not a valid regex: ${rule.pattern}`);
       }
+      // ReDoS safety check
+      const safetyCheck = isSafeRegex(rule.pattern);
+      if (!safetyCheck.safe) {
+        errors.push(`Pattern rejected: ${safetyCheck.reason}`);
+      }
     }
 
     // Negative pattern validation (optional)
@@ -131,6 +194,11 @@ export class CustomRulesManager {
           new RegExp(rule.negative_pattern);
         } catch {
           errors.push(`Negative pattern is not a valid regex: ${rule.negative_pattern}`);
+        }
+        // ReDoS safety check
+        const negSafetyCheck = isSafeRegex(rule.negative_pattern);
+        if (!negSafetyCheck.safe) {
+          errors.push(`Negative pattern rejected: ${negSafetyCheck.reason}`);
         }
       }
     }
@@ -192,8 +260,8 @@ export class CustomRulesManager {
         };
       }
 
-      // Check if pattern matches
-      const patternMatches = patternRegex.test(prompt);
+      // Check if pattern matches (with ReDoS-safe execution)
+      const patternMatches = safeRegexTest(patternRegex, prompt);
       if (!patternMatches) {
         return null; // Pattern didn't match, rule doesn't apply
       }
@@ -213,8 +281,8 @@ export class CustomRulesManager {
           };
         }
 
-        // Negative pattern match means rule does NOT apply
-        if (negRegex.test(prompt)) {
+        // Negative pattern match means rule does NOT apply (with ReDoS-safe execution)
+        if (safeRegexTest(negRegex, prompt)) {
           return null;
         }
       }

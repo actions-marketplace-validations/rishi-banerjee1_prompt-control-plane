@@ -501,7 +501,7 @@
           </div>
           <div class="toggle-row">
             <label class="toggle"><input type="checkbox" id="pol-audit" onchange="updatePolicyCmd()"><span class="toggle-track"></span></label>
-            <span class="toggle-label">Enable hash-chained audit trail — writes to <code>~/.prompt-control-plane/audit.log</code></span>
+            <span class="toggle-label">Enable hash-chained audit trail — writes to <code>~/.prompt-control-plane/audit.jsonl</code></span>
           </div>
         </div>
 
@@ -578,8 +578,8 @@
 
         <div class="card">
           <h3>Load Your Audit Log</h3>
-          <p class="card-desc">Paste the contents of <code>~/.prompt-control-plane/audit.log</code> below. The explorer parses every entry and verifies the SHA-256 hash chain — any modified or deleted line breaks the chain and will be flagged.</p>
-          <textarea class="paste-area" id="audit-input" placeholder="Paste audit.log content here (JSONL — one JSON object per line)…"></textarea>
+          <p class="card-desc">Paste the contents of <code>~/.prompt-control-plane/audit.jsonl</code> below. The explorer parses every entry and verifies the SHA-256 hash chain — any modified or deleted line breaks the chain and will be flagged.</p>
+          <textarea class="paste-area" id="audit-input" placeholder="Paste audit.jsonl content here (JSONL — one JSON object per line)…"></textarea>
           <div class="btn-row" style="margin-top:12px;">
             <button class="btn btn-primary" onclick="parseAudit()">Parse &amp; Verify Chain</button>
             <button class="btn btn-secondary" onclick="document.getElementById('audit-input').value='';document.getElementById('audit-results').style.display='none'">Clear</button>
@@ -890,7 +890,7 @@
     }
     async function parseAudit() {
       var raw = document.getElementById('audit-input').value.trim();
-      if (!raw) return alert('Paste your audit.log content first.');
+      if (!raw) return alert('Paste your audit.jsonl content first.');
       var entries = raw.split('\n').filter(l => l.trim()).map(l => { try { return JSON.parse(l); } catch(e) { return null; } }).filter(Boolean);
       if (!entries.length) return alert('No valid JSON entries found — check the format.');
       var prevHash = '0'.repeat(64);

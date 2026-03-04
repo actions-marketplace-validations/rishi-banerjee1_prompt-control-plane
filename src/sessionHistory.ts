@@ -122,7 +122,7 @@ export class SessionHistoryManager {
             state: session.state,
             task_type: session.intent_spec.task_type,
             quality_before: session.quality_before.total,
-            quality_after: session.state === 'APPROVED' ? session.quality_before.total : undefined,
+            confidence: session.quality_before.confidence,
             prompt_hash: sha256(session.raw_prompt),
             prompt_length: session.raw_prompt.length,
             target: session.target,
@@ -207,7 +207,7 @@ export class SessionHistoryManager {
         raw_prompt: session.raw_prompt,
         compiled_prompt: session.compiled_prompt,
         quality_before: session.quality_before.total,
-        quality_after: session.state === 'APPROVED' ? session.quality_before.total : undefined,
+        confidence: session.quality_before.confidence,
         rule_set_hash: ruleSetHash,
         rule_set_version: ruleSetVersion,
         metadata: {

@@ -61,6 +61,25 @@ describe('scorePrompt', () => {
     assert.equal(maxTotal, 100);
   });
 
+  it('returns confidence level based on total score', () => {
+    // Vague prompt should score low → high confidence
+    const vagueSpec = analyzePrompt('make it better');
+    const vagueScore = scorePrompt(vagueSpec);
+    assert.equal(vagueScore.confidence, 'high', `Expected high confidence for low score ${vagueScore.total}`);
+    assert.ok(vagueScore.confidence_note.length > 0, 'Should have a confidence note');
+
+    // Detailed prompt should score higher → medium or low confidence
+    const detailedSpec = analyzePrompt(
+      'Refactor the handleAuth function in src/auth.ts to use async/await. ' +
+      'Preserve backward compatibility. Only modify src/auth.ts. Do not change the public API.'
+    );
+    const detailedScore = scorePrompt(detailedSpec);
+    assert.ok(
+      detailedScore.confidence === 'medium' || detailedScore.confidence === 'low',
+      `Expected medium or low confidence for score ${detailedScore.total}, got ${detailedScore.confidence}`
+    );
+  });
+
   it('constraints dimension awards +2 for preservation instructions', () => {
     const specWithPreservation = analyzePrompt(
       'Refactor src/utils.ts. Preserve backward compatibility. Do not change tests.'

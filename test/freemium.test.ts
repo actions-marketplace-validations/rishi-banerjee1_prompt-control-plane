@@ -58,8 +58,8 @@ describe('Freemium enforcement', () => {
     assert.ok(PLAN_LIMITS.free, 'Free tier should exist');
     assert.ok(PLAN_LIMITS.pro, 'Pro tier should exist');
     assert.ok(PLAN_LIMITS.power, 'Power tier should exist');
-    assert.equal(PLAN_LIMITS.free.lifetime, 10);
-    assert.equal(PLAN_LIMITS.free.monthly, 10);
+    assert.equal(PLAN_LIMITS.free.lifetime, Infinity);
+    assert.equal(PLAN_LIMITS.free.monthly, 50);
     assert.equal(PLAN_LIMITS.free.rate_per_minute, 5);
     assert.equal(PLAN_LIMITS.free.always_on, false);
     assert.equal(PLAN_LIMITS.pro.lifetime, Infinity);
@@ -84,18 +84,18 @@ describe('Freemium enforcement', () => {
     }
   });
 
-  it('gates 11th use on free tier with lifetime enforcement', async () => {
+  it('gates 51st use on free tier with monthly enforcement', async () => {
     const ctx = makeCtx();
 
-    // Use up 10
-    for (let i = 0; i < 10; i++) {
+    // Use up 50
+    for (let i = 0; i < 50; i++) {
       await storage.incrementUsage();
     }
 
     const result = await storage.canUseOptimization(ctx);
     assert.equal(result.allowed, false);
-    assert.equal(result.enforcement, 'lifetime');
-    assert.equal(result.remaining.lifetime, 0);
+    assert.equal(result.enforcement, 'monthly');
+    assert.equal(result.remaining.monthly, 0);
   });
 
   it('EnforcementResult has correct shape', async () => {

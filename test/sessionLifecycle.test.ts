@@ -16,7 +16,7 @@ function createMockSession(overrides: Partial<Session> = {}): Session {
     state: 'APPROVED',
     created_at: Date.now(),
     target: 'claude' as const,
-    quality_before: { total: 65, dimensions: [], scoring_version: 2 },
+    quality_before: { total: 65, max: 100, dimensions: [], confidence: 'medium' as const, confidence_note: 'Moderate improvement expected — optimization will add structure and fill gaps.' },
     intent_spec: {
       task_type: 'code_change',
       role: 'developer',

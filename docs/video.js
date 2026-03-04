@@ -846,7 +846,7 @@
         txt(ctx,'One tool. Every prompt. Zero compromise.',W/2,90,
           {size:15,color:C.muted,align:'center',alpha:fi(lf,25,28)*ao});
         const vba=fi(lf,38,24)*ao;
-        pill(ctx,W/2,112,'v4.0.3  ·  claude-prompt-optimizer-mcp',C.primary,vba);
+        pill(ctx,W/2,112,'v5.1.0  ·  pcp-engine',C.primary,vba);
 
         const stats=[
           {val:'+32', unit:'avg pts',  desc:'Score improvement per prompt',    color:C.green,   icon:'🏆'},
@@ -957,7 +957,7 @@
         // Install command
         const ia=fi(lf,120,22)*ao;
         box(ctx,W/2-318,H/2+150,636,44,{fill:C.surface,stroke:C.border2,r:8,alpha:ia});
-        txt(ctx,'npm install -g claude-prompt-optimizer-mcp',W/2,H/2+173,
+        txt(ctx,'npm install -g pcp-engine',W/2,H/2+173,
           {size:13,color:C.green,align:'center',mono:true,alpha:ia});
 
         narrator(ctx,

@@ -1,8 +1,8 @@
 {
-  "name": "claude-prompt-optimizer-mcp",
-  "version": "5.0.2",
+  "name": "pcp-engine",
+  "version": "5.1.0",
   "type": "module",
-  "description": "The control plane for AI prompts — deterministic scoring, policy enforcement, audit & governance via MCP. Free tier included.",
+  "description": "PCP — the prompt quality engine. Deterministic scoring, compilation, cost estimation & governance for AI prompts. Zero LLM calls.",
   "main": "dist/src/api.js",
   "types": "dist/src/api.d.ts",
   "exports": {
@@ -16,7 +16,7 @@
     }
   },
   "bin": {
-    "claude-prompt-optimizer-mcp": "./bin/cli.js",
+    "pcp-engine": "./bin/cli.js",
     "prompt-lint": "./bin/lint.js",
     "pcp": "./bin/pcp.js"
   },
@@ -37,7 +37,7 @@
     "mcp",
     "model-context-protocol",
     "claude",
-    "prompt-control-plane",
+    "pcp-engine",
     "prompt-governance",
     "prompt-optimization",
     "prompt-engineering",
@@ -67,7 +67,7 @@
   "bugs": {
     "url": "https://github.com/rishiatlan/Prompt-Optimizer-MCP/issues"
   },
-  "mcpName": "io.github.rishiatlan/claude-prompt-optimizer",
+  "mcpName": "io.github.rishiatlan/pcp-engine",
   "author": "Rishi Banerjee",
   "license": "Elastic-2.0",
   "dependencies": {

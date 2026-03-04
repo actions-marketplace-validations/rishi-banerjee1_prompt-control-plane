@@ -1,6 +1,6 @@
 // src/api.ts — Programmatic API barrel export (v3.3).
 // Pure, synchronous, zero side effects. Safe for library use.
-// Does NOT start the MCP server (use `claude-prompt-optimizer-mcp/server` for that).
+// Does NOT start the MCP server (use `pcp-engine/server` for that).
 // v3 additions: classifyComplexity, routeModel, computeRiskScore, PROFILES, TIER_MODELS.
 // v3.1 additions: pruner, tokenizer, zones, preservePatterns, deltas, constants.
 // v3.3 additions: policy, auditLog, sessionHistory.

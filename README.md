@@ -2,12 +2,12 @@
 
 The control plane for AI prompts. Score, enforce policy, lock config, and audit every prompt decision. Free tier included.
 
-[![npm version](https://img.shields.io/npm/v/claude-prompt-optimizer-mcp)](https://www.npmjs.com/package/claude-prompt-optimizer-mcp)
+[![npm version](https://img.shields.io/npm/v/pcp-engine)](https://www.npmjs.com/package/pcp-engine)
 ![Node.js](https://img.shields.io/badge/Node.js-18%2B-339933?logo=node.js&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-Strict-3178C6?logo=typescript&logoColor=white)
 ![License](https://img.shields.io/badge/License-ELv2-blue)
-![No Dependencies](https://img.shields.io/badge/Runtime_Deps-2-brightgreen)
-[![npm downloads](https://img.shields.io/npm/dm/claude-prompt-optimizer-mcp)](https://www.npmjs.com/package/claude-prompt-optimizer-mcp)
+![No Dependencies](https://img.shields.io/badge/Runtime_Deps-3-brightgreen)
+[![npm downloads](https://img.shields.io/npm/dm/pcp-engine)](https://www.npmjs.com/package/pcp-engine)
 
 ---
 
@@ -22,27 +22,27 @@ The control plane for AI prompts. Score, enforce policy, lock config, and audit 
 
 ## Benchmarks
 
-Real results from the deterministic pipeline — every prompt scores 90/100 after optimization:
+Real results from the deterministic pipeline. PCP scores the **input** prompt quality, not the compiled output — the compiled prompt gets a structural checklist instead:
 
-| Prompt | Type | Before | After | Improvement | Model | Blocked? |
-|--------|------|--------|-------|-------------|-------|----------|
-| `"make the code better"` | other | 48 | 90 | **+42** | sonnet | — |
-| `"fix the login bug"` | debug | 51 | 90 | **+39** | opus | 3 BQs |
-| Multi-task (4 tasks in 1 prompt) | refactor | 51 | 90 | **+39** | opus | 3 BQs |
-| Well-specified refactor (auth middleware) | refactor | 76 | 90 | **+14** | opus | — |
-| Precise code change (retry logic) | code_change | 61 | 90 | **+29** | sonnet | — |
-| Create REST API server | create | 51 | 90 | **+39** | opus | 2 BQs |
-| LinkedIn post (technical topic) | writing | 59 | 90 | **+31** | sonnet | — |
-| Blog post (GraphQL migration) | writing | 59 | 90 | **+31** | sonnet | — |
-| Email to engineering team | writing | 59 | 90 | **+31** | sonnet | — |
-| Slack announcement | writing | 62 | 90 | **+28** | sonnet | — |
-| Technical summary (RFC → guide) | writing | 60 | 90 | **+30** | sonnet | — |
-| Research (Redis vs Memcached) | research | 56 | 90 | **+34** | sonnet | — |
-| Framework comparison (React vs Vue) | research | 56 | 90 | **+34** | sonnet | — |
-| Migration roadmap (REST → GraphQL) | planning | 56 | 90 | **+34** | sonnet | — |
-| Data transformation (CSV grouping) | data | 56 | 90 | **+34** | haiku | — |
+| Prompt | Type | Score | Confidence | Model | Blocked? |
+|--------|------|-------|------------|-------|----------|
+| `"make the code better"` | other | 48 | high | sonnet | — |
+| `"fix the login bug"` | debug | 51 | medium | opus | 3 BQs |
+| Multi-task (4 tasks in 1 prompt) | refactor | 51 | medium | opus | 3 BQs |
+| Well-specified refactor (auth middleware) | refactor | 76 | medium | opus | — |
+| Precise code change (retry logic) | code_change | 61 | medium | sonnet | — |
+| Create REST API server | create | 51 | medium | opus | 2 BQs |
+| LinkedIn post (technical topic) | writing | 59 | medium | sonnet | — |
+| Blog post (GraphQL migration) | writing | 59 | medium | sonnet | — |
+| Email to engineering team | writing | 59 | medium | sonnet | — |
+| Slack announcement | writing | 62 | medium | sonnet | — |
+| Technical summary (RFC → guide) | writing | 60 | medium | sonnet | — |
+| Research (Redis vs Memcached) | research | 56 | medium | sonnet | — |
+| Framework comparison (React vs Vue) | research | 56 | medium | sonnet | — |
+| Migration roadmap (REST → GraphQL) | planning | 56 | medium | sonnet | — |
+| Data transformation (CSV grouping) | data | 56 | medium | haiku | — |
 
-**Average improvement: +32 points.** Vague prompts get blocked with targeted questions. Well-specified prompts get compiled with safety constraints, workflow steps, and model routing — all deterministically, with zero LLM calls.
+**Score** = input prompt quality (0-100). **Confidence** = how much improvement to expect (high = prompt is weak, lots of room; low = prompt is already strong). Compiled output gets a structural checklist (e.g. 7/9 elements present), not an inflated numeric score. Vague prompts get blocked with targeted questions. Well-specified prompts get compiled with safety constraints, workflow steps, and model routing — all deterministically, with zero LLM calls.
 
 ## Features
 
@@ -210,15 +210,15 @@ Changes Made:
 
 | Method | Command |
 |--------|---------|
-| **npm global** (recommended) | `npm install -g claude-prompt-optimizer-mcp` |
+| **npm global** (recommended) | `npm install -g pcp-engine` |
 | **curl** | `curl -fsSL https://getpcp.site/install.sh \| bash` |
 
 ```bash
-npm install -g claude-prompt-optimizer-mcp
+npm install -g pcp-engine
 pcp preflight "Your prompt here" --json
 ```
 
-Free tier gives you 10 optimizations to try it out.
+Free tier gives you 50 optimizations/month to try it out.
 
 <details>
 <summary><strong>Add MCP integration (optional — for AI-assisted workflows)</strong></summary>
@@ -230,7 +230,7 @@ Add to your project's `.mcp.json` (or `~/.claude/settings.json` for global acces
   "mcpServers": {
     "prompt-optimizer": {
       "command": "npx",
-      "args": ["-y", "claude-prompt-optimizer-mcp"]
+      "args": ["-y", "pcp-engine"]
     }
   }
 }
@@ -377,7 +377,7 @@ jobs:
 Use the linter as a library in your own Node.js code — no MCP server needed.
 
 ```typescript
-import { optimize } from 'claude-prompt-optimizer-mcp';
+import { optimize } from 'pcp-engine';
 
 const result = optimize('fix the login bug in src/auth.ts');
 
@@ -397,7 +397,7 @@ The `optimize()` function runs the exact same pipeline as the `optimize_prompt` 
 | `scorePrompt(intent, context?)` | Intent → `QualityScore` (0–100) |
 | `compilePrompt(intent, context?, target?)` | Intent → compiled prompt string |
 | `generateChecklist(compiledPrompt)` | Compiled prompt → structural coverage |
-| `estimateCost(text, taskType, riskLevel, target?)` | Text → `CostEstimate` (8 models) |
+| `estimateCost(text, taskType, riskLevel, target?)` | Text → `CostEstimate` (10 models) |
 | `compressContext(context, intent)` | Strip irrelevant context, report savings |
 | `validateLicenseKey(key)` | Ed25519 offline license validation |
 
@@ -459,8 +459,8 @@ console.log(withCtx.cost);   // Higher token count (context included)
 
 | | Free | Pro | Power | Enterprise |
 |---|------|-----|-------|-----------|
-| **Price** | ₹0 | ₹499/mo | ₹899/mo | Custom |
-| **Optimizations** | 10 lifetime | 100/month | Unlimited | Unlimited |
+| **Price** | ₹0 | $6/mo (₹499) | $11/mo (₹899) | Custom |
+| **Optimizations** | 50/month | 100/month | Unlimited | Unlimited |
 | **Rate limit** | 5/min | 30/min | 60/min | 120/min |
 | **Always-on mode** | — | — | ✓ | ✓ |
 | **All 20 capabilities** | ✓ | ✓ | ✓ | ✓ |
@@ -472,13 +472,13 @@ console.log(withCtx.cost);   // Higher token count (context included)
 | **Support** | Community | Email | Priority | Dedicated |
 | **SLA** | — | — | — | Custom |
 
-**Free tier** gives you 10 optimizations to experience the full pipeline. No credit card required.
+**Free tier** gives you 50 optimizations/month to experience the full pipeline. No credit card required.
 
 **Enterprise** includes unlimited usage, custom integrations, and dedicated support. [Contact sales](https://getpcp.site/contact.html) for pricing and details.
 
 ### Activate a License
 
-1. **Free**: No action needed — you get 10 optimizations immediately.
+1. **Free**: No action needed — you get 50 optimizations/month immediately.
 2. **Pro/Power**: Purchase at the [Prompt Control Plane store](https://getpcp.site/) and you receive a license key starting with `pcp_...`
 3. Tell Claude: "Use set_license with key: pcp_YOUR_KEY_HERE"
 4. Done — your tier upgrades instantly. Verify with `license_status`.
@@ -1089,21 +1089,21 @@ Reason:         Balanced task — Sonnet offers the best
 - **Optional integrations:** any network calls (e.g., cost lookups for external providers) occur only when an integration tool is explicitly invoked.
 - **License validation:** Ed25519 asymmetric signatures. Public key only in the package. No PII in the key. `chmod 600` on POSIX (best-effort).
 - **Prompt logging:** disabled by default. Opt-in via `PROMPT_CONTROL_PLANE_LOG_PROMPTS=true`. Never enable in shared environments.
-- **Dependencies:** 2 runtime: `@modelcontextprotocol/sdk` and `zod`. No transitive bloat.
+- **Dependencies:** 3 runtime: `@modelcontextprotocol/sdk`, `zod`, and `express`. No transitive bloat.
 
 ## Troubleshooting
 
 | Issue | Fix |
 |-------|-----|
 | Tools don't appear in Claude Code | Verify your `.mcp.json` or settings file is valid JSON. Restart Claude Code after changes. |
-| `npx` hangs or is slow | First run downloads the package. Use `npm install -g claude-prompt-optimizer-mcp` for instant startup. |
+| `npx` hangs or is slow | First run downloads the package. Use `npm install -g pcp-engine` for instant startup. |
 | `Cannot find module` error (source install) | Run `npm run build` first. The `dist/` directory must exist. |
 | Session expired | Sessions have a 30-minute TTL. Call `optimize_prompt` again to start a new session. |
 | False positive on blocking questions | The detection rules are context-dependent. Refine your prompt to be more specific, or use Enterprise custom rules to tune detection for your workflow. |
 | "Scope explosion" triggers incorrectly | The rule detects broad scope language without nearby qualifiers. Context-dependent — may need prompt refinement. |
 | Cost estimates seem off | Token estimation uses an empirical approximation. For precise counts, use Anthropic's tokenizer directly. |
 | No model recommendation | Default is Sonnet. Opus is recommended only for high-risk or large-scope tasks. |
-| Check installed version | Run `npx claude-prompt-optimizer-mcp --version` or `claude-prompt-optimizer-mcp -v` (if globally installed). |
+| Check installed version | Run `npx pcp-engine --version` or `pcp-engine -v` (if globally installed). |
 
 ## Roadmap
 
@@ -1117,17 +1117,17 @@ Reason:         Balanced task — Sonnet offers the best
 - [x] Task-type-aware pipeline (scoring, constraints, model recommendations adapt per type)
 - [x] Intent-first detection — prevents topic-vs-task misclassification for technical writing prompts
 - [x] Answered question carry-forward — refine flow no longer regenerates already-answered blocking questions
-- [x] NPM package — `npx claude-prompt-optimizer-mcp` for zero-friction install
+- [x] NPM package — `npx pcp-engine` for zero-friction install
 - [x] Structured audience/tone/platform detection — 19 audience patterns, 9 platforms, tone signals
 - [x] Multi-LLM output targets — Claude (XML), OpenAI (system/user), Generic (Markdown)
 - [x] Persistent file-based storage (`~/.prompt-control-plane/`)
-- [x] 3-tier freemium system — Free (10 lifetime), Pro (₹499/mo, 100/mo), Power (₹899/mo, unlimited)
+- [x] 3-tier freemium system — Free (50/mo), Pro ($6/mo, 100/mo), Power ($11/mo, unlimited)
 - [x] Ed25519 offline license key activation — no phone-home, no backend
 - [x] Monthly usage enforcement with calendar-month reset
 - [x] Rate limiting — tier-keyed sliding window (5/30/60 per minute)
 - [x] v2.0 11 MCP tools including `check_prompt`, `configure_optimizer`, `get_usage`, `prompt_stats`, `set_license`, `license_status`
 - [x] Usage metering, statistics tracking, and cost savings aggregation
-- [x] Programmatic API — `import { optimize } from 'claude-prompt-optimizer-mcp'` for library use
+- [x] Programmatic API — `import { optimize } from 'pcp-engine'` for library use
 - [x] Dual entry points — `"."` (API) + `"./server"` (MCP server)
 - [x] Curl installer — `curl -fsSL .../install.sh | bash`
 - [x] Razorpay checkout integration — tier-specific purchase URLs

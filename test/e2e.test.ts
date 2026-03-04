@@ -308,21 +308,21 @@ describe('E2E: Gate enforcement', () => {
   beforeEach(() => { storage = makeTestStorage(); });
   afterEach(() => { try { fs.rmSync(testDir, { recursive: true }); } catch {} });
 
-  it('free tier exhaustion: 11th call blocked with lifetime enforcement', async () => {
+  it('free tier exhaustion: 51st call blocked with monthly enforcement', async () => {
     const ctx = makeCtx();
 
-    // Use up 10
-    for (let i = 0; i < 10; i++) {
+    // Use up 50
+    for (let i = 0; i < 50; i++) {
       const result = await storage.canUseOptimization(ctx);
       assert.ok(result.allowed, `Use ${i + 1} should be allowed`);
       await storage.incrementUsage();
     }
 
-    // 11th blocked
+    // 51st blocked
     const blocked = await storage.canUseOptimization(ctx);
     assert.equal(blocked.allowed, false);
-    assert.equal(blocked.enforcement, 'lifetime');
-    assert.equal(blocked.remaining.lifetime, 0);
+    assert.equal(blocked.enforcement, 'monthly');
+    assert.equal(blocked.remaining.monthly, 0);
   });
 
   it('pro tier monthly limit: 101st call blocked', async () => {
@@ -436,9 +436,9 @@ describe('E2E: Checkout URL wiring', () => {
   });
 
   it('PLAN_LIMITS tiers match expected pricing model', () => {
-    // Free: 10 lifetime, 10 monthly
-    assert.equal(PLAN_LIMITS.free.lifetime, 10);
-    assert.equal(PLAN_LIMITS.free.monthly, 10);
+    // Free: unlimited lifetime, 50 monthly
+    assert.equal(PLAN_LIMITS.free.lifetime, Infinity);
+    assert.equal(PLAN_LIMITS.free.monthly, 50);
     assert.equal(PLAN_LIMITS.free.always_on, false);
 
     // Pro (₹499/mo): unlimited lifetime, 100 monthly

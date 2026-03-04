@@ -71,7 +71,7 @@ describe('enterpriseWorkflow', async () => {
         state: 'APPROVED',
         created_at: Date.now() - (90 * 24 * 60 * 60 * 1000), // old
         target: 'claude',
-        quality_before: { total: 65, dimensions: [], scoring_version: 2 },
+        quality_before: { total: 65, max: 100, dimensions: [], confidence: 'medium' as const, confidence_note: 'Moderate improvement expected — optimization will add structure and fill gaps.' },
         intent_spec: {
           task_type: 'code_change',
           role: 'dev',

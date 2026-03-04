@@ -31,7 +31,7 @@ const args = process.argv.slice(2);
 if (args.includes('--version') || args.includes('-v')) {
   const require = createRequire(import.meta.url);
   const pkg = require(findPackageJson());
-  console.log(`claude-prompt-optimizer-mcp v${pkg.version}`);
+  console.log(`pcp-engine v${pkg.version}`);
   process.exit(0);
 }
 
@@ -39,18 +39,19 @@ if (args.includes('--help') || args.includes('-h')) {
   console.log(`Prompt Control Plane — Deterministic scoring, policy enforcement, audit & governance for AI prompts
 
 Usage:
-  claude-prompt-optimizer-mcp          Start the MCP server (stdio transport)
-  claude-prompt-optimizer-mcp -v       Print version
-  claude-prompt-optimizer-mcp -h       Print this help
+  pcp-engine          Start the MCP server (stdio transport)
+  pcp-engine -v       Print version
+  pcp-engine -h       Print this help
 
 Environment:
-  PROMPT_CONTROL_PLANE_PRO=true            Enable pro tier (env var override)
+  PROMPT_CONTROL_PLANE_PRO=true            Enable pro tier (development/testing only)
   PROMPT_CONTROL_PLANE_LOG_LEVEL=debug     Log verbosity: debug, info, warn, error
   PROMPT_CONTROL_PLANE_LOG_PROMPTS=true    Enable raw prompt logging (never in shared envs)
 
-Paid tiers:
-  Pro (₹499/mo)        — 100 optimizations/month, 30/min rate limit
-  Power (₹899/mo)      — Unlimited optimizations, 60/min rate limit, always-on mode
+Tiers:
+  Free                   — 50 optimizations/month, 5/min rate limit
+  Pro ($6/mo (₹499))    — 100 optimizations/month, 30/min rate limit
+  Power ($11/mo (₹899)) — Unlimited optimizations, 60/min rate limit, always-on mode
   Enterprise (custom)   — Policy enforcement, audit trail, config lock, custom rules
   Activate with the set_license tool. Tier priority: license key > env var > free
 
@@ -58,9 +59,9 @@ Quick setup (any MCP-compatible client):
   Add to .mcp.json or ~/.claude/settings.json:
   {
     "mcpServers": {
-      "prompt-optimizer": {
+      "prompt-control-plane": {
         "command": "npx",
-        "args": ["-y", "claude-prompt-optimizer-mcp"]
+        "args": ["-y", "pcp-engine"]
       }
     }
   }
@@ -85,7 +86,7 @@ const rateLimiter = new LocalRateLimiter();
 await storage.cleanupSessions();
 
 const server = new McpServer({
-  name: 'prompt-optimizer',
+  name: 'prompt-control-plane',
   version: pkg.version,
 });
 
@@ -96,4 +97,4 @@ await server.connect(transport);
 
 // Log tier from storage (reflects license > env var > default priority)
 const bootUsage = await storage.getUsage();
-log.info(bootId, `MCP server v${pkg.version} ready (tier=${bootUsage.tier}, tools=19)`);
+log.info(bootId, `MCP server v${pkg.version} ready (tier=${bootUsage.tier}, tools=20)`);

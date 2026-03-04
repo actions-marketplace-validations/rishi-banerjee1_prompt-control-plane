@@ -174,6 +174,9 @@ export class LocalFsStorage implements StorageInterface {
       ) {
         data.tier = license.tier;
       } else if (process.env.PROMPT_CONTROL_PLANE_PRO === 'true' || process.env.PROMPT_OPTIMIZER_PRO === 'true') {
+        // DEV/TEST ONLY: env var tier override — will be removed in Phase B (API key auth).
+        // This bypasses license validation intentionally for local development.
+        log.warn('storage', 'Pro tier activated via env var (PROMPT_CONTROL_PLANE_PRO) — dev/test override');
         data.tier = 'pro';
       }
       return data;
@@ -258,7 +261,7 @@ export class LocalFsStorage implements StorageInterface {
           usage,
           limits: sanitizeLimits(tierLimits),
           remaining: {
-            lifetime: Math.max(0, tierLimits.lifetime - usage.total_optimizations),
+            lifetime: tierLimits.lifetime === Infinity ? null : Math.max(0, tierLimits.lifetime - usage.total_optimizations),
             monthly: Math.max(0, tierLimits.monthly - periodOptimizations),
           },
           retry_after_seconds: rateResult.retry_after_seconds,
@@ -284,7 +287,7 @@ export class LocalFsStorage implements StorageInterface {
           usage,
           limits: sanitizeLimits(tierLimits),
           remaining: {
-            lifetime: Math.max(0, tierLimits.lifetime - usage.total_optimizations),
+            lifetime: tierLimits.lifetime === Infinity ? null : Math.max(0, tierLimits.lifetime - usage.total_optimizations),
             monthly: 0,
           },
         };
@@ -297,19 +300,38 @@ export class LocalFsStorage implements StorageInterface {
         usage,
         limits: tierLimits,
         remaining: {
-          lifetime: Math.max(0, tierLimits.lifetime - usage.total_optimizations),
+          lifetime: tierLimits.lifetime === Infinity ? null : Math.max(0, tierLimits.lifetime - usage.total_optimizations),
           monthly: Math.max(0, tierLimits.monthly - periodOptimizations),
         },
       };
     } catch (err) {
-      // Fail-open (Phase A): allow on storage error
-      log.error('storage', 'canUseOptimization failed (fail-open):', err instanceof Error ? err.message : String(err));
+      // Check if we should fail-closed (enforce mode) or fail-open (advisory/default)
+      let policyMode = 'advisory'; // default: fail-open
+      try {
+        const config = this._readJsonFile<OptimizerConfig>(this.configFile, DEFAULT_CONFIG);
+        policyMode = config.policy_mode || 'advisory';
+      } catch { /* use default */ }
+
+      if (policyMode === 'enforce') {
+        // Fail-CLOSED: deny on storage error in enforce mode
+        log.error('storage', 'canUseOptimization failed (fail-closed — enforce mode):', err instanceof Error ? err.message : String(err));
+        return {
+          allowed: false,
+          enforcement: 'error',
+          usage: { ...DEFAULT_USAGE },
+          limits: sanitizeLimits(PLAN_LIMITS.free),
+          remaining: { lifetime: 0, monthly: 0 },
+        };
+      }
+
+      // Fail-OPEN: allow on storage error in advisory mode (Phase A behavior)
+      log.error('storage', 'canUseOptimization failed (fail-open — advisory mode):', err instanceof Error ? err.message : String(err));
       return {
         allowed: true,
         enforcement: null,
         usage: { ...DEFAULT_USAGE },
         limits: sanitizeLimits(PLAN_LIMITS.free),
-        remaining: { lifetime: 10, monthly: 10 },
+        remaining: { lifetime: null, monthly: 50 },
       };
     }
   }
