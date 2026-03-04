@@ -1089,7 +1089,7 @@ Reason:         Balanced task — Sonnet offers the best
 - **Optional integrations:** any network calls (e.g., cost lookups for external providers) occur only when an integration tool is explicitly invoked.
 - **License validation:** Ed25519 asymmetric signatures. Public key only in the package. No PII in the key. `chmod 600` on POSIX (best-effort).
 - **Prompt logging:** disabled by default. Opt-in via `PROMPT_CONTROL_PLANE_LOG_PROMPTS=true`. Never enable in shared environments.
-- **Dependencies:** 3 runtime: `@modelcontextprotocol/sdk`, `zod`, and `express`. No transitive bloat.
+- **Dependencies:** 3 runtime: `@modelcontextprotocol/sdk`, `zod`, and `fast-glob`. No transitive bloat.
 
 ## Troubleshooting
 
