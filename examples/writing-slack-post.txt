@@ -1,0 +1,1 @@
+Write a short Slack post for my colleagues announcing that our team shipped the new dashboard feature. Keep it celebratory but professional, mention it was a 3-sprint effort, and tag the design team for their mockups.

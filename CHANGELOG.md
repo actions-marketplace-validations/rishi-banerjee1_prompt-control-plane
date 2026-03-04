@@ -1,14 +1,47 @@
 # Changelog
 
+## [5.2.0] - 2026-03-04
+
+### Added
+- **`pcp demo`** — guided first-run experience with example prompts
+- **`pcp badge`** — generates shields.io PQS badge markdown
+- **`pcp report`** — produces `prompt-quality.json` + `prompt-quality.md` artifacts
+- **`--format github`** — outputs `::warning`/`::error` annotations for PR inline display
+- **`--warn-only`** — advisory CI mode (exit 0 even on failures)
+- **`--output <dir>`** — custom output directory for report files
+- **GitHub Action step summary** — markdown quality table in `$GITHUB_STEP_SUMMARY`
+- **Structured error messages** — error codes (E_NO_INPUT, E_EMPTY_FILE, etc.) with hints
+- **Atomic writes** — temp-then-rename pattern in storage layer prevents corruption
+- **Advisory file locking** — `O_CREAT|O_EXCL` lockfile with stale detection and fail-open
+- **Confidence levels** — shown in check, score, and preflight human output
+- **PQS (Prompt Quality Score)** — new branding for quality scores throughout CLI output
+- **Architecture diagram** — mermaid diagram in README showing 8-phase pipeline
+- **Examples directory** — 6 real-world prompt examples covering various quality levels
+- **MIGRATION.md** — step-by-step migration guide from old package names
+- **PQS_SPEC.md** — formal specification for the scoring system
+- **Contributors Wall** — auto-generated contributor images on website
+- **8 golden snapshot tests** — CLI output format stability tests
+
+### Changed
+- **Modular tools architecture** — split 1957-line `tools.ts` into 6 focused files in `tools/`
+- **README restructured** — Quick Start first, Try It, GitHub Action, then Features
+- **Help system** — 4 primary commands + Advanced section; bare `pcp` shows help instead of erroring
+- **Website hero** — "Stop shipping bad prompts" + "Prompt Quality Engine" badge
+- **CONTRIBUTING.md** — added Recognition section (Contributors Wall + named credit)
+
+### Fixed
+- Removed inaccurate "→ 90/100" after-scores from README (12 occurrences)
+- Fixed "express" dependency claim → actual dep is `fast-glob`
+
 ## [5.1.0] - 2026-03-04
 
 ### Changed — Full Package Rebrand
 - **npm package renamed**: `prompt-control-plane` -> `pcp-engine`
-- **MCP registry name**: `io.github.rishiatlan/claude-prompt-optimizer` -> `io.github.rishiatlan/pcp-engine`
+- **MCP registry name**: `io.github.rishiatlan/claude-prompt-optimizer` -> `io.github.rishi-banerjee1/pcp-engine`
 - **Binary**: `prompt-control-plane` bin entry replaced with `pcp-engine` (existing `pcp` and `prompt-lint` bins unchanged)
 - **All public docs, HTML pages, install scripts, CI workflows, and README updated** to reference the new package name
 - **Version reset to 5.1.0** as a clean major version for the rebrand
-- **GitHub repository URL unchanged**: `rishiatlan/Prompt-Optimizer-MCP`
+- **GitHub repository URL changed**: `rishiatlan/Prompt-Optimizer-MCP` -> `rishi-banerjee1/prompt-control-plane`
 
 ### Migration
 - `npm install -g pcp-engine` (was `npm install -g prompt-control-plane`)
@@ -107,7 +140,7 @@
 ### Changed — Rebrand
 - **Product brand**: "Prompt Optimizer MCP" → **Prompt Control Plane** (display name only)
 - **npm package**: remains `prompt-control-plane` (unchanged)
-- **GitHub repo**: remains `rishiatlan/Prompt-Optimizer-MCP` (unchanged)
+- **GitHub repo**: `rishi-banerjee1/prompt-control-plane` (renamed from `rishiatlan/Prompt-Optimizer-MCP`)
 - **MCP config key**: remains `"prompt-optimizer"` (unchanged)
 - **Environment variables**: `PROMPT_OPTIMIZER_*` → `PROMPT_CONTROL_PLANE_*` (legacy fallback supported)
 - **Storage path**: `~/.prompt-optimizer/` → `~/.prompt-control-plane/`
@@ -231,7 +264,7 @@
 
 ### Added
 - **`prompt-lint` CLI binary**: Standalone CLI linter for AI prompts. Reuses the existing scoring/rules engine with no MCP dependency. Supports `--file`, `--threshold`, `--strict`, `--relaxed`, `--json`, and stdin input. Exit codes: 0 (pass), 1 (fail), 2 (invalid input).
-- **GitHub Action** (`action.yml`): Composite action to lint prompt files in CI. Drop `uses: rishiatlan/Prompt-Optimizer-MCP@v2` into any workflow.
+- **GitHub Action** (`action.yml`): Composite action to lint prompt files in CI. Drop `uses: rishi-banerjee1/prompt-control-plane@v2` into any workflow.
 - **CI test fixtures**: `test/fixtures/good-prompt.txt` and `bad-prompt.txt` for action self-testing.
 - **Action self-test workflow**: `.github/workflows/action-selftest.yml` with pass, fail, strictness, and packaging jobs.
 - Comprehensive CLI test suite with real exit-code verification.
@@ -262,7 +295,7 @@
 - **MCP Registry listing**: `server.json` added for MCP Registry publication + submitted to 6+ directories.
 
 ### Changed
-- **Repository renamed**: `Claude-Prompt-Optimizer` → `Prompt-Optimizer-MCP` (npm package name unchanged).
+- **Repository renamed**: `Claude-Prompt-Optimizer` → `Prompt-Optimizer-MCP` → `prompt-control-plane` (npm package name unchanged).
 - **MCP Registry identifier**: Fixed from `claude-prompt-optimizer` to `prompt-optimizer-mcp` in `server.json`.
 
 ## [2.2.1] - 2026-02-27

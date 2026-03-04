@@ -1,0 +1,1 @@
+Research the pros and cons of using Redis vs Memcached for our session caching layer. We need to support 50K concurrent users, sessions expire after 30 minutes, and we are running on AWS.

@@ -1,0 +1,1 @@
+Refactor the authentication middleware in src/auth/middleware.ts to use JWT tokens instead of session cookies. Replace validateSession() with validateJWT(). Do not touch the user model or database layer. Must pass all existing tests in auth.test.ts.

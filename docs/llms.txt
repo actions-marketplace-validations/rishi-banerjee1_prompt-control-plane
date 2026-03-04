@@ -27,5 +27,5 @@ Prompt Control Plane is a governance engine that enforces structure on every pro
 
 ## Install
 npm: pcp-engine
-GitHub: https://github.com/rishiatlan/Prompt-Optimizer-MCP
+GitHub: https://github.com/rishi-banerjee1/prompt-control-plane
 GitHub Action: https://github.com/marketplace/actions/prompt-control-plane

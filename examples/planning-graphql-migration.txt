@@ -1,0 +1,1 @@
+Create a roadmap for migrating our REST API to GraphQL over the next 2 quarters. We have 15 endpoints, a React frontend, and 3 mobile apps consuming the API. The team has no GraphQL experience.

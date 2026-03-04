@@ -125,7 +125,7 @@ export type {
 export { isCodeTask, isProseTask, PLAN_LIMITS } from './types.js';
 
 // ─── Purchase URLs (canonical source) ────────────────────────────────────────
-export { PRO_PURCHASE_URL, POWER_PURCHASE_URL } from './tools.js';
+export { PRO_PURCHASE_URL, POWER_PURCHASE_URL } from './tools/index.js';
 
 // ─── Convenience: optimize() ─────────────────────────────────────────────────
 

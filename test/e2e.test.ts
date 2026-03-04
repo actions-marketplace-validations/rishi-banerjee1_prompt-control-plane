@@ -19,7 +19,7 @@ import { validateLicenseKey, canonicalizePayload } from '../src/license.js';
 import type { LicensePayload } from '../src/license.js';
 import { PLAN_LIMITS } from '../src/types.js';
 import type { ExecutionContext, RateLimiter, LicenseData } from '../src/types.js';
-import { PRO_PURCHASE_URL, POWER_PURCHASE_URL } from '../src/tools.js';
+import { PRO_PURCHASE_URL, POWER_PURCHASE_URL } from '../src/tools/index.js';
 import { log } from '../src/logger.js';
 
 // ─── Test Ed25519 Keypair ───────────────────────────────────────────────────

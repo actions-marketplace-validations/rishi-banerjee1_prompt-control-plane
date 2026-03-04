@@ -48,6 +48,7 @@ const CONTEXT_SIZE_WARNING_BYTES = 500 * 1024; // 500KB
 const SUBCOMMANDS = new Set([
   'optimize', 'classify', 'route', 'compress', 'cost',
   'check', 'score', 'preflight', 'config', 'doctor', 'hook',
+  'demo', 'report', 'badge',
 ]);
 
 // ─── Types ──────────────────────────────────────────────────────────────────
@@ -56,6 +57,7 @@ interface LintResult {
   source: string;
   score: number;
   pass: boolean;
+  confidence?: 'low' | 'medium' | 'high';
   issues: Array<{ rule: string; severity: string; message: string }>;
 }
 
@@ -77,15 +79,57 @@ interface SubcommandArgs {
   threshold: number | null;
   fileArgs: string[];  // check supports multiple --file
   validateCustomRules: boolean;
+  format?: 'github' | 'human';
+  warnOnly?: boolean;
+  outputDir?: string;
 }
+
+// ─── Error Codes ───────────────────────────────────────────────────────────
+
+const ERROR_CODES: Record<string, { code: string; suggestion: string }> = {
+  'No prompt provided': {
+    code: 'E_NO_INPUT',
+    suggestion: "Try: pcp demo | pcp --help | pcp check 'your prompt'",
+  },
+  'File is empty': {
+    code: 'E_EMPTY_FILE',
+    suggestion: 'Check the file path and ensure it contains text.',
+  },
+  'Unknown flag': {
+    code: 'E_UNKNOWN_FLAG',
+    suggestion: 'Run pcp --help to see available options.',
+  },
+  'Policy blocked': {
+    code: 'E_POLICY_BLOCKED',
+    suggestion: 'Check your policy configuration with: pcp config',
+  },
+};
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
 
 function fatal(message: string, jsonMode: boolean, exitCode: number = 2): never {
+  // Look up structured error code by matching message prefix
+  let errorCode: string | undefined;
+  let suggestion: string | undefined;
+  for (const [prefix, info] of Object.entries(ERROR_CODES)) {
+    if (message.startsWith(prefix)) {
+      errorCode = info.code;
+      suggestion = info.suggestion;
+      break;
+    }
+  }
+
   if (jsonMode) {
-    process.stdout.write(JSON.stringify({ error: { code: exitCode, message } }, null, 2) + '\n');
+    const errorObj: Record<string, unknown> = { code: exitCode, message };
+    if (errorCode) errorObj.error_code = errorCode;
+    if (suggestion) errorObj.suggestion = suggestion;
+    process.stdout.write(JSON.stringify({ error: errorObj }, null, 2) + '\n');
   } else {
-    process.stderr.write(`Error: ${message}\n`);
+    if (errorCode) {
+      process.stderr.write(`Error [${errorCode}]: ${message}\n  Hint: ${suggestion}\n`);
+    } else {
+      process.stderr.write(`Error: ${message}\n`);
+    }
   }
   process.exit(exitCode);
 }
@@ -257,6 +301,19 @@ function parseSubcommandArgs(argv: string[]): SubcommandArgs {
         fatal(`--threshold must be an integer 0-100, got: ${argv[i]}`, result.json);
       }
       result.threshold = val;
+    } else if (arg === '--format') {
+      i++;
+      if (i >= argv.length) fatal('--format requires a value', result.json);
+      const fmt = argv[i];
+      if (fmt === 'json') result.json = true;
+      else if (fmt === 'github') result.format = 'github';
+      else if (fmt !== 'human') fatal(`--format must be human, json, or github, got: ${fmt}`, result.json);
+    } else if (arg === '--warn-only') {
+      result.warnOnly = true;
+    } else if (arg === '--output') {
+      i++;
+      if (i >= argv.length) fatal('--output requires a value', result.json);
+      result.outputDir = argv[i];
     } else if (arg === '--validate-custom-rules') {
       result.validateCustomRules = true;
     } else if (arg.startsWith('-')) {
@@ -361,7 +418,7 @@ async function handleOptimize(args: SubcommandArgs): Promise<void> {
     }), args);
   } else if (!args.quiet) {
     process.stdout.write(`${BIN_NAME} optimize v${VERSION}\n\n`);
-    process.stdout.write(`Quality Score: ${result.quality.total}/100\n`);
+    process.stdout.write(`PQS: ${result.quality.total}/100\n`);
     process.stdout.write(`Task Type:     ${result.intent.task_type}\n`);
     process.stdout.write(`Risk Level:    ${result.intent.risk_level}\n`);
     process.stdout.write(`Target:        ${args.target}\n`);
@@ -510,7 +567,7 @@ async function handleScore(args: SubcommandArgs): Promise<void> {
       dimensions: score.dimensions,
     }), args);
   } else if (!args.quiet) {
-    process.stdout.write(`Total: ${score.total}/100\n`);
+    process.stdout.write(`PQS: ${score.total}/100\n`);
     if (score.confidence) {
       const note = score.confidence_note ? ` — ${score.confidence_note}` : '';
       process.stdout.write(`Confidence: ${score.confidence}${note}\n`);
@@ -552,7 +609,7 @@ async function handlePreflight(args: SubcommandArgs): Promise<void> {
       task_type: taskType,
       complexity: complexity.complexity,
       confidence: complexity.confidence,
-      quality_score: score.total,
+      pqs: score.total,
       risk_score: riskScore.score,
       risk_level: riskScore.level,
       risk_dimensions: riskScore.dimensions,
@@ -565,7 +622,11 @@ async function handlePreflight(args: SubcommandArgs): Promise<void> {
     process.stdout.write(`${BIN_NAME} preflight v${VERSION}\n\n`);
     process.stdout.write(`Task:       ${taskType}\n`);
     process.stdout.write(`Complexity: ${complexity.complexity} (${complexity.confidence}% confidence)\n`);
-    process.stdout.write(`Quality:    ${score.total}/100\n`);
+    process.stdout.write(`PQS:        ${score.total}/100\n`);
+    if (score.confidence) {
+      const note = score.confidence_note ? ` — ${score.confidence_note}` : '';
+      process.stdout.write(`Confidence: ${score.confidence}${note}\n`);
+    }
     process.stdout.write(`Risk:       ${riskScore.score}/100 (${riskScore.level})\n`);
     process.stdout.write(`Model:      ${recommendation.primary.model} (${recommendation.primary.provider})\n`);
     process.stdout.write(`Savings:    ${recommendation.savings_summary}\n`);
@@ -747,7 +808,7 @@ async function lintPrompt(prompt: string, source: string, threshold: number): Pr
   }));
   const issues = [...builtInIssues, ...customIssues].slice(0, 5);
 
-  return { source, score: score.total, pass, issues };
+  return { source, score: score.total, pass, confidence: score.confidence, issues };
 }
 
 function collectFilesFromDir(dir: string): string[] {
@@ -840,7 +901,17 @@ async function handleCheck(args: SubcommandArgs): Promise<void> {
   const passed = results.filter(r => r.pass).length;
   const failed = results.length - passed;
 
-  if (args.json) {
+  if (args.format === 'github') {
+    // GitHub Actions annotation format
+    for (const r of results) {
+      const confidence = 'n/a'; // confidence from lint is not available at this level
+      if (r.pass) {
+        process.stdout.write(`::warning file=${r.source}::PQS ${r.score}/100 — Confidence: ${confidence}\n`);
+      } else {
+        process.stdout.write(`::error file=${r.source}::PQS ${r.score}/100 below threshold ${threshold}\n`);
+      }
+    }
+  } else if (args.json) {
     process.stdout.write(JSON.stringify({
       version: VERSION,
       threshold,
@@ -852,7 +923,10 @@ async function handleCheck(args: SubcommandArgs): Promise<void> {
     for (const r of results) {
       const icon = r.pass ? '\u2713' : '\u2717';
       const status = r.pass ? 'PASS' : 'FAIL';
-      process.stdout.write(`${icon} ${r.source}    score: ${r.score}/100  ${status} (threshold: ${threshold})\n`);
+      process.stdout.write(`${icon} ${r.source}    PQS: ${r.score}/100  ${status} (threshold: ${threshold})\n`);
+      if (r.confidence) {
+        process.stdout.write(`  Confidence: ${r.confidence}\n`);
+      }
       if (!r.pass && r.issues.length > 0) {
         for (const issue of r.issues) {
           process.stdout.write(`  \u2192 ${issue.rule}: ${issue.message}\n`);
@@ -862,6 +936,7 @@ async function handleCheck(args: SubcommandArgs): Promise<void> {
     process.stdout.write(`\n${passed} passed, ${failed} failed\n`);
   }
 
+  if (args.warnOnly) process.exit(0);
   process.exit(failed > 0 ? 1 : 0);
 }
 
@@ -1151,9 +1226,212 @@ async function handleValidateCustomRules(): Promise<void> {
   process.exit(errors.length === 0 ? 0 : 1);
 }
 
+// ─── Demo Mode ──────────────────────────────────────────────────────────────
+
+async function handleDemo(): Promise<void> {
+  const demos = [
+    { label: 'Vague', prompt: 'make the code better' },
+    {
+      label: 'Well-specified',
+      prompt: 'Refactor the authentication middleware in src/auth/middleware.ts to use JWT tokens instead of session cookies. Do not modify the user model or database layer. Must pass all existing tests.',
+    },
+  ];
+
+  process.stdout.write('\n\u2500\u2500 PCP Demo \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n\n');
+
+  for (const { label, prompt } of demos) {
+    const intentSpec = analyzePrompt(prompt);
+    const score = scorePrompt(intentSpec);
+    const truncated = prompt.length > 60 ? prompt.slice(0, 57) + '...' : prompt;
+
+    // Find the top dimension issue (lowest-scoring dimension)
+    let topIssue = '';
+    if (score.dimensions.length > 0) {
+      const worst = score.dimensions.reduce((a, b) =>
+        (a.score / a.max) < (b.score / b.max) ? a : b,
+      );
+      const firstNote = worst.notes?.length ? worst.notes[0] : 'needs improvement';
+      topIssue = `${worst.name}: ${firstNote}`;
+    }
+
+    process.stdout.write(`  ${label}: "${truncated}"\n`);
+    process.stdout.write(`    PQS: ${score.total}/100`);
+    if (score.confidence) {
+      process.stdout.write(`  Confidence: ${score.confidence}`);
+    }
+    process.stdout.write('\n');
+    if (topIssue) {
+      process.stdout.write(`    Top issue: ${topIssue}\n`);
+    }
+    process.stdout.write('\n');
+  }
+
+  process.stdout.write('\u2500\u2500 Try it yourself \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n');
+  process.stdout.write('  pcp score "your prompt here"\n');
+  process.stdout.write('  pcp check "your prompt here"\n');
+  process.stdout.write('  pcp preflight "your prompt here" --json\n');
+
+  process.exit(0);
+}
+
+// ─── Report Generation ──────────────────────────────────────────────────────
+
+async function handleReport(args: SubcommandArgs): Promise<void> {
+  const prompt = await resolveInput(args);
+  const context = resolveContext(args);
+
+  // Full analysis
+  const taskType = detectTaskType(prompt);
+  const complexity = classifyComplexity(prompt);
+  const intentSpec = analyzePrompt(prompt, context);
+  const score = scorePrompt(intentSpec, context);
+  const ruleResults = runRules(prompt, context, taskType);
+  const riskScore = computeRiskScore(ruleResults);
+
+  const recommendation = routeModel({
+    taskType,
+    complexity: complexity.complexity,
+    budgetSensitivity: 'medium',
+    latencySensitivity: 'medium',
+    contextTokens: estimateTokens(prompt + (context || '')),
+    riskScore: riskScore.score,
+  }, prompt, complexity.confidence, args.target);
+
+  const costEstimate = estimateCost(prompt, taskType, riskScore.level, args.target);
+  const sortedRules = sortIssues(ruleResults).filter(r => r.triggered);
+
+  // Determine prompt source
+  const promptSource = args.fileArg ? `file:${args.fileArg}` : 'inline';
+
+  // Build issues list
+  const issues = sortedRules.slice(0, 10).map(r => ({
+    rule: r.rule_name,
+    severity: r.severity,
+    message: r.message,
+  }));
+
+  // Build JSON report
+  const jsonReport = {
+    schema_version: '1.0.0',
+    generated_at: new Date().toISOString(),
+    pcp_version: VERSION,
+    prompt_source: promptSource,
+    pqs: {
+      total: score.total,
+      max: score.max,
+      confidence: score.confidence || 'n/a',
+      confidence_note: score.confidence_note || '',
+    },
+    dimensions: score.dimensions.map(d => ({
+      name: d.name,
+      score: d.score,
+      max: d.max,
+      notes: d.notes || [],
+    })),
+    task_type: taskType,
+    risk: {
+      score: riskScore.score,
+      level: riskScore.level,
+    },
+    issues,
+    model_recommendation: {
+      model: recommendation.primary.model,
+      reason: recommendation.decision_path || '',
+    },
+  };
+
+  // Build markdown report
+  const dimRows = score.dimensions.map(d => {
+    const firstNote = d.notes?.length ? d.notes[0] : '';
+    return `| ${d.name} | ${d.score}/${d.max} | ${firstNote} |`;
+  }).join('\n');
+
+  const issueLines = issues.length > 0
+    ? issues.map(iss => {
+        const icon = iss.severity === 'blocking' ? '\u26d4' : '\u26a0\ufe0f';
+        return `- ${icon} ${iss.message}`;
+      }).join('\n')
+    : '- No issues detected';
+
+  const mdReport = `# Prompt Quality Report
+
+**PQS: ${score.total}/100** | Confidence: ${score.confidence || 'n/a'} | Task: ${taskType} | Risk: ${riskScore.level}
+
+## Dimensions
+| Dimension | Score | Notes |
+|-----------|-------|-------|
+${dimRows}
+
+## Issues Found
+${issueLines}
+
+## Recommendation
+Model: ${recommendation.primary.model} | Estimated cost: $${(costEstimate.costs.find(c => c.model === costEstimate.recommended_model)?.total_cost_usd ?? costEstimate.costs[0]?.total_cost_usd ?? 0).toFixed(4)}
+
+---
+*Generated by [PCP Engine](https://github.com/rishi-banerjee1/prompt-control-plane) v${VERSION}*
+`;
+
+  // Determine output directory
+  const outDir = args.outputDir ? resolve(args.outputDir) : process.cwd();
+  if (!existsSync(outDir)) {
+    mkdirSync(outDir, { recursive: true });
+  }
+
+  const jsonPath = join(outDir, 'prompt-quality.json');
+  const mdPath = join(outDir, 'prompt-quality.md');
+
+  writeFileSync(jsonPath, JSON.stringify(jsonReport, null, 2) + '\n', 'utf-8');
+  writeFileSync(mdPath, mdReport, 'utf-8');
+
+  if (args.json) {
+    writeJson(envelope('report', {
+      json_path: jsonPath,
+      md_path: mdPath,
+      ...jsonReport,
+    }), args);
+  } else if (!args.quiet) {
+    process.stdout.write(`${BIN_NAME} report v${VERSION}\n\n`);
+    process.stdout.write(`PQS:    ${score.total}/100 (${score.confidence || 'n/a'})\n`);
+    process.stdout.write(`Task:   ${taskType}\n`);
+    process.stdout.write(`Risk:   ${riskScore.score}/100 (${riskScore.level})\n`);
+    process.stdout.write(`Model:  ${recommendation.primary.model}\n\n`);
+    process.stdout.write(`Written:\n  ${jsonPath}\n  ${mdPath}\n`);
+  }
+
+  process.exit(0);
+}
+
+// ─── Badge Generation ────────────────────────────────────────────────────────
+
+async function handleBadge(args: SubcommandArgs): Promise<void> {
+  const prompt = await resolveInput(args);
+  const context = resolveContext(args);
+  const intentSpec = analyzePrompt(prompt, context);
+  const score = scorePrompt(intentSpec, context);
+
+  const color = score.total >= 80 ? 'brightgreen' : score.total >= 60 ? 'green' : score.total >= 40 ? 'yellow' : 'red';
+  const badge = `![PQS](https://img.shields.io/badge/PQS-${score.total}-${color})`;
+
+  if (args.json) {
+    writeJson(envelope('badge', {
+      total: score.total,
+      confidence: score.confidence,
+      badge_markdown: badge,
+      badge_url: `https://img.shields.io/badge/PQS-${score.total}-${color}`,
+    }), args);
+  } else {
+    process.stdout.write(`${badge}\n`);
+    if (!args.quiet) {
+      process.stdout.write(`\nPaste this in your README to show your prompt quality score.\n`);
+    }
+  }
+  process.exit(0);
+}
+
 // ─── Help Text ──────────────────────────────────────────────────────────────
 
-const HELP = `${BIN_NAME} v${VERSION} — Prompt Control Plane CLI
+const HELP = `pcp-engine v${VERSION} — Prompt Quality Engine
 
 Usage:
   ${BIN_NAME} <command> [options] "prompt"
@@ -1161,17 +1439,23 @@ Usage:
   echo "prompt" | ${BIN_NAME} <command>
 
 Commands:
-  preflight   Full analysis: classify + risk + route + score (recommended)
+  check       Quick pass/fail quality gate (default)
+  score       Detailed 5-dimension PQS breakdown
   optimize    Compile, score, and estimate cost
+  preflight   Full analysis: classify + risk + route + score
+
+  demo        Guided first-run experience
+
+Advanced:
   classify    Detect task type and reasoning complexity
-  route       Get model recommendation with decision path
-  compress    Compress context with heuristic pipeline
+  route       Get model recommendation
+  compress    Compress context
   cost        Multi-provider cost estimation
-  score       Detailed 5-dimension quality breakdown
-  check       Quick pass/fail quality gate (default if no command)
-  config      Show current governance configuration (read-only)
+  config      Show governance configuration
   doctor      Validate environment health
-  hook        Manage auto-check hooks (install/uninstall/status)
+  hook        Manage auto-check hooks
+  report      Generate quality report (.md + .json)
+  badge       Generate PQS badge markdown
 
 Options:
   --json                 Structured JSON output with request_id envelope
@@ -1185,6 +1469,9 @@ Options:
   --threshold <n>        Minimum quality score 0-100 (for check)
   --strict               Set threshold to 75 (for check)
   --relaxed              Set threshold to 40 (for check)
+  --format <fmt>         Output format: human (default), json, github
+  --warn-only            Exit 0 even on threshold failures (advisory CI mode)
+  --output <dir>         Output directory for report files (for report)
   --validate-custom-rules  Validate custom-rules.json and exit
   --help, -h             Show this help
   --version, -v          Show version
@@ -1209,6 +1496,9 @@ async function handleSubcommand(subcmd: string, subArgs: string[]): Promise<void
   // Hook has its own arg parsing (sub-actions: install/uninstall/status)
   if (subcmd === 'hook') return handleHookCommand(subArgs);
 
+  // Demo has no args to parse
+  if (subcmd === 'demo') return handleDemo();
+
   const args = parseSubcommandArgs(subArgs);
 
   if (args.help) {
@@ -1227,6 +1517,8 @@ async function handleSubcommand(subcmd: string, subArgs: string[]): Promise<void
     case 'preflight': return handlePreflight(args);
     case 'config': return handleConfig(args);
     case 'doctor': return handleDoctor(args);
+    case 'report': return handleReport(args);
+    case 'badge': return handleBadge(args);
     default: fatal(`Unknown command: ${subcmd}`, args.json);
   }
 }
@@ -1256,6 +1548,13 @@ async function main(): Promise<void> {
   // Detect subcommand (firstArg0 already set above)
   if (hasSubcommand && firstArg0) {
     return handleSubcommand(firstArg0, rawArgs.slice(1));
+  }
+
+  // Bare `pcp` with no args and no stdin → show help + suggest demo
+  if (rawArgs.length === 0 && process.stdin.isTTY) {
+    process.stdout.write(HELP);
+    process.stdout.write('\nGet started: pcp demo\n');
+    process.exit(0);
   }
 
   // Legacy path: no subcommand → treat as "check"

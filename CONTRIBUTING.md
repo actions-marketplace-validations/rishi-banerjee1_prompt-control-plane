@@ -3,8 +3,8 @@
 ## Quick Start
 
 ```bash
-git clone https://github.com/rishiatlan/Prompt-Optimizer-MCP.git
-cd Prompt-Optimizer-MCP
+git clone https://github.com/rishi-banerjee1/prompt-control-plane.git
+cd prompt-control-plane
 npm ci
 npm run build
 npm test
@@ -90,6 +90,15 @@ node --test dist/test/scorer.test.js  # Run specific test file
 2. **Zero network calls** -- The core pipeline never makes HTTP requests.
 3. **Privacy-first** -- Never log raw prompt content unless explicitly opted in via `PROMPT_CONTROL_PLANE_LOG_PROMPTS=true`.
 4. **Fail-safe** -- Storage/filesystem errors must not crash the server.
+
+## Recognition
+
+All contributors are recognized:
+- **Contributors Wall** on the [PCP website](https://promptcontrolplane.com) — auto-updated from GitHub
+- **Named credit** in the changelog for every merged PR
+- **Co-author tag** in commit messages
+
+We believe in giving credit where it's due. Your contribution matters.
 
 ## License
 

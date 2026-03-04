@@ -2,7 +2,7 @@
 
 The control plane for AI prompts. Score, enforce policy, lock config, and audit every prompt decision. Free tier included.
 
-[![CI](https://github.com/rishiatlan/Prompt-Optimizer-MCP/actions/workflows/ci.yml/badge.svg)](https://github.com/rishiatlan/Prompt-Optimizer-MCP/actions/workflows/ci.yml)
+[![CI](https://github.com/rishi-banerjee1/prompt-control-plane/actions/workflows/ci.yml/badge.svg)](https://github.com/rishi-banerjee1/prompt-control-plane/actions/workflows/ci.yml)
 [![npm version](https://img.shields.io/npm/v/pcp-engine)](https://www.npmjs.com/package/pcp-engine)
 ![Node.js](https://img.shields.io/badge/Node.js-18%2B-339933?logo=node.js&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-Strict-3178C6?logo=typescript&logoColor=white)
@@ -12,6 +12,104 @@ The control plane for AI prompts. Score, enforce policy, lock config, and audit 
 
 ---
 
+## Quick Start
+
+```bash
+# Install globally (requires Node.js 18+)
+npm install -g pcp-engine
+
+# Score any prompt instantly
+pcp check "your prompt here"
+
+# Run the guided demo
+pcp demo
+```
+
+**Primary commands:**
+
+| Command | What it does |
+|---------|-------------|
+| `pcp check "prompt"` | Quick quality score + top issues |
+| `pcp score "prompt"` | Full 5-dimension quality breakdown |
+| `pcp preflight "prompt"` | Classify, assess risk, route model, score |
+| `pcp cost "prompt"` | Cost estimate across 10 models |
+
+Free tier gives you 50 optimizations/month to try it out.
+
+## Try It
+
+```bash
+# Score a vague prompt
+pcp score "make the code better"
+
+# Score a well-specified prompt
+pcp score "Refactor auth middleware in src/auth/middleware.ts to use JWT. Do not modify the user model."
+
+# Run the guided demo
+pcp demo
+
+# Check all prompts in a directory
+pcp check --file "prompts/**/*.txt"
+```
+
+## GitHub Action
+
+```yaml
+# .github/workflows/prompt-quality.yml
+- uses: rishi-banerjee1/prompt-control-plane@v5
+  with:
+    files: "prompts/**/*.txt"
+```
+
+<details>
+<summary><strong>Full GitHub Action configuration</strong></summary>
+
+```yaml
+# .github/workflows/pcp.yml
+name: Prompt Quality Gate
+on: [push, pull_request]
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: rishi-banerjee1/prompt-control-plane@v5
+        with:
+          files: 'prompts/**/*.txt'
+          threshold: 70
+```
+
+**Run pre-flight in CI:**
+
+```yaml
+      - uses: rishi-banerjee1/prompt-control-plane@v5
+        with:
+          subcommand: preflight
+          files: 'prompts/**/*.txt'
+```
+
+> This action expects your repo to be checked out (`actions/checkout`). Without it, file globs will match nothing.
+
+**SHA-pinned example (for enterprise users):**
+
+```yaml
+      - uses: rishi-banerjee1/prompt-control-plane@abc123def  # SHA-pinned
+        with:
+          version: '5.0.0'  # Required when pinning by SHA
+          files: 'prompts/**/*.txt'
+          threshold: 70
+```
+
+**Notes:**
+- The action installs `pcp` via `npm install --prefix` into `$RUNNER_TEMP`, then runs the binary. Falls back to `prompt-lint` for v4 installs.
+- Action tag `@v5` maps to npm `@5` (latest 5.x). Use `@v5.0.0` for exact pinning.
+- `subcommand` input accepts `check` (default), `score`, or `preflight`.
+- Exit code 2 means no files matched or invalid input — not "all passed." Zero matched files is always an error.
+- On Windows runners, prefer single quotes or escape glob wildcards in PowerShell.
+- Rule IDs (e.g., `vague_objective`, `missing_constraints`) are stable — treat as a public contract.
+
+</details>
+
 ## Why This Exists
 
 - **Prompts run without any quality check.** "Make the code better" gives Claude no constraints, no success criteria, and no target — leading to unpredictable results and wasted compute.
@@ -20,6 +118,36 @@ The control plane for AI prompts. Score, enforce policy, lock config, and audit 
 - **Simple tasks run on expensive models.** Without routing intelligence, every prompt goes to the same model. The decision engine classifies complexity and routes simple tasks to cheaper models automatically — reducing LLM spend without changing your prompts.
 - **Context bloat is the hidden cost multiplier.** Sending 500 lines of code when 50 are relevant burns tokens on irrelevant context. The smart compressor runs 5 heuristics (license strip, comment collapse, duplicate collapse, stub collapse, aggressive truncation) with zone protection for code blocks and tables — standard mode is safe, aggressive mode is opt-in.
 - **Human-in-the-loop approval.** The MCP asks blocking questions when your prompt is ambiguous, requires you to answer them before proceeding, and only finalizes the compiled prompt after you explicitly approve. No prompt runs without your sign-off — the gate is enforced in code, not convention.
+
+## How It Works
+
+```
+User prompt → Host Claude → calls optimize_prompt → Deterministic analysis
+                                                       ↓
+                                                  PreviewPack returned
+                                                       ↓
+                                               Claude presents to user
+                                                       ↓
+                                               User approves/refines
+                                                       ↓
+                                               Claude executes with
+                                               compiled prompt as guide
+```
+
+### The Approval Loop
+
+Every prompt goes through a mandatory review cycle before it's finalized:
+
+1. **Analyze** — You type a prompt. The MCP scores it, detects ambiguities, and compiles a structured version.
+2. **Ask** — If the prompt is vague or missing context, the MCP surfaces up to 3 blocking questions. You answer them via `refine_prompt`.
+3. **Review** — You see the compiled prompt, quality score, cost estimate, and what changed. No surprises.
+4. **Approve** — You say "approve" and the compiled prompt is locked in. `approve_prompt` **hard-fails** if unanswered blocking questions remain — the gate is enforced in code, not convention.
+
+The MCP is a **co-pilot for the co-pilot**. It does the structural work (decomposition, gap detection, template compilation, token counting) so Claude can focus on intelligence.
+
+**Zero LLM calls inside the MCP.** All analysis is deterministic — regex, heuristics, and rule engines. The host Claude provides all intelligence. This means the MCP itself is instant, free, and predictable.
+
+**Works for all prompt types** — not just code. The pipeline auto-detects 13 task types (code changes, writing, research, planning, analysis, communication, data, and more) and adapts scoring, constraints, templates, and model recommendations accordingly. A Slack post gets writing-optimized constraints; a refactoring task gets code safety guardrails. **Intent-first detection** ensures that prompts *about* technical topics but requesting non-code tasks (e.g., "Write me a LinkedIn post about my MCP server") are classified correctly — the opening verb phrase takes priority over technical keywords in the body.
 
 ## Benchmarks
 
@@ -205,57 +333,6 @@ Changes Made:
 </tr>
 </table>
 
-## Install
-
-**Requires Node.js 18+ with ESM support.** Pick one method — 30 seconds or less.
-
-| Method | Command |
-|--------|---------|
-| **npm global** (recommended) | `npm install -g pcp-engine` |
-| **curl** | `curl -fsSL https://getpcp.site/install.sh \| bash` |
-
-```bash
-npm install -g pcp-engine
-pcp preflight "Your prompt here" --json
-```
-
-Free tier gives you 50 optimizations/month to try it out.
-
-<details>
-<summary><strong>Add MCP integration (optional — for AI-assisted workflows)</strong></summary>
-
-Add to your project's `.mcp.json` (or `~/.claude/settings.json` for global access) to use inside Claude Code, Cursor, or Windsurf:
-
-```json
-{
-  "mcpServers": {
-    "prompt-optimizer": {
-      "command": "npx",
-      "args": ["-y", "pcp-engine"]
-    }
-  }
-}
-```
-
-Restart your MCP client. All 20 tools appear automatically.
-
-**Claude Desktop config path:**
-- **macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
-- **Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
-
-</details>
-
-<details>
-<summary><strong>From source (for contributors)</strong></summary>
-
-```bash
-git clone https://github.com/rishiatlan/Prompt-Optimizer-MCP.git
-cd Prompt-Optimizer-MCP
-npm install && npm run build
-```
-
-</details>
-
 ## CLI (`pcp`)
 
 The `pcp` command exposes the full scoring, routing, and policy engine from the terminal.
@@ -327,51 +404,56 @@ pcp hook uninstall
 
 When a prompt scores below the threshold, inline feedback is injected into the conversation context. Prompts above the threshold pass through silently. Hooks respect the same governance config that the CLI and MCP read.
 
-### GitHub Action
+## Install
 
-```yaml
-# .github/workflows/pcp.yml
-name: Prompt Quality Gate
-on: [push, pull_request]
-jobs:
-  lint:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: rishiatlan/Prompt-Optimizer-MCP@v5
-        with:
-          files: 'prompts/**/*.txt'
-          threshold: 70
+**Requires Node.js 18+ with ESM support.** Pick one method — 30 seconds or less.
+
+| Method | Command |
+|--------|---------|
+| **npm global** (recommended) | `npm install -g pcp-engine` |
+| **curl** | `curl -fsSL https://getpcp.site/install.sh \| bash` |
+
+```bash
+npm install -g pcp-engine
+pcp preflight "Your prompt here" --json
 ```
 
-**Run pre-flight in CI:**
+Free tier gives you 50 optimizations/month to try it out.
 
-```yaml
-      - uses: rishiatlan/Prompt-Optimizer-MCP@v5
-        with:
-          subcommand: preflight
-          files: 'prompts/**/*.txt'
+<details>
+<summary><strong>Add MCP integration (optional — for AI-assisted workflows)</strong></summary>
+
+Add to your project's `.mcp.json` (or `~/.claude/settings.json` for global access) to use inside Claude Code, Cursor, or Windsurf:
+
+```json
+{
+  "mcpServers": {
+    "prompt-optimizer": {
+      "command": "npx",
+      "args": ["-y", "pcp-engine"]
+    }
+  }
+}
 ```
 
-> This action expects your repo to be checked out (`actions/checkout`). Without it, file globs will match nothing.
+Restart your MCP client. All 20 tools appear automatically.
 
-**SHA-pinned example (for enterprise users):**
+**Claude Desktop config path:**
+- **macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
+- **Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
 
-```yaml
-      - uses: rishiatlan/Prompt-Optimizer-MCP@abc123def  # SHA-pinned
-        with:
-          version: '5.0.0'  # Required when pinning by SHA
-          files: 'prompts/**/*.txt'
-          threshold: 70
+</details>
+
+<details>
+<summary><strong>From source (for contributors)</strong></summary>
+
+```bash
+git clone https://github.com/rishi-banerjee1/prompt-control-plane.git
+cd prompt-control-plane
+npm install && npm run build
 ```
 
-**Notes:**
-- The action installs `pcp` via `npm install --prefix` into `$RUNNER_TEMP`, then runs the binary. Falls back to `prompt-lint` for v4 installs.
-- Action tag `@v5` maps to npm `@5` (latest 5.x). Use `@v5.0.0` for exact pinning.
-- `subcommand` input accepts `check` (default), `score`, or `preflight`.
-- Exit code 2 means no files matched or invalid input — not "all passed." Zero matched files is always an error.
-- On Windows runners, prefer single quotes or escape glob wildcards in PowerShell.
-- Rule IDs (e.g., `vague_objective`, `missing_constraints`) are stable — treat as a public contract.
+</details>
 
 ## Programmatic API
 
@@ -524,36 +606,6 @@ Purge only affects session data. Configuration, audit log, license, usage data, 
 ### Reproducible Session Exports
 
 Every session export includes `rule_set_hash`, `rule_set_version`, `risk_score`, and `policy_hash` — enabling full reproducibility. Given the same prompt, configuration, and rules, the output is identical. Any change to rules or policy produces a different hash.
-
-## How It Works
-
-```
-User prompt → Host Claude → calls optimize_prompt → Deterministic analysis
-                                                       ↓
-                                                  PreviewPack returned
-                                                       ↓
-                                               Claude presents to user
-                                                       ↓
-                                               User approves/refines
-                                                       ↓
-                                               Claude executes with
-                                               compiled prompt as guide
-```
-
-### The Approval Loop
-
-Every prompt goes through a mandatory review cycle before it's finalized:
-
-1. **Analyze** — You type a prompt. The MCP scores it, detects ambiguities, and compiles a structured version.
-2. **Ask** — If the prompt is vague or missing context, the MCP surfaces up to 3 blocking questions. You answer them via `refine_prompt`.
-3. **Review** — You see the compiled prompt, quality score, cost estimate, and what changed. No surprises.
-4. **Approve** — You say "approve" and the compiled prompt is locked in. `approve_prompt` **hard-fails** if unanswered blocking questions remain — the gate is enforced in code, not convention.
-
-The MCP is a **co-pilot for the co-pilot**. It does the structural work (decomposition, gap detection, template compilation, token counting) so Claude can focus on intelligence.
-
-**Zero LLM calls inside the MCP.** All analysis is deterministic — regex, heuristics, and rule engines. The host Claude provides all intelligence. This means the MCP itself is instant, free, and predictable.
-
-**Works for all prompt types** — not just code. The pipeline auto-detects 13 task types (code changes, writing, research, planning, analysis, communication, data, and more) and adapts scoring, constraints, templates, and model recommendations accordingly. A Slack post gets writing-optimized constraints; a refactoring task gets code safety guardrails. **Intent-first detection** ensures that prompts *about* technical topics but requesting non-code tasks (e.g., "Write me a LinkedIn post about my MCP server") are classified correctly — the opening verb phrase takes priority over technical keywords in the body.
 
 ### Pre-Flight Pipeline
 
@@ -1150,7 +1202,7 @@ Reason:         Balanced task — Sonnet offers the best
 
 ## Contributors
 
-- [@aish-varya](https://github.com/aish-varya) — audience/tone/platform detection, goal enrichment, `generic_vague_ask` rule, CLI flags ([PR #1](https://github.com/rishiatlan/Prompt-Optimizer-MCP/pull/1))
+- [@aish-varya](https://github.com/aish-varya) — audience/tone/platform detection, goal enrichment, `generic_vague_ask` rule, CLI flags ([PR #1](https://github.com/rishi-banerjee1/prompt-control-plane/pull/1))
 
 ## Credits
 

@@ -1,6 +1,6 @@
 {
   "name": "pcp-engine",
-  "version": "5.1.1",
+  "version": "5.2.0",
   "type": "module",
   "description": "PCP — the prompt quality engine. Deterministic scoring, compilation, cost estimation & governance for AI prompts. Zero LLM calls.",
   "main": "dist/src/api.js",
@@ -61,13 +61,13 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/rishiatlan/Prompt-Optimizer-MCP.git"
+    "url": "git+https://github.com/rishi-banerjee1/prompt-control-plane.git"
   },
   "homepage": "https://getpcp.site/",
   "bugs": {
-    "url": "https://github.com/rishiatlan/Prompt-Optimizer-MCP/issues"
+    "url": "https://github.com/rishi-banerjee1/prompt-control-plane/issues"
   },
-  "mcpName": "io.github.rishiatlan/pcp-engine",
+  "mcpName": "io.github.rishi-banerjee1/pcp-engine",
   "author": "Rishi Banerjee",
   "license": "Elastic-2.0",
   "dependencies": {

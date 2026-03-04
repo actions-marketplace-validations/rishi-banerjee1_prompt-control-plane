@@ -48,14 +48,46 @@ runs:
         elif [ "${{ inputs.strictness }}" = "relaxed" ]; then
           ARGS+=(--relaxed)
         fi
+        # Helper: run pcp and capture output for step summary
+        run_pcp() {
+          local PCP_BIN="$1"; shift
+          local PCP_OUTPUT
+          PCP_OUTPUT=$("$PCP_BIN" "$@" 2>&1) || local PCP_EXIT=$?
+          PCP_EXIT=${PCP_EXIT:-0}
+          echo "$PCP_OUTPUT"
+
+          # Write step summary if available
+          if [ -n "${GITHUB_STEP_SUMMARY:-}" ]; then
+            {
+              echo "### 📊 Prompt Quality Report"
+              echo ""
+              echo "Run: \`pcp ${SUBCMD:-check} ${ARGS[*]}\`"
+              echo ""
+              echo "| File | PQS | Confidence | Status |"
+              echo "|------|-----|------------|--------|"
+              echo "$PCP_OUTPUT" | node -e "
+                const data = JSON.parse(require('fs').readFileSync('/dev/stdin','utf8'));
+                const results = data.results || [{ source: 'prompt', score: data.quality_score || data.total || 0, pass: data.pass !== false }];
+                results.forEach(r => {
+                  const status = r.pass !== false ? '✅' : '❌';
+                  const conf = r.confidence || 'n/a';
+                  console.log('| ' + (r.source || 'prompt') + ' | ' + (r.score || 0) + '/100 | ' + conf + ' | ' + status + ' |');
+                });
+              " 2>/dev/null || echo "| (see logs) | - | - | - |"
+            } >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+          return $PCP_EXIT
+        }
+
         # Local checkout fallback (uses: ./ in self-tests)
         if [ -z "$VERSION" ] && [ -f "$GITHUB_ACTION_PATH/bin/pcp.js" ] && [ -f "$GITHUB_ACTION_PATH/dist/src/lint-cli.js" ]; then
-          node "$GITHUB_ACTION_PATH/bin/pcp.js" "${ARGS[@]}"
+          run_pcp node "$GITHUB_ACTION_PATH/bin/pcp.js" "${ARGS[@]}"
           exit $?
         fi
         # Backward compat: fall back to lint.js if pcp.js not found
         if [ -z "$VERSION" ] && [ -f "$GITHUB_ACTION_PATH/bin/lint.js" ] && [ -f "$GITHUB_ACTION_PATH/dist/src/lint-cli.js" ]; then
-          node "$GITHUB_ACTION_PATH/bin/lint.js" "${ARGS[@]}"
+          run_pcp node "$GITHUB_ACTION_PATH/bin/lint.js" "${ARGS[@]}"
           exit $?
         fi
         # Fail fast on empty version
@@ -74,8 +106,8 @@ runs:
         npm install --prefix "$INSTALL_DIR" "pcp-engine@${VERSION}" --no-save --ignore-scripts 2>&1
         # Try pcp first (v5+), fall back to prompt-lint (v4)
         if [ -x "$INSTALL_DIR/node_modules/.bin/pcp" ]; then
-          "$INSTALL_DIR/node_modules/.bin/pcp" "${ARGS[@]}"
+          run_pcp "$INSTALL_DIR/node_modules/.bin/pcp" "${ARGS[@]}"
         else
-          "$INSTALL_DIR/node_modules/.bin/prompt-lint" "${ARGS[@]}"
+          run_pcp "$INSTALL_DIR/node_modules/.bin/prompt-lint" "${ARGS[@]}"
         fi
       shell: bash

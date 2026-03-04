@@ -143,7 +143,73 @@ export class LocalFsStorage implements StorageInterface {
       log.warn('storage', `JSON write skipped — ${Buffer.byteLength(json)} bytes exceeds ${MAX_JSON_BYTES} cap`);
       return;
     }
-    fs.writeFileSync(filepath, json, 'utf-8');
+    // Atomic write: write to temp file, then rename (POSIX-atomic on same FS).
+    // The .tmp.PID suffix prevents collision between concurrent processes.
+    const tmpPath = filepath + '.tmp.' + process.pid;
+    try {
+      fs.writeFileSync(tmpPath, json, 'utf-8');
+      fs.renameSync(tmpPath, filepath);
+    } catch (err) {
+      try { fs.unlinkSync(tmpPath); } catch { /* ignore cleanup failure */ }
+      throw err;
+    }
+  }
+
+  /**
+   * Advisory file lock using lockfile (O_CREAT|O_EXCL — atomic creation).
+   * Fail-open: if the lock cannot be acquired after retries, logs a warning
+   * and executes `fn` anyway to avoid blocking the tool.
+   */
+  private _withLock<T>(filepath: string, fn: () => T): T {
+    const lockPath = filepath + '.lock';
+    const maxRetries = 10;
+    const retryDelay = 50; // ms
+    let acquired = false;
+
+    // Try to acquire lock
+    for (let i = 0; i < maxRetries; i++) {
+      try {
+        // O_CREAT | O_EXCL — fails if file already exists (atomic creation)
+        const fd = fs.openSync(lockPath, 'wx');
+        fs.writeSync(fd, String(process.pid));
+        fs.closeSync(fd);
+        acquired = true;
+        break;
+      } catch (err: any) {
+        if (err.code === 'EEXIST') {
+          // Lock exists — check if stale (> 10 seconds old)
+          try {
+            const stat = fs.statSync(lockPath);
+            if (Date.now() - stat.mtimeMs > 10_000) {
+              // Stale lock — remove and retry
+              try { fs.unlinkSync(lockPath); } catch { /* race ok */ }
+              continue;
+            }
+          } catch { /* lock disappeared between checks — retry */ }
+
+          if (i === maxRetries - 1) {
+            log.warn('storage', `Could not acquire lock on ${path.basename(filepath)} after ${maxRetries} retries — proceeding without lock`);
+            break;
+          }
+          // Busy-wait (synchronous context, no async available)
+          const start = Date.now();
+          while (Date.now() - start < retryDelay) { /* spin */ }
+          continue;
+        }
+        // Unexpected error (permission denied, etc.) — fail-open
+        log.warn('storage', `Lock error on ${path.basename(filepath)}: ${err.message ?? err} — proceeding without lock`);
+        break;
+      }
+    }
+
+    // Execute under lock (or without lock if acquisition failed — fail-open)
+    try {
+      return fn();
+    } finally {
+      if (acquired) {
+        try { fs.unlinkSync(lockPath); } catch { /* ignore */ }
+      }
+    }
   }
 
   // ── Health Probe ──────────────────────────────────────────────────────────
@@ -188,32 +254,48 @@ export class LocalFsStorage implements StorageInterface {
 
   async incrementUsage(): Promise<UsageData> {
     try {
-      const usage = await this.getUsage();
-      const now = new Date();
-
-      // Anti-tamper: detect backward clock
-      if (usage.last_used_at) {
-        const lastUsed = new Date(usage.last_used_at);
-        if (lastUsed > now) {
-          log.warn('storage', 'Clock moved backward — skipping period reset', {
-            last_used: usage.last_used_at,
-            now: now.toISOString(),
-          });
+      return this._withLock(this.usageFile, () => {
+        // Read usage inside lock to prevent concurrent read-modify-write races.
+        // Inline the tier-resolution logic from getUsage() (sync-only path).
+        const usage = this._readJsonFile<UsageData>(this.usageFile, DEFAULT_USAGE);
+        const license = this._readJsonFile<LicenseData | null>(this.licenseFile, null);
+        if (
+          license &&
+          license.valid &&
+          (license.expires_at === 'never' || new Date(license.expires_at) > new Date())
+        ) {
+          usage.tier = license.tier;
+        } else if (process.env.PROMPT_CONTROL_PLANE_PRO === 'true' || process.env.PROMPT_OPTIMIZER_PRO === 'true') {
+          log.warn('storage', 'Pro tier activated via env var (PROMPT_CONTROL_PLANE_PRO) — dev/test override');
+          usage.tier = 'pro';
         }
-      }
 
-      usage.total_optimizations += 1;
-      usage.last_used_at = now.toISOString();
-      if (!usage.first_used_at) {
-        usage.first_used_at = now.toISOString();
-      }
+        const now = new Date();
 
-      // Increment monthly period counter (resolves/resets if new month)
-      this._resolveMonthlyUsage(usage);
-      usage.period_optimizations = (usage.period_optimizations ?? 0) + 1;
+        // Anti-tamper: detect backward clock
+        if (usage.last_used_at) {
+          const lastUsed = new Date(usage.last_used_at);
+          if (lastUsed > now) {
+            log.warn('storage', 'Clock moved backward — skipping period reset', {
+              last_used: usage.last_used_at,
+              now: now.toISOString(),
+            });
+          }
+        }
 
-      this._safeWriteJson(this.usageFile, usage);
-      return usage;
+        usage.total_optimizations += 1;
+        usage.last_used_at = now.toISOString();
+        if (!usage.first_used_at) {
+          usage.first_used_at = now.toISOString();
+        }
+
+        // Increment monthly period counter (resolves/resets if new month)
+        this._resolveMonthlyUsage(usage);
+        usage.period_optimizations = (usage.period_optimizations ?? 0) + 1;
+
+        this._safeWriteJson(this.usageFile, usage);
+        return usage;
+      });
     } catch (err) {
       log.error('storage', 'incrementUsage failed:', err instanceof Error ? err.message : String(err));
       return { ...DEFAULT_USAGE };
@@ -249,8 +331,9 @@ export class LocalFsStorage implements StorageInterface {
       const tier = ctx.tier;
       const tierLimits = PLAN_LIMITS[tier] ?? PLAN_LIMITS.free;
 
-      // Resolve monthly period (resets counter on new calendar month)
-      const { periodOptimizations } = this._resolveMonthlyUsage(usage);
+      // Resolve monthly period (resets counter on new calendar month).
+      // Lock protects the potential month-boundary write to usage.json.
+      const { periodOptimizations } = this._withLock(this.usageFile, () => this._resolveMonthlyUsage(usage));
 
       // Priority 1: Rate limit (cheapest check)
       const rateResult = ctx.rateLimiter.check(tier);
@@ -536,31 +619,34 @@ export class LocalFsStorage implements StorageInterface {
 
   async updateStats(event: StatsEvent): Promise<void> {
     try {
-      const stats = await this.getStats();
+      this._withLock(this.statsFile, () => {
+        // Read stats inside lock to prevent concurrent read-modify-write races.
+        const stats = this._readJsonFile<StatsData>(this.statsFile, DEFAULT_STATS);
 
-      if (event.type === 'optimize') {
-        stats.total_optimized += 1;
-        if (event.score_before != null) {
-          stats.score_sum_before += event.score_before;
-        }
-        if (event.task_type) {
-          stats.task_type_counts[event.task_type] =
-            (stats.task_type_counts[event.task_type] || 0) + 1;
-        }
-        if (event.blocking_questions) {
-          for (const q of event.blocking_questions) {
-            stats.blocking_question_counts[q] =
-              (stats.blocking_question_counts[q] || 0) + 1;
+        if (event.type === 'optimize') {
+          stats.total_optimized += 1;
+          if (event.score_before != null) {
+            stats.score_sum_before += event.score_before;
           }
+          if (event.task_type) {
+            stats.task_type_counts[event.task_type] =
+              (stats.task_type_counts[event.task_type] || 0) + 1;
+          }
+          if (event.blocking_questions) {
+            for (const q of event.blocking_questions) {
+              stats.blocking_question_counts[q] =
+                (stats.blocking_question_counts[q] || 0) + 1;
+            }
+          }
+          if (event.cost_savings_usd != null) {
+            stats.estimated_cost_savings_usd += event.cost_savings_usd;
+          }
+        } else if (event.type === 'approve') {
+          stats.total_approved += 1;
         }
-        if (event.cost_savings_usd != null) {
-          stats.estimated_cost_savings_usd += event.cost_savings_usd;
-        }
-      } else if (event.type === 'approve') {
-        stats.total_approved += 1;
-      }
 
-      this._safeWriteJson(this.statsFile, stats);
+        this._safeWriteJson(this.statsFile, stats);
+      });
     } catch (err) {
       log.error('storage', 'updateStats failed:', err instanceof Error ? err.message : String(err));
     }

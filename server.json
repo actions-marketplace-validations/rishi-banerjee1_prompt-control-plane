@@ -1,17 +1,17 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
-  "name": "io.github.rishiatlan/pcp-engine",
+  "name": "io.github.rishi-banerjee1/pcp-engine",
   "description": "Prompt Control Plane — deterministic prompt linting, scoring, policy enforcement & audit. Zero AI calls inside. Freemium.",
   "repository": {
-    "url": "https://github.com/rishiatlan/Prompt-Optimizer-MCP",
+    "url": "https://github.com/rishi-banerjee1/prompt-control-plane",
     "source": "github"
   },
-  "version": "5.1.1",
+  "version": "5.2.0",
   "packages": [
     {
       "registryType": "npm",
       "identifier": "pcp-engine",
-      "version": "5.1.1",
+      "version": "5.2.0",
       "transport": {
         "type": "stdio"
       },

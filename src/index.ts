@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
-import { registerTools } from './tools.js';
+import { registerTools } from './tools/index.js';
 import { LocalFsStorage } from './storage/index.js';
 import { LocalRateLimiter } from './rateLimit.js';
 import { log, createRequestId } from './logger.js';
@@ -66,7 +66,7 @@ Quick setup (any MCP-compatible client):
     }
   }
 
-More info: https://github.com/rishiatlan/Prompt-Optimizer-MCP`);
+More info: https://github.com/rishi-banerjee1/prompt-control-plane`);
   process.exit(0);
 }
 

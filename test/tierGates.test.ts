@@ -189,7 +189,7 @@ describe('PLAN_LIMITS enterprise tier exists', () => {
 
 describe('ENTERPRISE_PURCHASE_URL', () => {
   it('points to Prompt Control Plane contact page', async () => {
-    const { ENTERPRISE_PURCHASE_URL } = await import('../src/tools.js');
+    const { ENTERPRISE_PURCHASE_URL } = await import('../src/tools/index.js');
     assert.ok(ENTERPRISE_PURCHASE_URL.includes('getpcp'), 'URL includes site domain');
     assert.ok(ENTERPRISE_PURCHASE_URL.startsWith('https://'), 'URL uses HTTPS');
     assert.ok(ENTERPRISE_PURCHASE_URL.includes('contact'), 'URL points to contact page');
