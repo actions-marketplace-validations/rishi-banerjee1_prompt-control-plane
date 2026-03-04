@@ -94,7 +94,7 @@ node --test dist/test/scorer.test.js  # Run specific test file
 ## Recognition
 
 All contributors are recognized:
-- **Contributors Wall** on the [PCP website](https://promptcontrolplane.com) — auto-updated from GitHub
+- **Contributors Wall** on the [PCP website](https://getpcp.site) & Github Repo — auto-updated from GitHub
 - **Named credit** in the changelog for every merged PR
 - **Co-author tag** in commit messages
 
