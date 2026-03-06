@@ -1,0 +1,25 @@
+{
+  "name": "pcp-video-explainer",
+  "version": "1.0.0",
+  "description": "5-minute explainer video for Prompt Control Plane",
+  "scripts": {
+    "dev": "remotion studio",
+    "build": "remotion render src/index.tsx PcpExplainer out/pcp-explainer.mp4",
+    "preview": "remotion preview"
+  },
+  "keywords": [],
+  "author": "Rishi Banerjee",
+  "license": "ISC",
+  "dependencies": {
+    "@remotion/cli": "4.0.434",
+    "@remotion/player": "4.0.434",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
+    "remotion": "4.0.434"
+  },
+  "devDependencies": {
+    "@remotion/bundler": "^4.0.434",
+    "@types/react": "^19.2.14",
+    "typescript": "^5.9.3"
+  }
+}
