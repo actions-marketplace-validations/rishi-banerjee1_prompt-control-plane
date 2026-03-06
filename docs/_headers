@@ -14,5 +14,5 @@
 /shared.js
   Cache-Control: public, max-age=86400
 
-/pcp-explainer.mp4
+/*.mp4
   Cache-Control: public, max-age=600
