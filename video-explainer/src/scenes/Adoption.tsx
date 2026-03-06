@@ -67,7 +67,7 @@ export const Adoption: React.FC = () => {
               <MethodChip label="pre_flight" desc="instant quality check" />
               <MethodChip label="optimize_prompt" desc="full compilation" />
               <MethodChip label="route_model" desc="cost-aware routing" />
-              <MethodChip label="+16 more" desc="governance tools" />
+              <MethodChip label="+17 more" desc="governance tools" />
             </div>
           </FadeIn>
         </AbsoluteFill>

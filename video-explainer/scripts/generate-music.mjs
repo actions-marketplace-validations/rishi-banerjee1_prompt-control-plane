@@ -1,144 +1,291 @@
 #!/usr/bin/env node
 /**
- * Generates a 5-minute UPBEAT ambient background track for the PCP explainer video.
- * Outputs a WAV file: public/music/ambient-bg.wav
+ * Generates two royalty-free background music tracks via pure math synthesis.
+ * Track 1: "Gentle Flow" — soft, ambient piano-like tones (~75s, replaces Ballerina)
+ * Track 2: "Bright Steps" — upbeat, peppy synth melody (~110s, replaces Happy Toes)
  *
- * Uses a major key (C major) with rhythmic pulse, bright harmonics,
- * and energetic modulation. Royalty-free (generated from math).
+ * Zero dependencies. Zero watermarks. Pure math → WAV.
  */
 import { writeFileSync, mkdirSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
+const SAMPLE_RATE = 44100;
 
-// ── Audio params ───────────────────────────────────────────────
-const SAMPLE_RATE = 22050;
-const DURATION    = 300;     // 5 minutes
-const BIT_DEPTH   = 16;
-const CHANNELS    = 1;
+// ─── WAV Writer ──────────────────────────────────────────────────────────────
 
-// ── Major key harmonic layers (C major / bright voicing) ──────
-// [frequency, amplitude, vibrato rate, vibrato depth]
-const PADS = [
-  [130.81, 0.15, 0.06, 0.002],  // C3 — root (warm base)
-  [164.81, 0.12, 0.07, 0.002],  // E3 — major third (bright!)
-  [196.00, 0.14, 0.05, 0.002],  // G3 — fifth
-  [261.63, 0.10, 0.08, 0.001],  // C4 — octave
-  [329.63, 0.07, 0.09, 0.001],  // E4 — bright shimmer
-  [523.25, 0.04, 0.11, 0.001],  // C5 — sparkle
-];
-
-// ── Rhythmic pulse frequencies for energy ─────────────────────
-// These create a subtle pulsing "excitement" layer
-const PULSE_BPM = 120;
-const PULSE_HZ  = PULSE_BPM / 60; // 2 Hz pulse
-
-// ── Arpeggio notes (major chord) for melodic shimmer ──────────
-const ARPEGGIO = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
-
-// ── Generate one sample ───────────────────────────────────────
-function generateSample(t) {
-  let sample = 0;
-
-  // 1. Warm pad layer (major key — bright and warm)
-  for (const [freq, amp, vibRate, vibDepth] of PADS) {
-    const modFreq = freq * (1 + vibDepth * Math.sin(2 * Math.PI * vibRate * t));
-    sample += amp * Math.sin(2 * Math.PI * modFreq * t);
-  }
-
-  // 2. Rhythmic pulse — adds energy and forward momentum
-  const pulse = 0.6 + 0.4 * Math.pow(Math.sin(2 * Math.PI * PULSE_HZ * t), 2);
-  sample *= pulse;
-
-  // 3. High sparkle arpeggio — cycles through major chord notes
-  const arpeggioIdx = Math.floor((t * 4) % ARPEGGIO.length); // 4 notes per second
-  const arpeggioFreq = ARPEGGIO[arpeggioIdx];
-  const arpeggioEnv = 0.5 + 0.5 * Math.cos(2 * Math.PI * 4 * t); // envelope per note
-  sample += 0.03 * arpeggioEnv * Math.sin(2 * Math.PI * arpeggioFreq * t);
-
-  // 4. Sub-bass pulse for warmth (felt more than heard)
-  const subBass = 0.08 * Math.sin(2 * Math.PI * 65.41 * t); // C2
-  const subPulse = 0.5 + 0.5 * Math.sin(2 * Math.PI * (PULSE_HZ / 2) * t);
-  sample += subBass * subPulse;
-
-  // 5. Bright "ping" accent every 4 beats (every 2 seconds)
-  const pingPhase = (t * 0.5) % 1; // repeats every 2 seconds
-  if (pingPhase < 0.05) { // brief ping at the start of each cycle
-    const pingEnv = 1 - (pingPhase / 0.05); // quick decay
-    sample += 0.04 * pingEnv * Math.sin(2 * Math.PI * 1046.50 * t); // C6 ping
-  }
-
-  // 6. Energy swell — medium-speed modulation (excitement builds and releases)
-  const swell = 0.75 + 0.25 * Math.sin(2 * Math.PI * (1 / 10) * t); // 10-second cycle
-  sample *= swell;
-
-  // 7. Larger movement wave (30-second cycle) to prevent monotony
-  const wave = 0.85 + 0.15 * Math.sin(2 * Math.PI * (1 / 30) * t + 0.8);
-  sample *= wave;
-
-  // 8. Fade in / fade out
-  const fadeIn  = Math.min(1, t / 3);         // 3-second fade in (quick start)
-  const fadeOut = Math.min(1, (DURATION - t) / 4); // 4-second fade out
-  sample *= fadeIn * fadeOut;
-
-  // 9. Master volume
-  sample *= 0.45;
-
-  return sample;
-}
-
-// ── Write WAV ─────────────────────────────────────────────────
 function writeWav(filepath, samples) {
-  const numSamples  = samples.length;
-  const dataSize    = numSamples * (BIT_DEPTH / 8) * CHANNELS;
-  const fileSize    = 44 + dataSize;
-  const buffer      = Buffer.alloc(fileSize);
+  const numSamples = samples.length;
+  const buffer = Buffer.alloc(44 + numSamples * 2);
 
   buffer.write('RIFF', 0);
-  buffer.writeUInt32LE(fileSize - 8, 4);
+  buffer.writeUInt32LE(36 + numSamples * 2, 4);
   buffer.write('WAVE', 8);
   buffer.write('fmt ', 12);
   buffer.writeUInt32LE(16, 16);
-  buffer.writeUInt16LE(1, 20);
-  buffer.writeUInt16LE(CHANNELS, 22);
+  buffer.writeUInt16LE(1, 20);        // PCM
+  buffer.writeUInt16LE(1, 22);        // mono
   buffer.writeUInt32LE(SAMPLE_RATE, 24);
-  buffer.writeUInt32LE(SAMPLE_RATE * CHANNELS * (BIT_DEPTH / 8), 28);
-  buffer.writeUInt16LE(CHANNELS * (BIT_DEPTH / 8), 32);
-  buffer.writeUInt16LE(BIT_DEPTH, 34);
+  buffer.writeUInt32LE(SAMPLE_RATE * 2, 28);
+  buffer.writeUInt16LE(2, 32);
+  buffer.writeUInt16LE(16, 34);
   buffer.write('data', 36);
-  buffer.writeUInt32LE(dataSize, 40);
+  buffer.writeUInt32LE(numSamples * 2, 40);
 
-  let offset = 44;
   for (let i = 0; i < numSamples; i++) {
     const clamped = Math.max(-1, Math.min(1, samples[i]));
-    buffer.writeInt16LE(Math.round(clamped * 32767), offset);
-    offset += 2;
+    buffer.writeInt16LE(Math.round(clamped * 32767), 44 + i * 2);
   }
 
   writeFileSync(filepath, buffer);
+  const mb = (buffer.length / 1024 / 1024).toFixed(1);
+  const sec = (numSamples / SAMPLE_RATE).toFixed(1);
+  console.log(`  ✓ ${filepath} (${mb} MB, ${sec}s)`);
 }
 
-// ── Main ──────────────────────────────────────────────────────
-console.log(`Generating ${DURATION}s upbeat ambient track at ${SAMPLE_RATE} Hz...`);
+// ─── Synthesis Primitives ────────────────────────────────────────────────────
 
-const totalSamples = SAMPLE_RATE * DURATION;
-const samples = new Float64Array(totalSamples);
+const TWO_PI = 2 * Math.PI;
 
-for (let i = 0; i < totalSamples; i++) {
-  const t = i / SAMPLE_RATE;
-  samples[i] = generateSample(t);
-  if (i % (SAMPLE_RATE * 30) === 0) {
-    process.stdout.write(`\r  ${Math.round((i / totalSamples) * 100)}% complete`);
+function sine(freq, t) {
+  return Math.sin(TWO_PI * freq * t);
+}
+
+function triangle(freq, t) {
+  const p = (freq * t) % 1;
+  return 4 * Math.abs(p - 0.5) - 1;
+}
+
+/** Soft piano-like tone with harmonics and exponential decay */
+function pianoTone(freq, t, dur) {
+  const attack = Math.min(t / 0.008, 1);
+  const decay = Math.exp(-t * 3.5 / dur);
+  const env = attack * decay;
+  return env * (
+    sine(freq, t) +
+    0.35 * sine(freq * 2, t) * Math.exp(-t * 5 / dur) +
+    0.12 * sine(freq * 3, t) * Math.exp(-t * 7 / dur) +
+    0.04 * sine(freq * 4, t) * Math.exp(-t * 9 / dur)
+  ) * 0.45;
+}
+
+/** Bright synth pad with subtle detune for stereo width */
+function synthPad(freq, t, dur) {
+  const attack = Math.min(t / 0.04, 1);
+  const release = t > dur - 0.08 ? Math.max(0, (dur - t) / 0.08) : 1;
+  const env = attack * release;
+  return env * (
+    triangle(freq, t) * 0.45 +
+    0.2 * sine(freq * 2.005, t) +
+    0.12 * sine(freq * 0.5, t)
+  ) * 0.35;
+}
+
+/** Staccato pluck for bouncy melodies */
+function pluck(freq, t, dur) {
+  const attack = Math.min(t / 0.004, 1);
+  const decay = Math.exp(-t * 6 / dur);
+  const env = attack * decay;
+  return env * (
+    sine(freq, t) +
+    0.45 * sine(freq * 2, t) * Math.exp(-t * 8 / dur) +
+    0.2 * sine(freq * 3, t) * Math.exp(-t * 11 / dur)
+  ) * 0.35;
+}
+
+// ─── Note Frequencies ────────────────────────────────────────────────────────
+
+const NOTES = {};
+const NAMES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+for (let oct = 2; oct <= 6; oct++) {
+  for (let i = 0; i < 12; i++) {
+    const midi = (oct + 1) * 12 + i;
+    NOTES[`${NAMES[i]}${oct}`] = 440 * Math.pow(2, (midi - 69) / 12);
+  }
+}
+const n = (name) => NOTES[name] || 440;
+
+// ─── Helper: render note into buffer ─────────────────────────────────────────
+
+function renderNote(samples, startSec, durSec, freq, synthFn, gain) {
+  const s0 = Math.floor(startSec * SAMPLE_RATE);
+  const s1 = Math.min(Math.floor((startSec + durSec) * SAMPLE_RATE), samples.length);
+  for (let s = s0; s < s1; s++) {
+    const t = (s - s0) / SAMPLE_RATE;
+    samples[s] += synthFn(freq, t, durSec) * gain;
   }
 }
 
-const outDir  = join(__dirname, '..', 'public', 'music');
+// ─── Track 1: Gentle Flow (75s) ─────────────────────────────────────────────
+// Soft ambient piano with slow arpeggiated chords — dreamy, calm
+
+function generateGentleFlow() {
+  const duration = 75;
+  const samples = new Float64Array(SAMPLE_RATE * duration);
+  const BPM = 68;
+  const beat = 60 / BPM;
+  const bar = beat * 4;
+
+  // Jazz-tinged progression: Cmaj7 → Am7 → Dm7 → G7 → Em7 → Am7 → Fmaj7 → G7
+  const chords = [
+    ['C3', 'E3', 'G3', 'B3'],
+    ['A2', 'C3', 'E3', 'G3'],
+    ['D3', 'F3', 'A3', 'C4'],
+    ['G2', 'B2', 'D3', 'F3'],
+    ['E3', 'G3', 'B3', 'D4'],
+    ['A2', 'C3', 'E3', 'G3'],
+    ['F2', 'A2', 'C3', 'E3'],
+    ['G2', 'B2', 'D3', 'F3'],
+  ];
+
+  // Gentle melody — sparse, lyrical
+  const melodies = [
+    [null, 'E4', null, 'G4'],
+    ['A4', null, 'E4', null],
+    [null, 'F4', 'A4', null],
+    ['G4', null, null, 'D4'],
+    [null, 'B4', null, 'G4'],
+    ['A4', null, 'C4', null],
+    [null, 'A3', null, 'E4'],
+    ['D4', null, 'G4', null],
+  ];
+
+  for (let rep = 0; rep < Math.ceil(duration / (bar * chords.length)); rep++) {
+    for (let ci = 0; ci < chords.length; ci++) {
+      const barStart = (rep * chords.length + ci) * bar;
+      if (barStart >= duration) break;
+
+      // Arpeggiated chord (soft piano)
+      chords[ci].forEach((note, ni) => {
+        renderNote(samples, barStart + ni * 0.18, bar - ni * 0.18, n(note), pianoTone, 0.3);
+      });
+
+      // Sparse melody
+      melodies[ci].forEach((note, bi) => {
+        if (!note) return;
+        renderNote(samples, barStart + bi * beat, beat * 0.85, n(note), pianoTone, 0.5);
+      });
+    }
+  }
+
+  // Gentle sub-bass warmth
+  for (let s = 0; s < samples.length; s++) {
+    const t = s / SAMPLE_RATE;
+    const barIdx = Math.floor(t / bar) % chords.length;
+    const bassNote = chords[barIdx][0]; // root
+    const bassFreq = n(bassNote) * 0.5; // one octave below
+    samples[s] += 0.06 * sine(bassFreq, t) * (0.7 + 0.3 * sine(0.08, t));
+  }
+
+  // Fade in (3s) / fade out (5s)
+  for (let s = 0; s < samples.length; s++) {
+    const t = s / SAMPLE_RATE;
+    samples[s] *= Math.min(t / 3, 1) * Math.min((duration - t) / 5, 1);
+  }
+
+  return samples;
+}
+
+// ─── Track 2: Bright Steps (110s) ───────────────────────────────────────────
+// Upbeat, peppy synth with bouncy eighth-note melody and rhythmic pulse
+
+function generateBrightSteps() {
+  const duration = 110;
+  const samples = new Float64Array(SAMPLE_RATE * duration);
+  const BPM = 118;
+  const beat = 60 / BPM;
+  const bar = beat * 4;
+  const eighth = beat / 2;
+
+  // Pop I-V-vi-IV progression
+  const chords = [
+    ['C3', 'E3', 'G3'],   // C
+    ['G2', 'B2', 'D3'],   // G
+    ['A2', 'C3', 'E3'],   // Am
+    ['F2', 'A2', 'C3'],   // F
+    ['C3', 'E3', 'G3'],   // C
+    ['G2', 'B2', 'D3'],   // G
+    ['F2', 'A2', 'C3'],   // F
+    ['G2', 'B2', 'D3'],   // G (turnaround)
+  ];
+
+  // Bouncy eighth-note melodies
+  const melodies = [
+    ['C4', 'E4', 'G4', 'E4', 'C5', null, 'G4', 'E4'],
+    ['B3', 'D4', 'G4', 'D4', 'B4', null, 'G4', 'D4'],
+    ['A3', 'C4', 'E4', 'C4', 'A4', null, 'E4', 'C4'],
+    ['F3', 'A3', 'C4', 'F4', 'A4', null, 'C4', 'A3'],
+    ['E4', 'G4', 'C5', 'G4', 'E4', null, 'C4', 'G4'],
+    ['D4', 'G4', 'B4', 'G4', 'D4', null, 'B3', 'G3'],
+    ['F3', 'A3', 'C4', 'F4', null, 'C4', 'A3', 'F3'],
+    ['G3', 'B3', 'D4', 'G4', 'B4', null, 'D4', 'B3'],
+  ];
+
+  for (let rep = 0; rep < Math.ceil(duration / (bar * chords.length)); rep++) {
+    for (let ci = 0; ci < chords.length; ci++) {
+      const barStart = (rep * chords.length + ci) * bar;
+      if (barStart >= duration) break;
+
+      // Synth pad chords
+      for (const note of chords[ci]) {
+        renderNote(samples, barStart, bar, n(note), synthPad, 0.3);
+      }
+
+      // Bouncy pluck melody
+      melodies[ci].forEach((note, ei) => {
+        if (!note) return;
+        renderNote(samples, barStart + ei * eighth, eighth * 0.7, n(note), pluck, 0.55);
+      });
+
+      // Kick-style pulse on beats 1 and 3
+      for (const b of [0, 2]) {
+        const kickStart = barStart + b * beat;
+        const ks = Math.floor(kickStart * SAMPLE_RATE);
+        const ke = Math.min(ks + Math.floor(0.07 * SAMPLE_RATE), samples.length);
+        for (let s = ks; s < ke; s++) {
+          const t = (s - ks) / SAMPLE_RATE;
+          samples[s] += sine(80 * Math.exp(-t * 30), t) * Math.exp(-t * 25) * 0.22;
+        }
+      }
+
+      // Hi-hat-like noise on every eighth note for groove
+      for (let ei = 0; ei < 8; ei++) {
+        const hatStart = barStart + ei * eighth;
+        const hs = Math.floor(hatStart * SAMPLE_RATE);
+        const he = Math.min(hs + Math.floor(0.02 * SAMPLE_RATE), samples.length);
+        for (let s = hs; s < he; s++) {
+          const t = (s - hs) / SAMPLE_RATE;
+          const noise = (Math.random() * 2 - 1);
+          // Bandpass-ish: multiply by high-freq sine
+          samples[s] += noise * sine(8000, t) * Math.exp(-t * 80) * 0.04;
+        }
+      }
+    }
+  }
+
+  // Fade in (2s) / fade out (4s)
+  for (let s = 0; s < samples.length; s++) {
+    const t = s / SAMPLE_RATE;
+    samples[s] *= Math.min(t / 2, 1) * Math.min((duration - t) / 4, 1);
+  }
+
+  return samples;
+}
+
+// ─── Main ────────────────────────────────────────────────────────────────────
+
+console.log('Generating watermark-free background music...\n');
+
+const outDir = join(__dirname, '..', 'public', 'music');
 mkdirSync(outDir, { recursive: true });
 
-const outPath = join(outDir, 'ambient-bg.wav');
-writeWav(outPath, samples);
+console.log('Track 1: Gentle Flow (soft ambient piano, ~75s)');
+const gentle = generateGentleFlow();
+writeWav(join(outDir, 'gentle-flow.wav'), gentle);
 
-const sizeMB = (Buffer.byteLength(Buffer.alloc(44 + totalSamples * 2)) / 1024 / 1024).toFixed(1);
-console.log(`\r  100% complete — ${outPath}`);
-console.log(`  Size: ~${sizeMB} MB | Duration: ${DURATION}s | BPM: ${PULSE_BPM} | Key: C major`);
+console.log('\nTrack 2: Bright Steps (upbeat peppy synth, ~110s)');
+const bright = generateBrightSteps();
+writeWav(join(outDir, 'bright-steps.wav'), bright);
+
+console.log('\nDone! Pure math synthesis — zero watermarks, zero licenses.');

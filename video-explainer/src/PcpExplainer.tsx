@@ -80,14 +80,14 @@ export const PcpExplainer: React.FC = () => {
 
   return (
     <AbsoluteFill>
-      {/* Background music — royalty-free tracks from artist.io */}
-      {/* Track 1: Ballerina by Yehezkel Raz (71.6s) — covers Hook + WhatIsPcp */}
-      <Sequence from={0} durationInFrames={Math.round(71.6 * FPS)}>
-        <Audio src={staticFile('music/ballerina.mp3')} volume={0.6} />
+      {/* Background music — math-generated, zero watermarks */}
+      {/* Track 1: Gentle Flow (75s) — soft ambient piano for Hook + WhatIsPcp */}
+      <Sequence from={0} durationInFrames={Math.round(75 * FPS)}>
+        <Audio src={staticFile('music/gentle-flow.wav')} volume={0.6} />
       </Sequence>
-      {/* Track 2: Happy Toes by MooveKa (107.4s, looped) — covers remaining scenes */}
-      <Sequence from={Math.round(71.6 * FPS)}>
-        <Audio src={staticFile('music/happy-toes.mp3')} volume={0.6} loop />
+      {/* Track 2: Bright Steps (110s, looped) — upbeat synth for remaining scenes */}
+      <Sequence from={Math.round(75 * FPS)}>
+        <Audio src={staticFile('music/bright-steps.wav')} volume={0.6} loop />
       </Sequence>
 
       {scenes.map(({Component, duration}, i) => {
