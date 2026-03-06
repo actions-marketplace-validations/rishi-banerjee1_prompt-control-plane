@@ -48,7 +48,7 @@ const CONTEXT_SIZE_WARNING_BYTES = 500 * 1024; // 500KB
 const SUBCOMMANDS = new Set([
   'optimize', 'classify', 'route', 'compress', 'cost',
   'check', 'score', 'preflight', 'config', 'doctor', 'hook',
-  'demo', 'report', 'badge',
+  'demo', 'report', 'badge', 'benchmark',
 ]);
 
 // ─── Types ──────────────────────────────────────────────────────────────────
@@ -1429,6 +1429,126 @@ async function handleBadge(args: SubcommandArgs): Promise<void> {
   process.exit(0);
 }
 
+// ─── Benchmark ──────────────────────────────────────────────────────────────
+
+interface BenchmarkPrompt {
+  id: string;
+  category: string;
+  difficulty: string;
+  prompt: string;
+  description: string;
+  expected_score: number;
+  expected_risk_level: string;
+  expected_task_type: string;
+}
+
+interface BenchmarkData {
+  schema_version: number;
+  benchmark_version: string;
+  created_at: string;
+  score_tolerance: number;
+  prompts: BenchmarkPrompt[];
+}
+
+async function handleBenchmark(args: SubcommandArgs): Promise<void> {
+  const benchmarkPath = resolve(__lint_dirname, '..', '..', 'benchmarks', 'prompts.json');
+  let data: BenchmarkData;
+  try {
+    data = JSON.parse(readFileSync(benchmarkPath, 'utf-8'));
+  } catch {
+    fatal('Benchmark file not found: ' + benchmarkPath, args.json);
+    return;
+  }
+
+  const tolerance = data.score_tolerance || 3;
+  const results: Array<{
+    id: string;
+    category: string;
+    expected_score: number;
+    actual_score: number;
+    score_pass: boolean;
+    expected_risk_level: string;
+    actual_risk_level: string;
+    risk_pass: boolean;
+    expected_task_type: string;
+    actual_task_type: string;
+    type_pass: boolean;
+  }> = [];
+
+  let regressions = 0;
+
+  for (const p of data.prompts) {
+    const intent = analyzePrompt(p.prompt);
+    const quality = scorePrompt(intent);
+    const taskType = detectTaskType(p.prompt);
+
+    const scoreDiff = Math.abs(quality.total - p.expected_score);
+    const scorePass = scoreDiff <= tolerance;
+    const riskPass = intent.risk_level === p.expected_risk_level;
+    const typePass = taskType === p.expected_task_type;
+
+    if (!scorePass || !riskPass || !typePass) regressions++;
+
+    results.push({
+      id: p.id,
+      category: p.category,
+      expected_score: p.expected_score,
+      actual_score: quality.total,
+      score_pass: scorePass,
+      expected_risk_level: p.expected_risk_level,
+      actual_risk_level: intent.risk_level,
+      risk_pass: riskPass,
+      expected_task_type: p.expected_task_type,
+      actual_task_type: taskType,
+      type_pass: typePass,
+    });
+  }
+
+  const passed = results.filter(r => r.score_pass && r.risk_pass && r.type_pass).length;
+  const excellent = results.filter(r => r.actual_score >= 65).length;
+  const good = results.filter(r => r.actual_score >= 50 && r.actual_score < 65).length;
+  const poor = results.filter(r => r.actual_score < 50).length;
+
+  if (args.json) {
+    writeJson(envelope('benchmark', {
+      benchmark_version: data.benchmark_version,
+      total: results.length,
+      passed,
+      regressions,
+      tolerance,
+      results,
+      distribution: { excellent, good, poor },
+    }), args);
+  } else {
+    process.stdout.write(`\nPCP Benchmark v${data.benchmark_version} (tolerance: ±${tolerance})\n`);
+    process.stdout.write('─'.repeat(72) + '\n');
+    process.stdout.write(
+      padRight('ID', 12) + padRight('Category', 14) + padRight('Expected', 10) +
+      padRight('Actual', 10) + padRight('Score', 8) + padRight('Risk', 8) + 'Type\n',
+    );
+    process.stdout.write('─'.repeat(72) + '\n');
+    for (const r of results) {
+      const scoreIcon = r.score_pass ? 'OK' : 'FAIL';
+      const riskIcon = r.risk_pass ? 'OK' : 'FAIL';
+      const typeIcon = r.type_pass ? 'OK' : 'FAIL';
+      process.stdout.write(
+        padRight(r.id, 12) + padRight(r.category, 14) +
+        padRight(String(r.expected_score), 10) + padRight(String(r.actual_score), 10) +
+        padRight(scoreIcon, 8) + padRight(riskIcon, 8) + typeIcon + '\n',
+      );
+    }
+    process.stdout.write('─'.repeat(72) + '\n');
+    process.stdout.write(`\nResults: ${passed}/${results.length} passed, ${regressions} regressions\n`);
+    process.stdout.write(`Distribution: ${excellent} excellent, ${good} good, ${poor} poor\n\n`);
+  }
+
+  process.exit(regressions > 0 ? 1 : 0);
+}
+
+function padRight(str: string, len: number): string {
+  return str.length >= len ? str : str + ' '.repeat(len - str.length);
+}
+
 // ─── Help Text ──────────────────────────────────────────────────────────────
 
 const HELP = `pcp-engine v${VERSION} — Prompt Quality Engine
@@ -1456,6 +1576,7 @@ Advanced:
   hook        Manage auto-check hooks
   report      Generate quality report (.md + .json)
   badge       Generate PQS badge markdown
+  benchmark   Run scoring benchmark suite
 
 Options:
   --json                 Structured JSON output with request_id envelope
@@ -1519,6 +1640,7 @@ async function handleSubcommand(subcmd: string, subArgs: string[]): Promise<void
     case 'doctor': return handleDoctor(args);
     case 'report': return handleReport(args);
     case 'badge': return handleBadge(args);
+    case 'benchmark': return handleBenchmark(args);
     default: fatal(`Unknown command: ${subcmd}`, args.json);
   }
 }

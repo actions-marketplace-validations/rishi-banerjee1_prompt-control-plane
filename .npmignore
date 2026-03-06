@@ -17,5 +17,6 @@ docs/
 tsconfig.json
 CHANGELOG.md
 LEARNINGS.md
+examples/
 .mcp.json
 server.json

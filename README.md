@@ -18,38 +18,48 @@ The control plane for AI prompts. Score, enforce policy, lock config, and audit 
 # Install globally (requires Node.js 18+)
 npm install -g pcp-engine
 
-# Score any prompt instantly
-pcp check "your prompt here"
+# Pre-flight: classify, score, route, and enforce policy in one call
+pcp preflight "your prompt here" --json
 
 # Run the guided demo
 pcp demo
 ```
 
-**Primary commands:**
+**Two powerhouse commands:**
+
+| Command | What it does |
+|---------|-------------|
+| `pcp preflight "prompt"` | **The lead command.** Classify, assess risk, route model, score — one call covers 90% of use cases |
+| `pcp optimize "prompt"` | **Full pipeline.** Analyze, compile, surface blocking questions, produce PreviewPack for approval |
+
+**Supporting commands:**
 
 | Command | What it does |
 |---------|-------------|
 | `pcp check "prompt"` | Quick quality score + top issues |
 | `pcp score "prompt"` | Full 5-dimension quality breakdown |
-| `pcp preflight "prompt"` | Classify, assess risk, route model, score |
 | `pcp cost "prompt"` | Cost estimate across 10 models |
+| `pcp benchmark` | Run 15-prompt regression suite |
 
 Free tier gives you 50 optimizations/month to try it out.
 
 ## Try It
 
 ```bash
-# Score a vague prompt
-pcp score "make the code better"
+# Pre-flight a vague prompt — see why it scores low
+pcp preflight "make the code better" --json
 
-# Score a well-specified prompt
-pcp score "Refactor auth middleware in src/auth/middleware.ts to use JWT. Do not modify the user model."
+# Pre-flight a well-specified prompt — see the full analysis
+pcp preflight "Refactor auth middleware in src/auth/middleware.ts to use JWT. Do not modify the user model." --json
+
+# Run the full optimization pipeline (compile + blocking questions + approval)
+pcp optimize "Build a REST API with auth" --json
+
+# Quick quality check on all prompts in a directory
+pcp check --file "prompts/**/*.txt"
 
 # Run the guided demo
 pcp demo
-
-# Check all prompts in a directory
-pcp check --file "prompts/**/*.txt"
 ```
 
 ## GitHub Action
@@ -58,6 +68,7 @@ pcp check --file "prompts/**/*.txt"
 # .github/workflows/prompt-quality.yml
 - uses: rishi-banerjee1/prompt-control-plane@v5
   with:
+    subcommand: preflight
     files: "prompts/**/*.txt"
 ```
 
@@ -71,20 +82,24 @@ on: [push, pull_request]
 jobs:
   lint:
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
     steps:
       - uses: actions/checkout@v4
       - uses: rishi-banerjee1/prompt-control-plane@v5
         with:
+          subcommand: preflight
           files: 'prompts/**/*.txt'
           threshold: 70
+          comment: 'true'  # Posts results as PR comment
 ```
 
-**Run pre-flight in CI:**
+**Run optimize in CI (full pipeline):**
 
 ```yaml
       - uses: rishi-banerjee1/prompt-control-plane@v5
         with:
-          subcommand: preflight
+          subcommand: optimize
           files: 'prompts/**/*.txt'
 ```
 
@@ -103,7 +118,8 @@ jobs:
 **Notes:**
 - The action installs `pcp` via `npm install --prefix` into `$RUNNER_TEMP`, then runs the binary. Falls back to `prompt-lint` for v4 installs.
 - Action tag `@v5` maps to npm `@5` (latest 5.x). Use `@v5.0.0` for exact pinning.
-- `subcommand` input accepts `check` (default), `score`, or `preflight`.
+- `subcommand` input accepts `check` (default), `preflight`, `optimize`, or `score`. Use `preflight` for CI gates.
+- `comment: 'true'` posts results as a PR comment (requires `pull-requests: write` permission).
 - Exit code 2 means no files matched or invalid input — not "all passed." Zero matched files is always an error.
 - On Windows runners, prefer single quotes or escape glob wildcards in PowerShell.
 - Rule IDs (e.g., `vague_objective`, `missing_constraints`) are stable — treat as a public contract.
@@ -164,21 +180,21 @@ Real results from the deterministic pipeline. PCP scores the **input** prompt qu
 
 | Prompt | Type | Score | Confidence | Model | Blocked? |
 |--------|------|-------|------------|-------|----------|
-| `"make the code better"` | other | 48 | high | sonnet | — |
-| `"fix the login bug"` | debug | 51 | medium | opus | 3 BQs |
-| Multi-task (4 tasks in 1 prompt) | refactor | 51 | medium | opus | 3 BQs |
-| Well-specified refactor (auth middleware) | refactor | 76 | medium | opus | — |
-| Precise code change (retry logic) | code_change | 61 | medium | sonnet | — |
-| Create REST API server | create | 51 | medium | opus | 2 BQs |
-| LinkedIn post (technical topic) | writing | 59 | medium | sonnet | — |
-| Blog post (GraphQL migration) | writing | 59 | medium | sonnet | — |
-| Email to engineering team | writing | 59 | medium | sonnet | — |
-| Slack announcement | writing | 62 | medium | sonnet | — |
-| Technical summary (RFC → guide) | writing | 60 | medium | sonnet | — |
-| Research (Redis vs Memcached) | research | 56 | medium | sonnet | — |
-| Framework comparison (React vs Vue) | research | 56 | medium | sonnet | — |
-| Migration roadmap (REST → GraphQL) | planning | 56 | medium | sonnet | — |
-| Data transformation (CSV grouping) | data | 56 | medium | haiku | — |
+| `"make the code better"` | other | 50 | high | sonnet | — |
+| `"fix the login bug"` | debug | 53 | medium | sonnet | 3 BQs |
+| Multi-task (4 tasks in 1 prompt) | refactor | 53 | medium | sonnet | 3 BQs |
+| Well-specified refactor (auth middleware) | refactor | 68 | medium | sonnet | — |
+| Precise code change (retry logic) | code_change | 63 | medium | sonnet | — |
+| Create REST API server | create | 58 | medium | sonnet | 1 BQ |
+| LinkedIn post (technical topic) | writing | 61 | medium | sonnet | — |
+| Blog post (GraphQL migration) | writing | 65 | medium | sonnet | — |
+| Email to engineering team | writing | 61 | medium | sonnet | — |
+| Slack announcement | writing | 61 | medium | sonnet | — |
+| Technical summary (RFC → guide) | writing | 65 | medium | sonnet | — |
+| Research (Redis vs Memcached) | research | 58 | medium | sonnet | — |
+| Framework comparison (React vs Vue) | research | 58 | medium | sonnet | — |
+| Migration roadmap (REST → GraphQL) | planning | 58 | medium | sonnet | — |
+| Data transformation (CSV grouping) | data | 58 | medium | sonnet | — |
 
 **Score** = input prompt quality (0-100). **Confidence** = how much improvement to expect (high = prompt is weak, lots of room; low = prompt is already strong). Compiled output gets a structural checklist (e.g. 7/9 elements present), not an inflated numeric score. Vague prompts get blocked with targeted questions. Well-specified prompts get compiled with safety constraints, workflow steps, and model routing — all deterministically, with zero LLM calls.
 
@@ -193,7 +209,7 @@ Real results from the deterministic pipeline. PCP scores the **input** prompt qu
 ```
 Raw: "make the code better"
 
-Quality:  48/100  Confidence: high
+Quality:  50/100  Confidence: high
 State:    ANALYZING
 
 Blocking Questions:
@@ -219,7 +235,7 @@ Changes Made:
 Raw: "Refactor auth middleware in
       src/auth/middleware.ts..."
 
-Quality:  81/100  Confidence: low
+Quality:  68/100  Confidence: medium
 State:    COMPILED
 Risk:     high (auth domain)
 Model:    opus (recommended)
@@ -247,7 +263,7 @@ Raw: "update payment processing and
       then fix rate limiting and
       finally clean up tests"
 
-Quality:  51/100  Confidence: medium
+Quality:  53/100  Confidence: medium
 Risk:     high (payment domain)
 Blocking: 3 questions
 
@@ -293,7 +309,7 @@ Raw: "Write a Slack post for my
       dashboard feature. Celebratory
       but professional, 3-sprint effort."
 
-Quality:  71/100  Confidence: medium
+Quality:  70/100  Confidence: medium
 Task:     writing
 Model:    sonnet (recommended)
 
@@ -321,7 +337,7 @@ Raw: "Create a roadmap for migrating
       quarters. 15 endpoints, React
       frontend, 3 mobile apps."
 
-Quality:  56/100  Confidence: medium
+Quality:  58/100  Confidence: medium
 Task:     planning
 Model:    sonnet (recommended)
 
@@ -347,17 +363,17 @@ Changes Made:
 The `pcp` command exposes the full scoring, routing, and policy engine from the terminal.
 
 ```bash
-# Guided first-run experience
-pcp demo
+# Pre-flight: classify, assess risk, route model, score — the lead command
+pcp preflight "Build a REST API with auth" --json
+
+# Optimize: full pipeline — compile, blocking questions, PreviewPack
+pcp optimize "Build a REST API with auth" --json --target claude
 
 # Quick quality check (default subcommand)
 pcp check "Write a REST API for user management"
 
 # Score quality (5 dimensions, full breakdown)
 pcp score "Refactor the middleware"
-
-# Pre-flight: classify, assess risk, route model, score quality
-pcp preflight "Build a REST API with auth" --json
 
 # Lint prompt files with CI annotations
 pcp check --file "prompts/**/*.txt" --format github
@@ -392,7 +408,7 @@ pcp hook uninstall
 
 **Exit codes:** `0` = success, `1` = threshold fail (check/doctor), `2` = input error, `3` = policy blocked (enforce mode).
 
-**All subcommands:** demo, check, score, preflight, optimize, badge, report, classify, route, cost, compress, config, doctor, hook.
+**All subcommands:** preflight, optimize, check, score, benchmark, demo, badge, report, classify, route, cost, compress, config, doctor, hook.
 
 **CI flags:** `--format github` (PR annotations), `--warn-only` (advisory mode, always exit 0), `--output <dir>` (report destination).
 
@@ -518,12 +534,13 @@ console.log(withCtx.cost);   // Higher token count (context included)
 
 | Action | How |
 |--------|-----|
-| Optimize a prompt | Ask Claude: "Use optimize_prompt to analyze this task: [your prompt]" |
+| Preflight analysis | `pcp preflight "prompt"` or ask Claude: "Use pre_flight to analyze: [your prompt]" |
+| Optimize a prompt | `pcp optimize "prompt"` or ask Claude: "Use optimize_prompt to analyze: [your prompt]" |
 | Answer blocking questions | Claude will present questions. Answer them, then Claude calls `refine_prompt` |
 | Approve and proceed | Say "approve" — Claude calls `approve_prompt` and uses the compiled prompt |
+| Quick quality check | Ask Claude: "Use check_prompt on: [your prompt]" — lightweight pass/fail |
 | Estimate cost for any text | Ask Claude: "Use estimate_cost on this prompt: [text]" |
 | Compress context before sending | Ask Claude: "Use compress_context on this code for [intent]" |
-| Quick quality check | Ask Claude: "Use check_prompt on: [your prompt]" — lightweight pass/fail |
 | Check usage & limits | Ask Claude: "Use get_usage to check my remaining optimizations" |
 | View stats | Ask Claude: "Use prompt_stats to see my optimization history" |
 | Activate Pro license | Ask Claude: "Use set_license with key: pcp_..." |
@@ -533,21 +550,21 @@ console.log(withCtx.cost);   // Higher token count (context included)
 
 | # | Tool | Free/Metered | Purpose |
 |---|------|-------------|---------|
-| 1 | `optimize_prompt` | **Metered** | Main entry: analyze, score, compile, estimate cost, return PreviewPack |
-| 2 | `refine_prompt` | **Metered** | Iterative: answer questions, add edits, get updated PreviewPack |
-| 3 | `approve_prompt` | Free | Sign-off gate: returns final compiled prompt |
-| 4 | `estimate_cost` | Free | Multi-provider token + cost estimator (Anthropic, OpenAI, Google, Perplexity) |
-| 5 | `compress_context` | Free | Prune irrelevant context, report token savings |
-| 6 | `check_prompt` | Free | Lightweight pass/fail + score + top 2 issues |
-| 7 | `configure_optimizer` | Free | Set mode, threshold, strictness, target, lock/unlock config with passphrase |
-| 8 | `get_usage` | Free | Usage count, limits, remaining, tier info |
-| 9 | `prompt_stats` | Free | Aggregates: total optimized, avg score, top task types, cost savings |
-| 10 | `set_license` | Free | Activate a Pro or Power license key (Ed25519 offline validation) |
-| 11 | `license_status` | Free | Check license status, tier, expiry. Shows purchase link if free tier. |
-| 12 | `classify_task` | Free | Classify prompt by task type, reasoning complexity, risk, and suggested profile |
-| 13 | `route_model` | Free | Route to optimal model with `decision_path` audit trail |
-| 14 | `pre_flight` | **Metered** | Full pre-flight pipeline: classify, assess risk, route model, score quality |
-| 15 | `prune_tools` | Free | Score and rank MCP tools by task relevance, optionally prune low-relevance tools |
+| 1 | **`pre_flight`** | **Metered** | **The lead tool.** Classify, assess risk, route model, score quality — one call, full analysis |
+| 2 | **`optimize_prompt`** | **Metered** | **Full pipeline.** Analyze, score, compile, estimate cost, surface blocking questions, return PreviewPack |
+| 3 | `refine_prompt` | **Metered** | Iterative: answer questions, add edits, get updated PreviewPack |
+| 4 | `approve_prompt` | Free | Sign-off gate: returns final compiled prompt |
+| 5 | `check_prompt` | Free | Lightweight pass/fail + score + top 2 issues |
+| 6 | `estimate_cost` | Free | Multi-provider token + cost estimator (Anthropic, OpenAI, Google, Perplexity) |
+| 7 | `compress_context` | Free | Prune irrelevant context, report token savings |
+| 8 | `classify_task` | Free | Classify prompt by task type, reasoning complexity, risk, and suggested profile |
+| 9 | `route_model` | Free | Route to optimal model with `decision_path` audit trail |
+| 10 | `prune_tools` | Free | Score and rank MCP tools by task relevance, optionally prune low-relevance tools |
+| 11 | `configure_optimizer` | Free | Set mode, threshold, strictness, target, lock/unlock config with passphrase |
+| 12 | `get_usage` | Free | Usage count, limits, remaining, tier info |
+| 13 | `prompt_stats` | Free | Aggregates: total optimized, avg score, top task types, cost savings |
+| 14 | `set_license` | Free | Activate a Pro or Power license key (Ed25519 offline validation) |
+| 15 | `license_status` | Free | Check license status, tier, expiry. Shows purchase link if free tier. |
 | 16 | `list_sessions` | Free | List session history (metadata only, no raw prompts) |
 | 17 | `export_session` | Free | Full session export with rule-set hash + policy hash for reproducibility |
 | 18 | `delete_session` | Free | Delete a single session by ID |
@@ -623,7 +640,7 @@ Purge only affects session data. Configuration, audit log, license, usage data, 
 
 Every session export includes `rule_set_hash`, `rule_set_version`, `risk_score`, and `policy_hash` — enabling full reproducibility. Given the same prompt, configuration, and rules, the output is identical. Any change to rules or policy produces a different hash.
 
-### Pre-Flight Pipeline
+### Preflight Pipeline
 
 All v3 outputs are **deterministic, offline, and reproducible** — no LLM calls are made inside the MCP. Risk score (0–100) drives routing decisions; `riskLevel` (`low` / `medium` / `high`) is derived for display only.
 
@@ -828,7 +845,7 @@ Storage also tracks:
 ```
 Raw prompt: "make the code better"
 
-Quality Score:  48/100  Confidence: high
+Quality Score:  50/100  Confidence: high
 State:          ANALYZING
 Risk Level:     medium
 Model Rec:      sonnet
@@ -869,7 +886,7 @@ cookies. Replace validateSession() with validateJWT().
 Do not touch the user model or database layer.
 Must pass all existing tests in auth.test.ts."
 
-Quality Score:  81/100  Confidence: low
+Quality Score:  68/100  Confidence: medium
 State:          COMPILED
 Risk Level:     high (auth domain detected)
 Task Type:      refactor
@@ -908,7 +925,7 @@ Raw prompt: "update the payment processing to handle edge cases
 and also refactor the user dashboard and then fix the API
 rate limiting and finally clean up the test suite"
 
-Quality Score:  51/100  Confidence: medium
+Quality Score:  53/100  Confidence: medium
 State:          ANALYZING
 Risk Level:     high (payment domain)
 Blocking:       3 questions
@@ -975,7 +992,7 @@ Saved:       ~228 tokens (57%)
 ```
 ── Step 1: Initial prompt ──
   Raw: "fix the login bug"
-  Quality:  51/100
+  Quality:  53/100
   State:    ANALYZING
   Blocking: 3 question(s)
     ? What specific file or component should be changed?
@@ -988,7 +1005,7 @@ Saved:       ~228 tokens (57%)
   "Don't modify other auth components or auth API"
 
 ── Step 3: Refined result ──
-  Quality:  71/100  (up from 51)
+  Quality:  70/100  (up from 53)
   State:    COMPILED
   Blocking: 0 question(s)
   Risk:     high
@@ -1000,7 +1017,7 @@ Saved:       ~228 tokens (57%)
 
 ── Step 4: Approved! ──
   Status:      APPROVED
-  Confidence:  medium (refined from 71/100 after user clarification)
+  Confidence:  medium (refined from 70/100 after user clarification)
   Model:       opus (recommended)
   Reason:      High-risk task — max capability recommended.
 ```
@@ -1016,7 +1033,7 @@ announcing that our team shipped the new dashboard feature.
 Keep it celebratory but professional, mention it was a
 3-sprint effort, and tag the design team for their mockups."
 
-Quality Score:  71/100  Confidence: medium
+Quality Score:  70/100  Confidence: medium
 State:          COMPILED
 Task Type:      writing
 Risk Level:     low
@@ -1107,7 +1124,7 @@ GraphQL over the next 2 quarters. We have 15 endpoints, a
 React frontend, and 3 mobile apps consuming the API. The
 team has no GraphQL experience."
 
-Quality Score:  56/100  Confidence: medium
+Quality Score:  58/100  Confidence: medium
 State:          COMPILED
 Task Type:      planning
 Risk Level:     low

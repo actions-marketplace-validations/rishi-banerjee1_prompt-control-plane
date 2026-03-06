@@ -1,5 +1,5 @@
 name: Action Self-Test
-on: [push]
+on: [push, pull_request]
 jobs:
   # Job 1: Success path — good prompt passes at threshold 50
   pass:
@@ -75,3 +75,86 @@ jobs:
           tar -xzf pcp-engine-*.tgz
           test -f package/bin/lint.js || (echo "::error::bin/lint.js missing from npm tarball" && exit 1)
           node package/bin/lint.js --version
+
+  # Job 5: PR comment — verify action outputs JSON for comment step
+  outputs-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+      - run: npm ci && npm run build
+      - uses: ./
+        id: pcp
+        continue-on-error: true
+        with:
+          files: 'test/fixtures/good-prompt.txt'
+          threshold: 50
+      - name: Verify JSON output exists
+        run: |
+          JSON='${{ steps.pcp.outputs.json }}'
+          if [ -z "$JSON" ]; then
+            echo "::error::Action did not produce JSON output"
+            exit 1
+          fi
+          # Validate it parses as JSON with expected fields
+          echo "$JSON" | node -e "
+            const d = JSON.parse(require('fs').readFileSync('/dev/stdin','utf8'));
+            if (!d.version) throw new Error('Missing version');
+            if (!d.results) throw new Error('Missing results');
+            if (typeof d.threshold !== 'number') throw new Error('Missing threshold');
+            console.log('JSON output valid: version=' + d.version + ' results=' + d.results.length);
+          "
+      - name: Verify exit code output
+        run: |
+          EXIT='${{ steps.pcp.outputs.exit_code }}'
+          if [ -z "$EXIT" ]; then
+            echo "::error::Action did not produce exit_code output"
+            exit 1
+          fi
+          echo "Exit code: $EXIT"
+
+  # Job 6: PR comment format (dry-run — validate comment markdown generation)
+  comment-format:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+      - run: npm ci && npm run build
+      - uses: ./
+        id: pcp
+        continue-on-error: true
+        with:
+          files: 'test/fixtures/bad-prompt.txt'
+          threshold: 90
+      - name: Validate comment format
+        run: |
+          # Simulate the comment generation logic
+          cat << 'SCRIPT' > /tmp/gen-comment.js
+          const fs = require('fs');
+          const MARKER = '<!-- pcp-bot -->';
+          const raw = process.argv[2];
+          const data = JSON.parse(raw);
+          const results = data.results || [];
+          const summary = data.summary || {};
+          const threshold = data.threshold || 60;
+          let body = MARKER + '\n## Prompt Control Plane\n\n';
+          body += '| File | Score | Status | Top Issue |\n';
+          body += '|------|-------|--------|----------|\n';
+          for (const r of results) {
+            const status = r.pass !== false ? 'PASS' : 'FAIL';
+            const topIssue = (r.issues && r.issues.length > 0) ? r.issues[0].rule : '—';
+            body += `| \`${r.source}\` | ${r.score}/100 | ${status} | ${topIssue} |\n`;
+          }
+          // Validate structure
+          if (!body.includes(MARKER)) throw new Error('Missing marker');
+          if (!body.includes('| File |')) throw new Error('Missing table header');
+          if (!body.includes('FAIL')) throw new Error('Expected at least one failure');
+          console.log('Comment format valid (' + body.length + ' chars)');
+          SCRIPT
+          node /tmp/gen-comment.js '${{ steps.pcp.outputs.json }}'
