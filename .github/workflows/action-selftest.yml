@@ -60,7 +60,7 @@ jobs:
           echo "::error::Expected strict lint to fail but it passed"
           exit 1
 
-  # Job 4: Packaging — verify bin/lint.js ships in npm tarball
+  # Job 4: Packaging — verify bin files ship in npm tarball
   packaging:
     runs-on: ubuntu-latest
     steps:
@@ -73,10 +73,39 @@ jobs:
       - run: npm pack
       - run: |
           tar -xzf pcp-engine-*.tgz
+          test -f package/bin/pcp.js || (echo "::error::bin/pcp.js missing from npm tarball" && exit 1)
           test -f package/bin/lint.js || (echo "::error::bin/lint.js missing from npm tarball" && exit 1)
+          test -f package/bin/cli.js || (echo "::error::bin/cli.js missing from npm tarball" && exit 1)
+          node package/bin/pcp.js --version
           node package/bin/lint.js --version
 
-  # Job 5: PR comment — verify action outputs JSON for comment step
+  # Job 5: Preflight subcommand — verify preflight works via action
+  preflight:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+      - run: npm ci && npm run build
+      - uses: ./
+        id: pcp
+        with:
+          subcommand: preflight
+          files: 'test/fixtures/good-prompt.txt'
+      - name: Verify preflight JSON output
+        run: |
+          JSON='${{ steps.pcp.outputs.json }}'
+          echo "$JSON" | node -e "
+            const d = JSON.parse(require('fs').readFileSync('/dev/stdin','utf8'));
+            if (typeof d.pqs !== 'number') throw new Error('Missing pqs');
+            if (!d.risk_level) throw new Error('Missing risk_level');
+            if (!d.recommended_model) throw new Error('Missing recommended_model');
+            console.log('Preflight output valid: pqs=' + d.pqs + ' risk=' + d.risk_level + ' model=' + d.recommended_model);
+          "
+
+  # Job 6: PR comment — verify action outputs JSON for comment step
   outputs-check:
     runs-on: ubuntu-latest
     steps:
@@ -116,7 +145,7 @@ jobs:
           fi
           echo "Exit code: $EXIT"
 
-  # Job 6: PR comment format (dry-run — validate comment markdown generation)
+  # Job 7: PR comment format (dry-run — validate comment markdown generation)
   comment-format:
     runs-on: ubuntu-latest
     steps:
