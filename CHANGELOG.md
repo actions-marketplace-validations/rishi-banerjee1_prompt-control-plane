@@ -1,6 +1,6 @@
 # Changelog
 
-## [5.3.4] - 2026-03-31
+## [5.3.4] - 2026-06-18
 
 ### Security
 - **Fixed:** path-to-regexp DoS via sequential optional groups (GHSA-j3q9-mxjg-w52f, high severity)
@@ -11,6 +11,8 @@
 - **Fixed:** Regex injection in `preservePatterns.ts` user patterns (CodeQL js/regex-injection) — character-by-character allowlist sanitizer replaces partial blocklist
 - **Fixed:** Incomplete URL substring sanitization in `test/cli.test.ts` (CodeQL js/incomplete-url-substring-sanitization) — full URL origin check
 - 10 new security regression tests covering: atomic writes, file permissions, ReDoS resistance, regex injection prevention, URL validation
+- **Fixed:** npm audit alerts in root package by refreshing vulnerable transitives: `hono`, `@hono/node-server`, `fast-uri`, `qs`, `ip-address`, and `express-rate-limit`
+- **Fixed:** video explainer audit alerts by updating the Remotion toolchain and vulnerable `ws`, `postcss`, `esbuild`, and `fast-uri` transitives
 
 ### Changed
 - Dependency: @modelcontextprotocol/sdk upgraded from ^1.25.2 to ^1.29.0

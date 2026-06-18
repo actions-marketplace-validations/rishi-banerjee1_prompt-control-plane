@@ -299,6 +299,23 @@
     <div class="container">
       <div class="timeline">
 
+        <!-- ── v5.3.4 ─────────────────────────────────────────────────────── -->
+        <div class="release release-patch">
+          <div class="release-card">
+            <div class="release-header">
+              <span class="release-version"><a href="https://github.com/rishi-banerjee1/prompt-control-plane/releases/tag/v5.3.4">v5.3.4</a></span>
+              <span class="release-tag release-tag-security">Security</span>
+              <span class="release-date">June 18, 2026</span>
+            </div>
+            <div class="release-title">Dependency Security Remediation</div>
+            <ul class="release-changes">
+              <li><strong>Root package audit clean</strong> &mdash; refreshed vulnerable transitive dependencies behind the MCP SDK, including <code>hono</code>, <code>@hono/node-server</code>, <code>fast-uri</code>, <code>qs</code>, <code>ip-address</code>, and <code>express-rate-limit</code></li>
+              <li><strong>Video explainer audit clean</strong> &mdash; updated the Remotion toolchain and vulnerable <code>ws</code>, <code>postcss</code>, <code>esbuild</code>, and <code>fast-uri</code> transitives</li>
+              <li><strong>Verification</strong> &mdash; root build, full test suite, CLI smoke test, and npm audit checks all pass</li>
+            </ul>
+          </div>
+        </div>
+
         <!-- ── v5.3.3 ─────────────────────────────────────────────────────── -->
         <div class="release release-patch">
           <div class="release-card">
