@@ -8,27 +8,27 @@
   <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
   <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
   <link rel="manifest" href="site.webmanifest">
-  <title>How We're Different — Prompt Control Plane</title>
+  <title>How We're Different: Prompt Control Plane</title>
   <meta name="description" content="Prompt Control Plane is a deterministic, offline-first prompt governance engine. See how it differs from observability platforms, LLM-powered optimizers, runtime guardrails, eval frameworks, and prompt management tools.">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://getpcp.site/different.html">
 
   <!-- Open Graph -->
-  <meta property="og:title" content="How We're Different — Prompt Control Plane">
-  <meta property="og:description" content="Pre-flight governance, zero LLM calls, fully deterministic. See how Prompt Control Plane fits alongside — and differs from — adjacent tools in the AI stack.">
+  <meta property="og:title" content="How We're Different: Prompt Control Plane">
+  <meta property="og:description" content="Pre-flight governance, zero LLM calls, fully deterministic. See how Prompt Control Plane fits alongside: and differs from: adjacent tools in the AI stack.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://getpcp.site/different.html">
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="How We're Different — Prompt Control Plane">
+  <meta name="twitter:title" content="How We're Different: Prompt Control Plane">
   <meta name="twitter:description" content="Pre-flight governance, zero LLM calls, fully deterministic. See where we fit in your AI stack.">
 
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "WebPage",
-    "name": "How We're Different — Prompt Control Plane",
+    "name": "How We're Different: Prompt Control Plane",
     "description": "Pre-flight governance, zero LLM calls, fully deterministic. See how Prompt Control Plane differs from adjacent tools.",
     "url": "https://getpcp.site/different.html"
   }
@@ -285,7 +285,7 @@
       position: relative;
     }
     .limits-card ul li::before {
-      content: '—';
+      content: ':';
       position: absolute;
       left: 0;
       color: var(--text-muted);
@@ -354,7 +354,7 @@
     <div class="container">
       <span class="badge badge-accent">Positioning</span>
       <h1>How We're Different</h1>
-      <p class="subtitle">Most tools in this space observe what happened, test what could go wrong, or guard against attacks at runtime. We govern prompts before they run &mdash; deterministically, offline, with no LLM calls inside.</p>
+      <p class="subtitle">Most tools in this space observe what happened, test what could go wrong, or guard against attacks at runtime. We govern prompts before they run: deterministically, offline, with no LLM calls inside.</p>
     </div>
   </section>
 
@@ -370,7 +370,7 @@
           <div class="layer-icon">🧱</div>
           <div>
             <div class="layer-label">Foundation Models</div>
-            <div class="layer-desc">Claude, GPT-4o, Gemini, Llama &mdash; the LLMs that generate responses</div>
+            <div class="layer-desc">Claude, GPT-4o, Gemini, Llama: the LLMs that generate responses</div>
           </div>
           <div class="layer-tag other">Not us</div>
         </div>
@@ -433,7 +433,7 @@
           <h3>They record what your LLM did</h3>
           <p>These platforms capture traces of every LLM call after it executes. They measure latency, track token spend, visualize model behavior over time, and surface what went wrong in production.</p>
           <div class="diff-box">
-            <strong>We work before the call, not after.</strong> By the time an observability tool sees a prompt, it's already been sent. We score, compile, and enforce policy at authoring time — catching structural gaps, ambiguity, and policy violations before any model sees the prompt.
+            <strong>We work before the call, not after.</strong> By the time an observability tool sees a prompt, it's already been sent. We score, compile, and enforce policy at authoring time: catching structural gaps, ambiguity, and policy violations before any model sees the prompt.
           </div>
         </div>
 
@@ -453,7 +453,7 @@
           <h3>They validate at inference time</h3>
           <p>These frameworks intercept LLM inputs and outputs at runtime, applying validators and safety checks as part of the inference pipeline. Many make secondary model calls for validation logic.</p>
           <div class="diff-box">
-            <strong>We enforce policy pre-flight, not at runtime.</strong> Our policy engine is deterministic and fully offline &mdash; no additional inference calls, no added latency to your production path. Governance happens at prompt authoring, before the inference budget is touched.
+            <strong>We enforce policy pre-flight, not at runtime.</strong> Our policy engine is deterministic and fully offline: no additional inference calls, no added latency to your production path. Governance happens at prompt authoring, before the inference budget is touched.
           </div>
         </div>
 
@@ -463,7 +463,7 @@
           <h3>They test prompts against expected outputs</h3>
           <p>Eval frameworks let teams write declarative test suites, run adversarial probes, and catch prompt regressions in CI pipelines. They're excellent for systematic behavioral quality assurance.</p>
           <div class="diff-box">
-            <strong>We score structure in real time, without test cases.</strong> Where eval frameworks test outputs after execution, we flag ambiguity, missing constraints, scope explosion, and risk dimensions as you write &mdash; using 14 deterministic rules that require no maintenance and no example prompts.
+            <strong>We score structure in real time, without test cases.</strong> Where eval frameworks test outputs after execution, we flag ambiguity, missing constraints, scope explosion, and risk dimensions as you write: using 14 deterministic rules that require no maintenance and no example prompts.
           </div>
         </div>
 
@@ -471,9 +471,9 @@
         <div class="cat-card cat-wide">
           <div class="cat-type">Prompt Management &amp; Versioning Tools</div>
           <h3>They store and deploy prompts as assets. We compile them as programs.</h3>
-          <p>Prompt CMS platforms let teams version, store, A/B test, and collaboratively edit prompt templates. They treat prompts as static content artifacts &mdash; valuable for centralizing and distributing what's already been written.</p>
+          <p>Prompt CMS platforms let teams version, store, A/B test, and collaboratively edit prompt templates. They treat prompts as static content artifacts: valuable for centralizing and distributing what's already been written.</p>
           <div class="diff-box">
-            <strong>We treat prompts as programs that need to be compiled, not assets to be stored.</strong> Raw intent goes in; a structured, constrained, role-defined prompt with uncertainty policy, workflow steps, and safety constraints comes out. An approval gate &mdash; enforced in code, not convention &mdash; requires explicit human sign-off before any prompt is finalized. Sessions are exportable with reproducibility metadata: rule-set hash, engine version, and risk score.
+            <strong>We treat prompts as programs that need to be compiled, not assets to be stored.</strong> Raw intent goes in; a structured, constrained, role-defined prompt with uncertainty policy, workflow steps, and safety constraints comes out. An approval gate: enforced in code, not convention: requires explicit human sign-off before any prompt is finalized. Sessions are exportable with reproducibility metadata: rule-set hash, engine version, and risk score.
           </div>
         </div>
 
@@ -485,7 +485,7 @@
   <section class="section">
     <div class="container">
       <h2 class="section-title text-center">Architecture Guarantees</h2>
-      <p class="section-subtitle text-center">Properties that hold unconditionally &mdash; not by configuration, by design.</p>
+      <p class="section-subtitle text-center">Properties that hold unconditionally: not by configuration, by design.</p>
 
       <div class="guarantee-grid">
         <div class="guarantee">
@@ -518,7 +518,7 @@
   <section class="section section-alt">
     <div class="container">
       <h2 class="section-title text-center">We Complement, Not Replace</h2>
-      <p class="section-subtitle text-center">Prompt Control Plane is the governance layer that runs before your existing stack, not instead of it.</p>
+      <p class="section-subtitle text-center">Prompt Control Plane is the governance layer that runs before your existing stack and strengthens it.</p>
 
       <table class="complement-table">
         <thead>
@@ -563,7 +563,7 @@
         <h3>Honest limitations</h3>
         <ul>
           <li>We do not detect prompt injection or jailbreak attacks. For adversarial input security, pair us with a dedicated security layer.</li>
-          <li>We do not understand your domain context. Our rules are structural and heuristic &mdash; we flag "no success criteria" but can't evaluate whether your success criteria are correct for your use case.</li>
+          <li>We do not understand your domain context. Our rules are structural and heuristic: we flag "no success criteria." Domain teams decide whether the criteria are correct for the use case.</li>
           <li>We do not replace semantic evals. Behavioral quality testing against expected outputs still requires an eval framework.</li>
           <li>We do not store or version prompts as a team asset. Our session exports are audit artifacts, not a prompt management system.</li>
           <li>We do not make real-time observations of your production traffic. There is no proxy, no tracing layer, and no logging of your LLM responses.</li>

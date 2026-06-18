@@ -319,7 +319,7 @@
       <div class="gate-logo">Prompt <span>Control Plane</span></div>
       <div class="gate-lock-icon">🔐</div>
       <h2>Enterprise access required</h2>
-      <p>This admin console is restricted to Enterprise license holders. Enter your license key to authenticate — verification happens entirely in your browser.</p>
+      <p>This admin console is restricted to Enterprise license holders. Enter your license key to authenticate: verification happens entirely in your browser.</p>
       <input type="text" class="gate-input" id="gate-key"
         placeholder="pcp_eyJ…"
         autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
@@ -328,7 +328,7 @@
       <div class="gate-error" id="gate-error"></div>
       <button class="gate-btn" id="gate-btn" onclick="gateVerify()">Verify License Key</button>
       <p class="gate-footer">
-        License verification is offline — your key is never transmitted anywhere.<br>
+        License verification is offline: your key is never transmitted anywhere.<br>
         Don't have an Enterprise license? <a href="contact.html" style="color:var(--accent);">Contact sales →</a>
       </p>
     </div>
@@ -365,9 +365,9 @@
   <div style="max-width:1160px;margin:0 auto;padding:36px 24px 0;">
     <span class="badge badge-accent">Enterprise Admin Console</span>
     <h1 style="font-size:1.6rem;margin:10px 0 6px;">Governance Control Panel</h1>
-    <p style="color:var(--text-muted);margin:0 0 14px;font-size:0.9rem;">Configure policy, inspect audit logs, manage custom rules, and govern your enterprise PCP installation — all from one authenticated place.</p>
+    <p style="color:var(--text-muted);margin:0 0 14px;font-size:0.9rem;">Configure policy, inspect audit logs, manage custom rules, and govern your enterprise PCP installation: all from one authenticated place.</p>
     <div class="alert alert-info">
-      <strong>How this works:</strong> Each section generates a ready-to-use governance command. Copy and paste it into Claude to apply the change — or download the generated JSON files to <code>~/.prompt-control-plane/</code>. Your config lock passphrase is automatically derived from your enterprise license key, so governance settings can only be changed through this console.
+      <strong>How this works:</strong> Each section generates a ready-to-use governance command. Copy and paste it into Claude to apply the change: or download the generated JSON files to <code>~/.prompt-control-plane/</code>. Your config lock passphrase is automatically derived from your enterprise license key, so governance settings can only be changed through this console.
     </div>
   </div>
 
@@ -414,16 +414,16 @@
             <div class="form-group">
               <span class="form-label">Mode</span>
               <select class="form-control" id="opt-mode" onchange="updateOptimizerCmd()">
-                <option value="manual">Manual — optimize only when you ask</option>
-                <option value="always_on">Always On — optimize every prompt automatically</option>
+                <option value="manual">Manual: optimize only when you ask</option>
+                <option value="always_on">Always On: optimize every prompt automatically</option>
               </select>
             </div>
             <div class="form-group">
               <span class="form-label">Default Output Format</span>
               <select class="form-control" id="opt-target" onchange="updateOptimizerCmd()">
-                <option value="claude">Claude — XML tagged format</option>
-                <option value="openai">OpenAI — system / user split</option>
-                <option value="generic">Generic — plain Markdown</option>
+                <option value="claude">Claude: XML tagged format</option>
+                <option value="openai">OpenAI: system / user split</option>
+                <option value="generic">Generic: plain Markdown</option>
               </select>
             </div>
           </div>
@@ -431,9 +431,9 @@
             <div class="form-group">
               <span class="form-label">Strictness</span>
               <select class="form-control" id="opt-strictness" onchange="updateOptimizerCmd()">
-                <option value="relaxed">Relaxed — fewer flags, lower bar</option>
-                <option value="standard" selected>Standard — balanced (recommended)</option>
-                <option value="strict">Strict — more flags, higher bar</option>
+                <option value="relaxed">Relaxed: fewer flags, lower bar</option>
+                <option value="standard" selected>Standard: balanced (recommended)</option>
+                <option value="strict">Strict: more flags, higher bar</option>
               </select>
             </div>
             <div class="form-group">
@@ -456,18 +456,18 @@
               <input type="number" class="form-control" id="opt-maxsess" value="500" min="1" max="10000" oninput="updateOptimizerCmd()">
             </div>
             <div class="form-group">
-              <span class="form-label">Auto-Purge After (days — leave blank to disable)</span>
+              <span class="form-label">Auto-Purge After (days: leave blank to disable)</span>
               <input type="number" class="form-control" id="opt-retention" placeholder="e.g. 90" min="1" max="365" oninput="updateOptimizerCmd()">
             </div>
           </div>
           <div class="toggle-row">
             <label class="toggle"><input type="checkbox" id="opt-ephemeral" onchange="updateOptimizerCmd()"><span class="toggle-track"></span></label>
-            <span class="toggle-label">Ephemeral mode — sessions stay in memory only, never written to disk</span>
+            <span class="toggle-label">Ephemeral mode: sessions stay in memory only, never written to disk</span>
           </div>
         </div>
 
         <div class="cmd-box">
-          <div class="cmd-box-label">Generated Claude command — paste this into Claude to apply</div>
+          <div class="cmd-box-label">Generated Claude command: paste this into Claude to apply</div>
           <div class="cmd-text" id="optimizer-cmd"></div>
           <div class="btn-row">
             <button class="btn btn-primary btn-sm" onclick="copyEl('optimizer-cmd',this)">Copy Command</button>
@@ -489,22 +489,22 @@
             <div class="form-group">
               <span class="form-label">Policy Mode</span>
               <select class="form-control" id="pol-mode" onchange="updatePolicyCmd()">
-                <option value="advisory">Advisory — flag and warn, never block</option>
-                <option value="enforce">Enforce — block on violations</option>
+                <option value="advisory">Advisory: flag and warn, never block</option>
+                <option value="enforce">Enforce: block on violations</option>
               </select>
             </div>
             <div class="form-group">
               <span class="form-label">Strictness</span>
               <select class="form-control" id="pol-strictness" onchange="updatePolicyCmd()">
-                <option value="relaxed">Relaxed — blocks at risk score ≥ 40</option>
-                <option value="standard" selected>Standard — blocks at risk score ≥ 60</option>
-                <option value="strict">Strict — blocks at risk score ≥ 75</option>
+                <option value="relaxed">Relaxed: blocks at risk score ≥ 40</option>
+                <option value="standard" selected>Standard: blocks at risk score ≥ 60</option>
+                <option value="strict">Strict: blocks at risk score ≥ 75</option>
               </select>
             </div>
           </div>
           <div class="toggle-row">
             <label class="toggle"><input type="checkbox" id="pol-audit" onchange="updatePolicyCmd()"><span class="toggle-track"></span></label>
-            <span class="toggle-label">Enable hash-chained audit trail — writes to <code>~/.prompt-control-plane/audit.log</code></span>
+            <span class="toggle-label">Enable hash-chained audit trail: writes to <code>~/.prompt-control-plane/audit.log</code></span>
           </div>
         </div>
 
@@ -512,7 +512,7 @@
           <h3>Config Lock</h3>
           <p class="card-desc">Lock your configuration behind a passphrase so governance settings can't be changed in a Claude session without it. Protects policy from being overridden mid-session.</p>
           <div class="alert alert-info">
-            <strong>License-tied passphrase:</strong> Your lock passphrase is automatically derived from your enterprise license key. To change governance settings later, log back into this console and generate a new unlock command — no separate passphrase to remember or store.
+            <strong>License-tied passphrase:</strong> Your lock passphrase is automatically derived from your enterprise license key. To change governance settings later, log back into this console and generate a new unlock command: no separate passphrase to remember or store.
           </div>
           <div class="form-row">
             <div class="form-group">
@@ -546,7 +546,7 @@
 
         <div class="card">
           <h3>Purge Sessions</h3>
-          <p class="card-desc">Remove old sessions from your history. Run a dry-run first to preview what will be removed — no sessions are deleted until you run without dry-run.</p>
+          <p class="card-desc">Remove old sessions from your history. Run a dry-run first to preview what will be removed: no sessions are deleted until you run without dry-run.</p>
           <div class="form-row">
             <div class="form-group">
               <span class="form-label">Delete sessions older than (days)</span>
@@ -559,7 +559,7 @@
           </div>
           <div class="toggle-row">
             <label class="toggle"><input type="checkbox" id="sess-dry" checked onchange="updateSessionCmd()"><span class="toggle-track"></span></label>
-            <span class="toggle-label">Dry run — show what would be removed, don't delete anything yet</span>
+            <span class="toggle-label">Dry run: show what would be removed, don't delete anything yet</span>
           </div>
         </div>
 
@@ -581,8 +581,8 @@
 
         <div class="card">
           <h3>Load Your Audit Log</h3>
-          <p class="card-desc">Paste the contents of <code>~/.prompt-control-plane/audit.log</code> below. The explorer parses every entry and verifies the SHA-256 hash chain — any modified or deleted line breaks the chain and will be flagged.</p>
-          <textarea class="paste-area" id="audit-input" placeholder="Paste audit.log content here (JSONL — one JSON object per line)…"></textarea>
+          <p class="card-desc">Paste the contents of <code>~/.prompt-control-plane/audit.log</code> below. The explorer parses every entry and verifies the SHA-256 hash chain: any modified or deleted line breaks the chain and will be flagged.</p>
+          <textarea class="paste-area" id="audit-input" placeholder="Paste audit.log content here (JSONL: one JSON object per line)…"></textarea>
           <div class="btn-row" style="margin-top:12px;">
             <button class="btn btn-primary" onclick="parseAudit()">Parse &amp; Verify Chain</button>
             <button class="btn btn-secondary" onclick="document.getElementById('audit-input').value='';document.getElementById('audit-results').style.display='none'">Clear</button>
@@ -637,7 +637,7 @@
 
         <div class="card">
           <h3>Add a Rule</h3>
-          <p class="card-desc">Define rules that run on every prompt. BLOCKING rules reject the prompt in enforce mode. NON-BLOCKING rules add to the risk score. Maximum 25 rules. Export the JSON and save to <code>~/.prompt-control-plane/custom-rules.json</code> — the engine loads it automatically. Validate with <code>pcp doctor</code>.</p>
+          <p class="card-desc">Define rules that run on every prompt. BLOCKING rules reject the prompt in enforce mode. NON-BLOCKING rules add to the risk score. Maximum 25 rules. Export the JSON and save to <code>~/.prompt-control-plane/custom-rules.json</code>: the engine loads it automatically. Validate with <code>pcp doctor</code>.</p>
           <div class="form-row">
             <div class="form-group">
               <span class="form-label">Rule ID (must start with a-z, then a-z 0-9 _ · max 64)</span>
@@ -650,12 +650,12 @@
           </div>
           <div class="form-row">
             <div class="form-group">
-              <span class="form-label">Pattern — flag if matched (regex, required, max 500)</span>
+              <span class="form-label">Pattern: flag if matched (regex, required, max 500)</span>
               <input type="text" class="form-control" id="r-pat" placeholder="e.g. (password|api.?key|secret)" oninput="liveRegex('r-pat','r-pat-s')">
               <span id="r-pat-s" style="font-size:0.75rem;margin-top:2px;"></span>
             </div>
             <div class="form-group">
-              <span class="form-label">Negative Pattern — flag if NOT matched (optional)</span>
+              <span class="form-label">Negative Pattern: flag if NOT matched (optional)</span>
               <input type="text" class="form-control" id="r-neg" placeholder="Optional" oninput="liveRegex('r-neg','r-neg-s')">
               <span id="r-neg-s" style="font-size:0.75rem;margin-top:2px;"></span>
             </div>
@@ -672,8 +672,8 @@
             <div class="form-group">
               <span class="form-label">Severity</span>
               <select class="form-control" id="r-severity">
-                <option value="NON-BLOCKING">NON-BLOCKING — adds to risk score</option>
-                <option value="BLOCKING">BLOCKING — rejects in enforce mode</option>
+                <option value="NON-BLOCKING">NON-BLOCKING: adds to risk score</option>
+                <option value="BLOCKING">BLOCKING: rejects in enforce mode</option>
               </select>
             </div>
           </div>
@@ -746,7 +746,7 @@
           </div>
           <div class="quick-card">
             <h4>Quick score a prompt</h4>
-            <p>Instant pass/fail score and top issues — free, no quota used.</p>
+            <p>Instant pass/fail score and top issues: free, no quota used.</p>
             <div class="quick-snippet">Please run a quick check on this prompt: [your prompt]</div>
             <button class="btn btn-secondary btn-sm" onclick="copyText('Please run a quick check on this prompt: ',this)">Copy</button>
           </div>
@@ -758,7 +758,7 @@
           </div>
           <div class="quick-card">
             <h4>View optimization stats</h4>
-            <p>Aggregate metrics across all your sessions — scores, savings, top task types.</p>
+            <p>Aggregate metrics across all your sessions: scores, savings, top task types.</p>
             <div class="quick-snippet">Please show my prompt optimization statistics.</div>
             <button class="btn btn-secondary btn-sm" onclick="copyText('Please show my prompt optimization statistics.',this)">Copy</button>
           </div>
@@ -859,13 +859,13 @@
     }
     function genLock() {
       var pw = document.getElementById('pol-pass').value.trim();
-      if (!pw) { alert('Log in with your enterprise license first — the passphrase is derived automatically.'); return; }
+      if (!pw) { alert('Log in with your enterprise license first: the passphrase is derived automatically.'); return; }
       document.getElementById('policy-cmd').textContent =
         'Please lock the optimizer configuration with the passphrase: ' + pw;
     }
     function genUnlock() {
       var pw = document.getElementById('pol-pass').value.trim();
-      if (!pw) { alert('Log in with your enterprise license first — the passphrase is derived automatically.'); return; }
+      if (!pw) { alert('Log in with your enterprise license first: the passphrase is derived automatically.'); return; }
       document.getElementById('policy-cmd').textContent =
         'Please unlock the optimizer configuration with the passphrase: ' + pw;
     }
@@ -877,8 +877,8 @@
       var dry   = document.getElementById('sess-dry').checked;
       var cmd   = 'Please purge sessions older than ' + age + ' days';
       if (keep > 0) cmd += ', keeping the last ' + keep;
-      cmd += dry ? '. Run as a dry run — show me what would be removed without removing anything.'
-                 : '.';
+      cmd += dry ? '. Run as a dry run: show me what would be removed without removing anything.'
+: '.';
       document.getElementById('session-cmd').textContent = cmd;
     }
 
@@ -897,7 +897,7 @@
       var raw = document.getElementById('audit-input').value.trim();
       if (!raw) return alert('Paste your audit.log content first.');
       var entries = raw.split('\n').filter(l => l.trim()).map(l => { try { return JSON.parse(l); } catch(e) { return null; } }).filter(Boolean);
-      if (!entries.length) return alert('No valid JSON entries found — check the format.');
+      if (!entries.length) return alert('No valid JSON entries found: check the format.');
       var prevHash = '0'.repeat(64);
       auditRows = [];
       for (var e of entries) {
@@ -914,22 +914,22 @@
         stat('Success', auditRows.filter(r => r.outcome==='success').length) +
         stat('Blocked', auditRows.filter(r => r.outcome==='blocked').length, 'var(--red)') +
         stat('Errors', auditRows.filter(r => r.outcome==='error').length, 'var(--orange)') +
-        stat('Chain Breaks', fails, fails ? 'var(--red)' : 'var(--green)');
+        stat('Chain Breaks', fails, fails ? 'var(--red)': 'var(--green)');
       renderAuditRows(auditRows);
       document.getElementById('audit-results').style.display = 'block';
     }
     function renderAuditRows(rows) {
       document.getElementById('audit-tbody').innerHTML = rows.map(r => {
-        var ts = r.timestamp ? new Date(r.timestamp).toLocaleString() : '—';
-        var det = r.details ? Object.entries(r.details).slice(0,3).map(([k,v])=>k+': '+v).join('<br>') : '—';
-        var oc = r.outcome === 'success' ? 'outcome-success' : r.outcome === 'blocked' ? 'outcome-blocked' : 'outcome-error';
+        var ts = r.timestamp ? new Date(r.timestamp).toLocaleString(): ':';
+        var det = r.details ? Object.entries(r.details).slice(0,3).map(([k,v])=>k+': '+v).join('<br>'): ':';
+        var oc = r.outcome === 'success' ? 'outcome-success': r.outcome === 'blocked' ? 'outcome-blocked': 'outcome-error';
         return `<tr>
           <td>${r._n}</td>
           <td style="white-space:nowrap;font-size:0.75rem;">${ts}</td>
-          <td><code style="font-size:0.75rem;">${r.event||'—'}</code></td>
-          <td class="${oc}">${r.outcome||'—'}</td>
+          <td><code style="font-size:0.75rem;">${r.event||':'}</code></td>
+          <td class="${oc}">${r.outcome||':'}</td>
           <td style="font-size:0.75rem;max-width:200px;">${det}</td>
-          <td>${r._ok ? '<span class="chain-ok">✓ OK</span>' : '<span class="chain-fail">✗ BROKEN</span>'}</td>
+          <td>${r._ok ? '<span class="chain-ok">✓ OK</span>': '<span class="chain-fail">✗ BROKEN</span>'}</td>
         </tr>`;
       }).join('');
     }
@@ -1002,8 +1002,8 @@
           </div>
           <p style="font-size:0.8rem;color:var(--text-muted);margin:0 0 8px;">${r.description}</p>
           <div class="rule-meta">
-            ${r.pattern ? `<span>Match: <code>${r.pattern}</code></span>` : ''}
-            ${r.negative_pattern ? `<span>Must include: <code>${r.negative_pattern}</code></span>` : ''}
+            ${r.pattern ? `<span>Match: <code>${r.pattern}</code></span>`: ''}
+            ${r.negative_pattern ? `<span>Must include: <code>${r.negative_pattern}</code></span>`: ''}
             <span>Applies: ${r.applies_to}</span>
             <span>Dimension: ${r.risk_dimension}</span>
             <span>Weight: ${r.risk_weight}/25</span>
@@ -1086,9 +1086,9 @@
       }
       var p = envelope.payload;
       if (!p.tier || !p.issued_at || !p.expires_at || !p.license_id) {
-        return { valid: false, error: 'Malformed license key — missing fields' };
+        return { valid: false, error: 'Malformed license key: missing fields' };
       }
-      // Tier check — enterprise only
+      // Tier check: enterprise only
       if (p.tier !== 'enterprise') {
         return { valid: false, error: 'This console requires an Enterprise license. Your key is ' + p.tier + ' tier. Contact sales to upgrade.' };
       }
@@ -1096,7 +1096,7 @@
       if (p.expires_at !== 'never') {
         var exp = new Date(p.expires_at);
         if (isNaN(exp.getTime()) || exp <= new Date()) {
-          return { valid: false, error: 'License expired on ' + (isNaN(exp.getTime()) ? p.expires_at : exp.toLocaleDateString()) };
+          return { valid: false, error: 'License expired on ' + (isNaN(exp.getTime()) ? p.expires_at: exp.toLocaleDateString()) };
         }
       }
       // Ed25519 signature verification
@@ -1105,14 +1105,14 @@
         var sigBytes = new Uint8Array(envelope.signature_hex.match(/.{2}/g).map(function(h){ return parseInt(h, 16); }));
         var pubKey = await importEdPubKey();
         var ok = await crypto.subtle.verify({ name: 'Ed25519' }, pubKey, sigBytes, new TextEncoder().encode(canonical));
-        if (!ok) return { valid: false, error: 'Invalid license signature — key may be tampered with' };
+        if (!ok) return { valid: false, error: 'Invalid license signature: key may be tampered with' };
       } catch(e) {
         // Ed25519 in WebCrypto requires Chrome 113+, Firefox 113+, Safari 17+
         if (e.name === 'NotSupportedError' || e.name === 'TypeError') {
           // Graceful degradation: allow if format is valid but note limited verification
-          console.warn('WebCrypto Ed25519 not supported — falling back to format-only validation');
+          console.warn('WebCrypto Ed25519 not supported: falling back to format-only validation');
         } else {
-          return { valid: false, error: 'Signature verification failed — use a modern browser (Chrome 113+, Firefox 113+, Safari 17+)' };
+          return { valid: false, error: 'Signature verification failed: use a modern browser (Chrome 113+, Firefox 113+, Safari 17+)' };
         }
       }
       return { valid: true, payload: p };
@@ -1130,7 +1130,7 @@
         btn.textContent = 'Verify License Key';
         return;
       }
-      // Store session (sessionStorage — expires when tab closes)
+      // Store session (sessionStorage: expires when tab closes)
       sessionStorage.setItem(GATE_SESSION_KEY, JSON.stringify({
         key: key, payload: result.payload, verified_at: new Date().toISOString()
       }));
@@ -1145,13 +1145,13 @@
       var bar = document.getElementById('session-bar');
       bar.style.display = 'block';
       document.getElementById('sb-license-id').textContent = 'License ID: ' + payload.license_id;
-      document.getElementById('sb-expiry').textContent = payload.expires_at === 'never' ? '· No expiry' : '· Expires ' + new Date(payload.expires_at).toLocaleDateString();
+      document.getElementById('sb-expiry').textContent = payload.expires_at === 'never' ? '· No expiry': '· Expires ' + new Date(payload.expires_at).toLocaleDateString();
       // Auto-derive lock passphrase from license key (Phase 1.5)
       if (licenseKey) autoDeriveLockPassphrase(licenseKey);
     }
 
     async function autoDeriveLockPassphrase(licenseKey) {
-      // Derive a 32-char hex passphrase from the license key — consistent across sessions
+      // Derive a 32-char hex passphrase from the license key: consistent across sessions
       var hash = await sha256hex(licenseKey + ':pcp-governance-lock:v1');
       var passphrase = hash.slice(0, 32);
       var passEl = document.getElementById('pol-pass');
@@ -1161,7 +1161,7 @@
         passEl.readOnly = true;
       }
       if (noteEl) {
-        noteEl.innerHTML = '✓ Auto-derived from your enterprise license — no need to remember this separately.';
+        noteEl.innerHTML = '✓ Auto-derived from your enterprise license: no need to remember this separately.';
       }
     }
 

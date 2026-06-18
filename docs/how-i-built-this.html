@@ -9,8 +9,8 @@
   <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
   <link rel="manifest" href="site.webmanifest">
   <meta name="robots" content="noindex, nofollow">
-  <title>How I Built Prompt Control Plane — From Idea to Product in 49 Hours</title>
-  <meta name="description" content="The full story of building a governance engine for AI prompts — from zero to 20 MCP tools, 15 CLI subcommands, and auto-check hooks in 7 days. Published on npm and 6+ directories.">
+  <title>How I Built Prompt Control Plane: From Idea to Product in 49 Hours</title>
+  <meta name="description" content="The full story of building a governance engine for AI prompts: from zero to 20 MCP tools, 15 CLI subcommands, and auto-check hooks in 7 days. Published on npm and 6+ directories.">
   <link rel="canonical" href="https://getpcp.site/how-i-built-this.html">
   <meta property="og:title" content="How I Built Prompt Control Plane">
   <meta property="og:description" content="7 days, 70+ commits, 20 MCP tools, 15 CLI subcommands, auto-check hooks. The full story of building a prompt governance engine and turning it into an enterprise product.">
@@ -27,14 +27,14 @@
   {
     "@context": "https://schema.org",
     "@type": "Article",
-    "headline": "How I Built Prompt Control Plane — From Idea to Product in 49 Hours",
+    "headline": "How I Built Prompt Control Plane: From Idea to Product in 49 Hours",
     "author": {
       "@type": "Person",
       "name": "Rishi Banerjee",
       "url": "https://github.com/rishi-banerjee1"
     },
     "datePublished": "2026-02-28",
-    "description": "The full story of building a governance engine for AI prompts — from zero to 20 MCP tools, 15 CLI subcommands, and auto-check hooks in 7 days. Published on npm and 6+ directories.",
+    "description": "The full story of building a governance engine for AI prompts: from zero to 20 MCP tools, 15 CLI subcommands, and auto-check hooks in 7 days. Published on npm and 6+ directories.",
     "mainEntityOfPage": "https://getpcp.site/how-i-built-this.html",
     "publisher": {
       "@type": "Person",
@@ -642,7 +642,7 @@
         <span>18 min read</span>
       </div>
       <div class="hero-tldr">
-        <strong>TL;DR:</strong> I noticed AI tools were wasting time and money because people write vague prompts. I built a prompt governance engine &mdash; deterministic scoring, policy enforcement, and structured compilation &mdash; that governs every prompt before it reaches any LLM. No AI needed inside. Shipped it in under 2 weeks, listed it on 6+ directories, and monetized it with a four-tier model from free to enterprise. Then built a full CLI suite (15 subcommands), auto-check hooks, and a custom domain &mdash; all in 7 days. Total infrastructure cost: $0.
+        <strong>TL;DR:</strong> I noticed AI tools were wasting time and money because people write vague prompts. I built a prompt governance engine: deterministic scoring, policy enforcement, and structured compilation: that governs every prompt before it reaches any LLM. No AI needed inside. Shipped it in under 2 weeks, listed it on 6+ directories, and monetized it with a four-tier model from free to enterprise. Then built a full CLI suite (15 subcommands), auto-check hooks, and a custom domain: all in 7 days. Total infrastructure cost: $0.
       </div>
     </div>
   </header>
@@ -682,17 +682,17 @@
       <!-- Section 1: The Problem -->
       <h2 id="the-problem">The Problem I Kept Running Into</h2>
 
-      <p>I use AI constantly &mdash; for writing, coding, planning, research, emails. Claude is my daily driver. And I kept noticing the same pattern:</p>
+      <p>I use AI constantly: for writing, coding, planning, research, emails. Claude is my daily driver. And I kept noticing the same pattern:</p>
 
       <p><strong>People (including me) are terrible at telling AI what they actually want.</strong></p>
 
-      <p>&ldquo;Make the code better.&rdquo; &ldquo;Fix the login bug.&rdquo; &ldquo;Write me a blog post.&rdquo; These sound reasonable. But they&rsquo;re the AI equivalent of walking into a restaurant and saying &ldquo;give me food.&rdquo; You&rsquo;ll get <em>something</em>, but probably not what you wanted.</p>
+      <p>&ldquo;Make the code better.&rdquo; &ldquo;Fix the login bug.&rdquo; &ldquo;Write me a blog post.&rdquo; These sound reasonable. They are the AI equivalent of walking into a restaurant and saying &ldquo;give me food.&rdquo; You get <em>something</em>, rarely the thing you wanted.</p>
 
       <p>The result? Wasted iterations. Wasted tokens (which cost money). Wasted time going back and forth with the AI trying to clarify what you meant in the first place.</p>
 
       <div class="tldr">
         <div class="tldr-label">TL;DR</div>
-        Vague prompts lead to vague results, which lead to wasted money and time. Everyone knows this, but nobody systematically fixes their prompts before hitting Enter.
+        Vague prompts lead to vague results, which lead to wasted money and time. Everyone knows this. Very few teams systematically fix prompts before hitting Enter.
       </div>
 
       <hr>
@@ -700,11 +700,11 @@
       <!-- Section 2: Aha Moment -->
       <h2 id="aha-moment">The &ldquo;Aha&rdquo; Moment</h2>
 
-      <p>I was reading about <strong>Model Context Protocol (MCP)</strong> &mdash; a new open standard from Anthropic that lets you extend Claude with custom tools. Think of it like plugins for AI: you can give Claude the ability to search databases, control your browser, call APIs, or &mdash; in my case &mdash; analyze and fix prompts before they execute.</p>
+      <p>I was reading about <strong>Model Context Protocol (MCP)</strong>: a new open standard from Anthropic that lets you extend Claude with custom tools. Think of it like plugins for AI: you can give Claude the ability to search databases, control your browser, call APIs, or: in my case: analyze and fix prompts before they execute.</p>
 
-      <p>The idea hit me: <strong>what if there was a tool that sat between you and Claude, intercepting your sloppy prompt, scoring it, restructuring it, and compiling it into a professional instruction set &mdash; all before Claude even sees it?</strong></p>
+      <p>The idea hit me: <strong>what if there was a tool that sat between you and Claude, intercepting your sloppy prompt, scoring it, restructuring it, and compiling it into a professional instruction set: all before Claude even sees it?</strong></p>
 
-      <p>Like a spellchecker, but for AI prompts. And it would do this with zero AI calls &mdash; pure rules and algorithms. That way it&rsquo;s instant, free to run, and deterministic (same input always gives same output).</p>
+      <p>A spellchecker for AI prompts. It would run with zero AI calls: pure rules and algorithms. That makes it instant, free to run, and deterministic (same input always gives same output).</p>
 
       <hr>
 
@@ -713,7 +713,7 @@
 
       <p>Quick explainer for the non-technical crowd:</p>
 
-      <p><strong>MCP (Model Context Protocol)</strong> is a standard that lets you give AI assistants new abilities. Normally, Claude can only chat with you. With MCP, you can give it &ldquo;tools&rdquo; &mdash; specific capabilities that it can call during a conversation.</p>
+      <p><strong>MCP (Model Context Protocol)</strong> is a standard that lets you give AI assistants new abilities. Normally, Claude can only chat with you. With MCP, you can give it &ldquo;tools&rdquo;: specific capabilities that it can call during a conversation.</p>
 
       <p>My MCP gives Claude 20 tools, grouped into four categories:</p>
 
@@ -743,8 +743,8 @@
       <ol>
         <li><strong>Zero AI calls inside.</strong> The optimizer itself makes no API calls. All intelligence comes from rules, patterns, and scoring algorithms. This means it&rsquo;s instant, free to operate, and never produces hallucinated advice.</li>
         <li><strong>Works for any LLM.</strong> The same prompt compiles to different formats: Claude gets XML tags (<code>&lt;role&gt;</code>, <code>&lt;goal&gt;</code>, <code>&lt;constraints&gt;</code>), OpenAI gets system/user splits, and generic targets get Markdown headers. One prompt, three outputs.</li>
-        <li><strong>Nothing ships without user approval.</strong> The MCP never silently finalizes a prompt. If your input is ambiguous, it asks blocking questions first. You review the compiled result, see the quality score and cost estimate, and explicitly approve before anything executes. <code>approve_prompt</code> hard-fails if unanswered questions remain &mdash; the gate is enforced in code, not convention.</li>
-        <li><strong>Four tiers from day one.</strong> Free users get 10 lifetime optimizations &mdash; enough to see the value. Pro and Power unlock higher volume. Enterprise adds policy enforcement, audit trails, and config governance.</li>
+        <li><strong>Nothing ships without user approval.</strong> The MCP never silently finalizes a prompt. If your input is ambiguous, it asks blocking questions first. You review the compiled result, see the quality score and cost estimate, and explicitly approve before anything executes. <code>approve_prompt</code> hard-fails if unanswered questions remain: the gate is enforced in code, not convention.</li>
+        <li><strong>Four tiers from day one.</strong> Free users get 10 lifetime optimizations: enough to see the value. Pro and Power unlock higher volume. Enterprise adds policy enforcement, audit trails, and config governance.</li>
       </ol>
 
       <h3>The Pipeline</h3>
@@ -762,38 +762,38 @@
       </div>
 
       <ol>
-        <li><strong>Analyze</strong> &mdash; What does the user actually want? Is this a coding task, a writing task, research, planning? What are the implicit assumptions? Are there blocking questions?</li>
-        <li><strong>Score</strong> &mdash; Rate the prompt 0&ndash;100 across multiple quality dimensions, each with weighted penalties for specific weaknesses</li>
-        <li><strong>Compile</strong> &mdash; Restructure it with a role definition, success criteria, safety constraints, workflow steps, and uncertainty policies</li>
-        <li><strong>Checklist</strong> &mdash; 9-point structural coverage check (does it have a goal? constraints? inputs? outputs?)</li>
-        <li><strong>Cost Estimate</strong> &mdash; Exact token counts and dollar costs across 10 models from 4 providers</li>
+        <li><strong>Analyze</strong>: What does the user actually want? Is this a coding task, a writing task, research, planning? What are the implicit assumptions? Are there blocking questions?</li>
+        <li><strong>Score</strong>: Rate the prompt 0&ndash;100 across multiple quality dimensions, each with weighted penalties for specific weaknesses</li>
+        <li><strong>Compile</strong>: Restructure it with a role definition, success criteria, safety constraints, workflow steps, and uncertainty policies</li>
+        <li><strong>Checklist</strong>: 9-point structural coverage check (does it have a goal? constraints? inputs? outputs?)</li>
+        <li><strong>Cost Estimate</strong>: Exact token counts and dollar costs across 10 models from 4 providers</li>
       </ol>
 
-      <p>And then the <strong>approval gate</strong>: the user always reviews the compiled prompt before it&rsquo;s used. If the MCP detects ambiguity, it surfaces up to 3 blocking questions that must be answered before the prompt can be approved. <code>approve_prompt</code> hard-fails if unanswered questions remain &mdash; no prompt ships without explicit user sign-off.</p>
+      <p>And then the <strong>approval gate</strong>: the user always reviews the compiled prompt before it&rsquo;s used. If the MCP detects ambiguity, it surfaces up to 3 blocking questions that must be answered before the prompt can be approved. <code>approve_prompt</code> hard-fails if unanswered questions remain: no prompt ships without explicit user sign-off.</p>
 
       <p>Average improvement: <strong>+32 points.</strong> A vague prompt scoring 48/100 comes out at 90/100 after compilation.</p>
 
       <div class="tldr">
         <div class="tldr-label">TL;DR</div>
-        Five deterministic stages turn any prompt from amateur to professional, with a mandatory human approval gate at the end. No AI used in the process &mdash; pure pattern matching and rules.
+        Five deterministic stages turn any prompt from amateur to professional, with a mandatory human approval gate at the end. No AI used in the process: pure pattern matching and rules.
       </div>
 
       <hr>
 
       <!-- Section 5: Building It -->
-      <h2 id="building">Building It &mdash; With AI as My Co-Pilot</h2>
+      <h2 id="building">Building It: With AI as My Co-Pilot</h2>
 
       <p>Here&rsquo;s the irony: I built a prompt governance engine <em>using</em> the AI it&rsquo;s designed to help.</p>
 
-      <p>The entire project was built with <strong>Claude Code</strong> &mdash; Anthropic&rsquo;s AI coding agent. I wrote the architecture, designed the interfaces, and specified what each module should do. Claude wrote the implementation, tests, and documentation.</p>
+      <p>The entire project was built with <strong>Claude Code</strong>: Anthropic&rsquo;s AI coding agent. I wrote the architecture, designed the interfaces, and specified what each module should do. Claude wrote the implementation, tests, and documentation.</p>
 
       <h3>The Stack</h3>
 
       <ul>
-        <li><strong>TypeScript</strong> &mdash; type safety for a rules engine is non-negotiable</li>
-        <li><strong>MCP SDK</strong> &mdash; the official Anthropic library for building MCP servers</li>
-        <li><strong>Zod</strong> &mdash; runtime schema validation for all tool inputs</li>
-        <li><strong>Node.js crypto</strong> &mdash; Ed25519 signatures for license keys (zero external dependencies)</li>
+        <li><strong>TypeScript</strong>: type safety for a rules engine is non-negotiable</li>
+        <li><strong>MCP SDK</strong>: the official Anthropic library for building MCP servers</li>
+        <li><strong>Zod</strong>: runtime schema validation for all tool inputs</li>
+        <li><strong>Node.js crypto</strong>: Ed25519 signatures for license keys (zero external dependencies)</li>
         <li><strong>No database.</strong> Local file storage in <code>~/.prompt-control-plane/</code></li>
       </ul>
 
@@ -801,11 +801,11 @@
 
       <h3>Timeline</h3>
 
-      <p>Here&rsquo;s the actual git log &mdash; the real story is that this was built in 3 intense sessions, not 2 weeks:</p>
+      <p>Here&rsquo;s the actual git log: the real story is that this was built in 3 intense sessions, not 2 weeks:</p>
 
       <ul>
         <li><strong>Session 1 (Feb 26, 1am&ndash;7pm):</strong> 11 commits. Started at 1:18am with the initial server. By 3am, the full pipeline worked. After a break, came back at 3pm to ship the npm package and publish v1.2.</li>
-        <li><strong>Session 2 (Feb 27, 8pm&ndash;11pm):</strong> 3 commits. The big one &mdash; v2.1.0 landed with the 3-tier freemium model, Ed25519 license system, 11 tools, persistent storage.</li>
+        <li><strong>Session 2 (Feb 27, 8pm&ndash;11pm):</strong> 3 commits. The big one: v2.1.0 landed with the 3-tier freemium model, Ed25519 license system, 11 tools, persistent storage.</li>
         <li><strong>Session 3 (Feb 28, 12am&ndash;2am):</strong> 7 commits. Programmatic API, E2E tests, landing page, MCP Registry publication, directory submissions, and these writeup docs.</li>
       </ul>
 
@@ -824,7 +824,7 @@
       <div class="problem-card">
         <div class="problem-number">1</div>
         <h4>Detecting What People Actually Mean</h4>
-        <p>&ldquo;Write a post about my MCP&rdquo; &mdash; is that a coding task or a writing task? The word &ldquo;post&rdquo; could mean a blog post, a social media post, or a POST API endpoint.</p>
+        <p>&ldquo;Write a post about my MCP&rdquo;: is that a coding task or a writing task? The word &ldquo;post&rdquo; could mean a blog post, a social media post, or a POST API endpoint.</p>
         <p>I built a three-layer detection system:</p>
         <ul>
           <li>First, look for <strong>output type</strong> keywords (&ldquo;post&rdquo;, &ldquo;article&rdquo;, &ldquo;tweet&rdquo; &#x2192; writing)</li>
@@ -837,8 +837,8 @@
       <div class="problem-card">
         <div class="problem-number">2</div>
         <h4>Scoring Without Being Arbitrary</h4>
-        <p>It would be easy to slap a score on a prompt and call it a day. But people would immediately ask &ldquo;why did I get a 48?&rdquo; and you&rsquo;d better have a real answer.</p>
-        <p>Each score breaks down into multiple dimensions with clear penalties. Every point deducted has a specific, traceable reason &mdash; vagueness, missing constraints, scope issues. The math is transparent and reproducible.</p>
+        <p>It would be easy to slap a score on a prompt and call it a day. People immediately ask &ldquo;why did I get a 48?&rdquo; The system needs a real answer.</p>
+        <p>Each score breaks down into multiple dimensions with clear penalties. Every point deducted has a specific, traceable reason: vagueness, missing constraints, scope issues. The math is transparent and reproducible.</p>
       </div>
 
       <div class="problem-card">
@@ -846,13 +846,13 @@
         <h4>Offline License Validation</h4>
         <p>Most products phone home to check if you&rsquo;ve paid. I didn&rsquo;t want that. My users might be on planes, behind corporate VPNs, or philosophically opposed to telemetry.</p>
         <p>Solution: <strong>Ed25519 cryptographic signatures.</strong> I sign each license key with a private key (kept secret). The optimizer verifies the signature using only the public key (embedded in the code). No internet required. No server to maintain. No external dependency.</p>
-        <p>The trade-off: if I ever lose the private key, I can&rsquo;t generate new licenses. And if I regenerate the key pair, all existing licenses become invalid. High stakes, but clean design.</p>
+        <p>The trade-off: losing the private key means I can&rsquo;t generate new licenses. Regenerating the key pair invalidates all existing licenses. High stakes. Clean design.</p>
       </div>
 
       <div class="problem-card">
         <div class="problem-number">4</div>
         <h4>The Freemium Gate</h4>
-        <p>How do you meter usage fairly without a server? Local file storage tracks usage counts, but what stops someone from deleting the file?</p>
+        <p>How do you meter usage fairly without a server? Local file storage tracks usage counts. A determined local user can delete the file.</p>
         <p>Answer: nothing. And that&rsquo;s fine. The free tier is a funnel, not a prison. If someone wants to hack around the limit, they&rsquo;re technical enough to have opinions about the product. The license system handles the actual paywall for Pro/Power features.</p>
       </div>
 
@@ -864,7 +864,7 @@
       <hr>
 
       <!-- Section 7: Monetization -->
-      <h2 id="monetization">Monetization &mdash; Making It a Real Product</h2>
+      <h2 id="monetization">Monetization: Making It a Real Product</h2>
 
       <h3>Pricing</h3>
 
@@ -882,7 +882,7 @@
 
       <h3>Payment Infrastructure</h3>
 
-      <p>I used <strong>Razorpay</strong> as the payment processor &mdash; it handles subscriptions, tax compliance, and checkout pages. Total cost: ₹0 until someone pays (they take a percentage of sales, no upfront fee).</p>
+      <p>I used <strong>Razorpay</strong> as the payment processor: it handles subscriptions, tax compliance, and checkout pages. Total cost: ₹0 until someone pays (they take a percentage of sales, no upfront fee).</p>
 
       <h3>The Purchase Flow</h3>
 
@@ -891,10 +891,10 @@
         <li>User completes checkout on Razorpay</li>
         <li>I generate a signed license key (a cryptographic string)</li>
         <li>User enters the license key in Claude &#x2192; <code>set_license</code> tool validates it offline</li>
-        <li>Tier upgrades instantly &mdash; no server round-trip, no &ldquo;checking your subscription&rdquo; delay</li>
+        <li>Tier upgrades instantly: no server round-trip, no &ldquo;checking your subscription&rdquo; delay</li>
       </ol>
 
-      <p>The entire activation happens locally. The license key contains the tier, expiration date, and a cryptographic signature. Nothing else &mdash; no email, no name, no tracking.</p>
+      <p>The entire activation happens locally. The license key contains the tier, expiration date, and a cryptographic signature. Nothing else: no email, no name, no tracking.</p>
 
       <div class="tldr">
         <div class="tldr-label">TL;DR</div>
@@ -904,7 +904,7 @@
       <hr>
 
       <!-- Section 8: Distribution -->
-      <h2 id="distribution">Distribution &mdash; Getting It in Front of People</h2>
+      <h2 id="distribution">Distribution: Getting It in Front of People</h2>
 
       <p>Building the product is half the job. Distribution is the other half.</p>
 
@@ -930,8 +930,8 @@
       <p>Two ways to install, from quickest to most integrated:</p>
 
       <ol>
-        <li><strong>npm global</strong> (recommended) &mdash; <code>npm install -g pcp-engine</code> &mdash; gives you the <code>pcp</code> CLI with 15 subcommands</li>
-        <li><strong>curl</strong> &mdash; <code>curl -fsSL https://getpcp.site/install.sh | bash</code></li>
+        <li><strong>npm global</strong> (recommended): <code>npm install -g pcp-engine</code>: gives you the <code>pcp</code> CLI with 15 subcommands</li>
+        <li><strong>curl</strong>: <code>curl -fsSL https://getpcp.site/install.sh | bash</code></li>
       </ol>
 
       <p>Optionally, add MCP integration for AI-assisted workflows by pasting a JSON config block into your MCP settings file.</p>
@@ -952,7 +952,7 @@
 
       <h3>The npm Token Saga</h3>
 
-      <p>Every. Single. Time. I tried to publish to npm, the auth token would fail with a cryptic &ldquo;one-time password required&rdquo; error. The issue? npm has three types of tokens &mdash; Publish (needs OTP), Read-only, and Automation (no OTP). I kept accidentally using the wrong one across sessions.</p>
+      <p>Every. Single. Time. I tried to publish to npm, the auth token would fail with a cryptic &ldquo;one-time password required&rdquo; error. The issue? npm has three types of tokens: Publish (needs OTP), Read-only, and Automation (no OTP). I kept accidentally using the wrong one across sessions.</p>
 
       <div class="lesson">
         <strong>Lesson learned:</strong> I documented the exact token type and recovery steps in the project docs so no future session makes the same mistake.
@@ -976,7 +976,7 @@
 
       <h3>The MCP Registry&rsquo;s mcpName Requirement</h3>
 
-      <p>The Official MCP Registry requires a special field (<code>mcpName</code>) in your npm package. But you have to publish to npm <em>first</em> with that field, <em>then</em> publish to the registry. I discovered this after multiple failed attempts. Had to bump to v2.2.2 just to add one metadata field.</p>
+      <p>The Official MCP Registry requires a special field (<code>mcpName</code>) in your npm package. The sequence matters: publish to npm <em>first</em> with that field, <em>then</em> publish to the registry. I discovered this after multiple failed attempts. Had to bump to v2.2.2 just to add one metadata field.</p>
 
       <div class="lesson">
         <strong>Lesson learned:</strong> Read the entire docs before starting a submission pipeline. Version bumps are cheap; frustration is expensive.
@@ -987,7 +987,7 @@
       <p>Migrated hosting from GitHub Pages to Cloudflare Pages for v4.0.2. GitHub Pages auto-deploys on push; Cloudflare Pages does not. Every change to <code>docs/</code> requires a manual <code>wrangler pages deploy docs/ --project-name prompt-control-plane</code> step. I learned this the hard way after pushing docs updates and waiting 30 minutes wondering why the live site hadn&rsquo;t changed.</p>
 
       <div class="lesson">
-        <strong>Lesson learned:</strong> Multi-step deployments need explicit handoff steps. Document them, add them to CI, or automate them away. Git push is a dangerous illusion of "done"—especially when your docs site is the product&rsquo;s only interface to the world.
+        <strong>Lesson learned:</strong> Multi-step deployments need explicit handoff steps. Document them, add them to CI, or automate them away. Git push creates a dangerous illusion of "done," especially when your docs site is the product&rsquo;s only interface to the world.
       </div>
 
       <h3>Multi-Release Version Sync Across 15+ Surfaces</h3>
@@ -995,7 +995,7 @@
       <p>Shipped five major releases (v4.0 → v4.1.0) within five days. Each release touched npm (package.json, package-lock.json), GitHub (tags, releases), docs site (11 pages, each with version mentions), README, CHANGELOG, schema docs, and feature matrices. Tool count went 4 → 19 → 20. Keeping version numbers, feature lists, and tier descriptions in sync across all surfaces manually was error-prone. Almost shipped v4.0.2 docs claiming 19 tools when we had 18.</p>
 
       <div class="lesson">
-        <strong>Lesson learned:</strong> Centralize versioning in a single source (one JSON file), then have a build step propagate it everywhere: README, docs site, API references, and changelogs. Never manually edit version numbers in 15 places. Reduce cognitive load; reduce mistakes. The version is the single source of truth—everything else derives from it.
+        <strong>Lesson learned:</strong> Centralize versioning in a single source (one JSON file), then have a build step propagate it everywhere: README, docs site, API references, and changelogs. Never manually edit version numbers in 15 places. Reduce cognitive load; reduce mistakes. The version is the single source of truth. Everything else derives from it.
       </div>
 
       <h3>Content Filtering Across 15+ Public Surfaces</h3>
@@ -1003,7 +1003,7 @@
       <p>For v4.1.0, I stripped internal references (source paths, function names, type names, test counts) from README, CHANGELOG, docs site (11 pages), and API reference to keep public documentation business-focused. The challenge: ensuring consistency across all surfaces. I found outdated paths in one doc, exposed function names in another, and test counts scattered across three pages. Fixing them manually was tedious and error-prone. Almost shipped with internal jargon mixed into marketing copy.</p>
 
       <div class="lesson">
-        <strong>Lesson learned:</strong> Content filters for "public vs internal" should be applied early in the docs pipeline, not retroactively. Consider separate source files for internal vs public content, or use build-time templating to strip sensitive details. One missing filter in one file defeats the entire exercise.
+        <strong>Lesson learned:</strong> Content filters for public and internal material should be applied early in the docs pipeline. Use separate source files or build-time templating to strip sensitive details. One missing filter in one file defeats the entire exercise.
       </div>
 
       <div class="tldr">
@@ -1018,23 +1018,23 @@
 
       <ul>
         <li><strong>Team features:</strong> Shared policy configurations, team-wide audit dashboards, and centralized rule management for organizations running multiple AI agents.</li>
-        <li><strong>Broader ecosystem:</strong> Already works with Claude Desktop, Claude Code, Cursor, Windsurf, and any MCP-compatible client. The v5 CLI means any developer can use it without MCP at all &mdash; just <code>pcp preflight</code> from their terminal.</li>
+        <li><strong>Broader ecosystem:</strong> Already works with Claude Desktop, Claude Code, Cursor, Windsurf, and any MCP-compatible client. The v5 CLI means any developer can use it without MCP at all: just <code>pcp preflight</code> from their terminal.</li>
         <li><strong>Compound knowledge:</strong> Every edge case discovered becomes a new detection rule. 14 rules today, growing. The scoring dimensions, compiler templates, and ambiguity detectors are the product&rsquo;s real moat.</li>
-        <li><strong>Phase B:</strong> Cloud backend (Cloudflare Worker + Supabase + Stripe) to replace local file storage. Same tool contracts, same CLI, same MCP &mdash; only the storage layer swaps.</li>
+        <li><strong>Phase B:</strong> Cloud backend (Cloudflare Worker + Supabase + Stripe) to replace local file storage. Same tool contracts, same CLI, same MCP: only the storage layer swaps.</li>
       </ul>
 
       <hr>
 
       <!-- Section 11: Timeline -->
-      <h2 id="timeline">The Actual Timeline &mdash; 49 Hours, 21 Commits</h2>
+      <h2 id="timeline">The Actual Timeline: 49 Hours, 21 Commits</h2>
 
-      <p>Most &ldquo;how I built this&rdquo; posts hand-wave the timeline. Here&rsquo;s the actual git history &mdash; every commit, timestamped.</p>
+      <p>Most &ldquo;how I built this&rdquo; posts hand-wave the timeline. Here&rsquo;s the actual git history: every commit, timestamped.</p>
 
       <div class="timeline-section">
 
         <!-- Day 1 -->
         <div class="timeline-day">
-          <div class="timeline-day-header">Day 1 &mdash; Feb 26: From Zero to Published</div>
+          <div class="timeline-day-header">Day 1: Feb 26: From Zero to Published</div>
           <div class="timeline-day-summary">11 commits &middot; 5 hours 43 minutes active &middot; Went from zero to a published npm package</div>
 
           <div class="timeline">
@@ -1051,7 +1051,7 @@
             <div class="timeline-item">
               <div class="timeline-dot feature"></div>
               <div class="timeline-time">1:57am</div>
-              <div class="timeline-content">Made the optimizer <strong>universal</strong> &mdash; supports all prompt types, not just code.</div>
+              <div class="timeline-content">Made the optimizer <strong>universal</strong>: supports all prompt types, not just code.</div>
             </div>
             <div class="timeline-item">
               <div class="timeline-dot docs"></div>
@@ -1076,7 +1076,7 @@
           </div>
 
           <div class="timeline-sleep">
-            <div class="timeline-sleep-inner">&#x1f4a4; &nbsp;Sleep break &mdash; 12 hours &nbsp;&#x1f4a4;</div>
+            <div class="timeline-sleep-inner">&#x1f4a4; &nbsp;Sleep break: 12 hours &nbsp;&#x1f4a4;</div>
           </div>
 
           <div class="timeline">
@@ -1088,7 +1088,7 @@
             <div class="timeline-item">
               <div class="timeline-dot feature"></div>
               <div class="timeline-time">6:52pm</div>
-              <div class="timeline-content"><strong>v1.2</strong> &mdash; audience/tone/platform detection, goal enrichment, new rules.</div>
+              <div class="timeline-content"><strong>v1.2</strong>: audience/tone/platform detection, goal enrichment, new rules.</div>
             </div>
             <div class="timeline-item">
               <div class="timeline-dot docs"></div>
@@ -1105,7 +1105,7 @@
 
         <!-- Day 2 -->
         <div class="timeline-day">
-          <div class="timeline-day-header">Day 2 &mdash; Feb 27: The Freemium &amp; License System</div>
+          <div class="timeline-day-header">Day 2: Feb 27: The Freemium &amp; License System</div>
           <div class="timeline-day-summary">3 commits &middot; 2 hours 54 minutes &middot; The entire monetization layer in one sitting</div>
 
           <div class="timeline">
@@ -1129,14 +1129,14 @@
 
         <!-- Day 3 -->
         <div class="timeline-day">
-          <div class="timeline-day-header">Day 3 &mdash; Feb 28: API, Distribution, and Launch</div>
+          <div class="timeline-day-header">Day 3: Feb 28: API, Distribution, and Launch</div>
           <div class="timeline-day-summary">7 commits &middot; 1 hour 49 minutes &middot; Programmatic API, tests, landing page, 6 directory submissions</div>
 
           <div class="timeline">
             <div class="timeline-item">
               <div class="timeline-dot feature"></div>
               <div class="timeline-time">12:27am</div>
-              <div class="timeline-content"><strong>v2.2.0</strong> &mdash; programmatic API, dual entry points, curl installer, E2E tests (129 total).</div>
+              <div class="timeline-content"><strong>v2.2.0</strong>: programmatic API, dual entry points, curl installer, E2E tests (129 total).</div>
             </div>
             <div class="timeline-item">
               <div class="timeline-dot ship"></div>
@@ -1146,7 +1146,7 @@
             <div class="timeline-item">
               <div class="timeline-dot fix"></div>
               <div class="timeline-time">1:17am</div>
-              <div class="timeline-content"><strong>v2.2.1</strong> &mdash; published new Ed25519 public key to npm.</div>
+              <div class="timeline-content"><strong>v2.2.1</strong>: published new Ed25519 public key to npm.</div>
             </div>
             <div class="timeline-item">
               <div class="timeline-dot docs"></div>
@@ -1156,7 +1156,7 @@
             <div class="timeline-item">
               <div class="timeline-dot ship"></div>
               <div class="timeline-time">1:42am</div>
-              <div class="timeline-content"><strong>v2.2.2</strong> &mdash; MCP Registry listing + directory submissions to 6 platforms.</div>
+              <div class="timeline-content"><strong>v2.2.2</strong>: MCP Registry listing + directory submissions to 6 platforms.</div>
             </div>
             <div class="timeline-item">
               <div class="timeline-dot feature"></div>
@@ -1173,30 +1173,30 @@
 
         <!-- Day 4 -->
         <div class="timeline-day">
-          <div class="timeline-day-header">Day 4 &mdash; Mar 1: v4.0.2 Release (Cloudflare Migration)</div>
+          <div class="timeline-day-header">Day 4: Mar 1: v4.0.2 Release (Cloudflare Migration)</div>
           <div class="timeline-day-summary">Migrated hosting, expanded website, shipped trust signals</div>
           <p style="margin: 12px 0 0; font-size: 0.9rem; color: var(--text-muted);"><strong>What happened:</strong> GitHub Pages → Cloudflare Pages for global edge delivery. Website expanded from 5 pages to 11+ (blog, privacy, terms, security). Added Shields.io badges, three-column footer redesign, zero-downtime migration. See <a href="#v4-update">v4.0.2 details</a> below.</p>
         </div>
 
         <!-- Day 5 -->
         <div class="timeline-day">
-          <div class="timeline-day-header">Day 5 &mdash; Mar 2: v4.0.3 Release (Privacy & Contact Infrastructure)</div>
+          <div class="timeline-day-header">Day 5: Mar 2: v4.0.3 Release (Privacy & Contact Infrastructure)</div>
           <div class="timeline-day-summary">Privacy-first contact infrastructure, security hardening</div>
           <p style="margin: 12px 0 0; font-size: 0.9rem; color: var(--text-muted);"><strong>What happened:</strong> Replaced all exposed email addresses with privacy-first contact form (Formspree integration). Broadened from enterprise-only to general audience. Hardened legal pages (privacy.html, terms.html, security.html) by removing internal references and operational details. See <a href="#v4-update">v4.0.3 details</a> below.</p>
         </div>
 
         <!-- Day 6 -->
         <div class="timeline-day">
-          <div class="timeline-day-header">Day 6 &mdash; Mar 3: v4.1.0 Release (Enterprise Console Integration)</div>
+          <div class="timeline-day-header">Day 6: Mar 3: v4.1.0 Release (Enterprise Console Integration)</div>
           <div class="timeline-day-summary">Tool 20, Enterprise Console, terminology refresh, 20-tool platform</div>
-          <p style="margin: 12px 0 0; font-size: 0.9rem; color: var(--text-muted);"><strong>What happened:</strong> Shipped <strong>Tool 20 — save_custom_rules</strong>, enabling Enterprise Console → MCP integration. Build rules visually, click "Copy &amp; Deploy" to paste into any MCP-connected AI assistant. Content filter applied across 15+ public docs: stripped internal paths, function names, type names, test counts. Terminology refresh: "tamper-evident" → "hash-chained" for clarity. See <a href="#v4-update">v4.1.0 details</a> below.</p>
+          <p style="margin: 12px 0 0; font-size: 0.9rem; color: var(--text-muted);"><strong>What happened:</strong> Shipped <strong>Tool 20: save_custom_rules</strong>, enabling Enterprise Console → MCP integration. Build rules visually, click "Copy &amp; Deploy" to paste into any MCP-connected AI assistant. Content filter applied across 15+ public docs: stripped internal paths, function names, type names, test counts. Terminology refresh: "tamper-evident" → "hash-chained" for clarity. See <a href="#v4-update">v4.1.0 details</a> below.</p>
         </div>
 
         <!-- Day 7 -->
         <div class="timeline-day">
-          <div class="timeline-day-header">Day 7 &mdash; Mar 3 (cont.): v5.0.0 Release (Full CLI Suite + Auto-Check Hooks)</div>
+          <div class="timeline-day-header">Day 7: Mar 3 (cont.): v5.0.0 Release (Full CLI Suite + Auto-Check Hooks)</div>
           <div class="timeline-day-summary">15 CLI subcommands, auto-check hooks, custom domain, 832 tests</div>
-          <p style="margin: 12px 0 0; font-size: 0.9rem; color: var(--text-muted);"><strong>What happened:</strong> Built the <strong><code>pcp</code> CLI</strong> with 11 subcommands (preflight, optimize, check, score, classify, route, cost, compress, config, doctor, hook). Added <strong>auto-check hooks</strong> that intercept prompts before they reach the LLM &mdash; install with <code>pcp hook install</code>. Consistent JSON envelope across all output (<code>request_id</code>, <code>schema_version</code>, <code>policy_mode</code>). Policy enforcement via exit code 3. Migrated to custom domain <strong>getpcp.site</strong>. Restructured all install docs CLI-first. 797 tests passing on Day 7 (832 today). See <a href="#v5-update">v5.0.0 details</a> below.</p>
+          <p style="margin: 12px 0 0; font-size: 0.9rem; color: var(--text-muted);"><strong>What happened:</strong> Built the <strong><code>pcp</code> CLI</strong> with 11 subcommands (preflight, optimize, check, score, classify, route, cost, compress, config, doctor, hook). Added <strong>auto-check hooks</strong> that intercept prompts before they reach the LLM: install with <code>pcp hook install</code>. Consistent JSON envelope across all output (<code>request_id</code>, <code>schema_version</code>, <code>policy_mode</code>). Policy enforcement via exit code 3. Migrated to custom domain <strong>getpcp.site</strong>. Restructured all install docs CLI-first. 797 tests passing on Day 7 (832 today). See <a href="#v5-update">v5.0.0 details</a> below.</p>
         </div>
 
         <!-- The Math -->
@@ -1319,7 +1319,7 @@
         <p>Replaced all exposed email addresses in documentation, legal pages, and footer with a general contact form (privacy-first, no SMTP exposure). Added dedicated "Contact" link to footer across all pages. Broadened the contact form from enterprise-only to general audience, with a subject dropdown (General, Support, Enterprise). Implemented post-submission confirmation page and email integration via Formspree. Security-hardened legal pages (privacy.html, terms.html, security.html) to remove internal references and operational details.</p>
 
         <h3>v4.1.0: Enterprise Console Integration</h3>
-        <p>Shipped <strong>Tool 20 — <code>save_custom_rules</code></strong> (March 3, 2026). Enterprises can now build custom governance rules in the Enterprise Console (admin panel), then click "Copy & Deploy" to paste directly into any MCP-connected AI assistant. Rules are validated, sorted deterministically, written with secure file permissions (chmod 600), and return a rule-set hash for reproducibility. Works with any LLM — not Claude-specific. Enterprise Console provides a visual rule editor, policy enforcement dashboard, audit trail viewer, and role-based governance controls. Consolidated all Enterprise Features (Policy Enforcement, Config Lock, Audit Trails, Custom Rules, Session Management) into a dedicated section on the website. Updated terminology across all 15+ public docs: "tamper-evident" → "hash-chained" to describe the integrity verification mechanism. Content filter applied: stripped internal source paths, function names, type names, test counts, and implementation details from README, CHANGELOG, and all website pages to keep the public documentation focused on business value, not implementation.</p>
+        <p>Shipped <strong>Tool 20: <code>save_custom_rules</code></strong> (March 3, 2026). Enterprises can now build custom governance rules in the Enterprise Console (admin panel), then click "Copy & Deploy" to paste directly into any MCP-connected AI assistant. Rules are validated, sorted deterministically, written with secure file permissions (chmod 600), and return a rule-set hash for reproducibility. Works with any LLM: not Claude-specific. Enterprise Console provides a visual rule editor, policy enforcement dashboard, audit trail viewer, and role-based governance controls. Consolidated all Enterprise Features (Policy Enforcement, Config Lock, Audit Trails, Custom Rules, Session Management) into a dedicated section on the website. Updated terminology across all 15+ public docs: "tamper-evident" → "hash-chained" to describe the integrity verification mechanism. Content filter applied: stripped internal source paths, function names, type names, test counts, and implementation details from README, CHANGELOG, and all website pages to keep the public documentation focused on business value, not implementation.</p>
 
         <div class="tldr">
           <div class="tldr-label">TL;DR</div>
@@ -1331,9 +1331,9 @@
 
       <!-- v5 Update -->
       <section id="v5-update">
-        <h2>Update: v5.0.0 &mdash; The Full CLI Suite</h2>
+        <h2>Update: v5.0.0: The Full CLI Suite</h2>
 
-        <p>On the same day as v4.1.0 (March 3), the product took its biggest architectural step: the CLI became the primary developer interface. The MCP remains the AI integration surface, but developers no longer need MCP to use the engine.</p>
+        <p>On the same day as v4.1.0 (March 3), the product took its biggest architectural step: the CLI became the primary developer interface. The MCP remains the AI integration surface. Developers can now use the engine directly from the terminal.</p>
 
         <h3>Interface Hierarchy</h3>
 
@@ -1416,18 +1416,18 @@ pcp hook uninstall</div>
 
       <!-- v5.3 Update -->
       <section id="v53-update">
-        <h2>Update: v5.3.0 &mdash; CI-First Release</h2>
+        <h2>Update: v5.3.0: CI-First Release</h2>
 
         <p>Three weeks after v5.0.0, the product extended further into CI workflows. The CLI became the primary interface for automated pipeline governance.</p>
 
         <h3>GitHub Action PR Comment Bot</h3>
-        <p>The GitHub Action gained a <code>comment: 'true'</code> input that posts a formatted markdown table to every pull request &mdash; per-file scores, pass/fail status, top issues. Updates are idempotent via a <code>&lt;!-- pcp-bot --&gt;</code> marker (no duplicate comments on re-runs). Fork PRs are handled gracefully: catches the 403, emits a notice, skips rather than failing the workflow.</p>
+        <p>The GitHub Action gained a <code>comment: 'true'</code> input that posts a formatted markdown table to every pull request: per-file scores, pass/fail status, top issues. Updates are idempotent via a <code>&lt;!-- pcp-bot --&gt;</code> marker, which keeps one current comment per run. Fork PRs catch 403 errors gracefully, emit a notice, and keep the workflow moving.</p>
 
         <h3>Lightweight Validate API</h3>
         <p>A zero-dependency export for backend integration: <code>import &#x7B; validate &#x7D; from 'pcp-engine/validate'</code>. No MCP dependency. Returns <code>&#x7B; pass, score, threshold, task_type, risk_level, issues[] &#x7D;</code>. Useful for serverless functions and build scripts that need prompt governance without the full MCP stack.</p>
 
         <h3>Benchmark Dataset</h3>
-        <p>15 curated prompts with locked expected scores (&plusmn;3 tolerance), risk levels, and task types. <code>pcp benchmark</code> runs all 15 and reports regressions. Ships in the npm package. Intended as a regression guard &mdash; if a rule change shifts scores on these golden prompts, you know immediately.</p>
+        <p>15 curated prompts with locked expected scores (&plusmn;3 tolerance), risk levels, and task types. <code>pcp benchmark</code> runs all 15 and reports regressions. Ships in the npm package. Intended as a regression guard: if a rule change shifts scores on these golden prompts, you know immediately.</p>
 
         <div class="tldr">
           <div class="tldr-label">TL;DR</div>
@@ -1440,7 +1440,7 @@ pcp hook uninstall</div>
       <!-- Acknowledgments -->
       <section id="acknowledgments">
         <h2>Acknowledgments</h2>
-        <p>Thanks to <strong><a href="https://github.com/aish-varya">@aish-varya</a></strong> for <a href="https://github.com/rishi-banerjee1/prompt-control-plane/pull/1">PR #1</a> — audience/tone/platform detection, goal enrichment, the <code>generic_vague_ask</code> rule, and CLI flags. Several of those ideas shipped directly into v1.2 on Day 1.</p>
+        <p>Thanks to <strong><a href="https://github.com/aish-varya">@aish-varya</a></strong> for <a href="https://github.com/rishi-banerjee1/prompt-control-plane/pull/1">PR #1</a>: audience/tone/platform detection, goal enrichment, the <code>generic_vague_ask</code> rule, and CLI flags. Several of those ideas shipped directly into v1.2 on Day 1.</p>
       </section>
 
       <!-- Closing -->

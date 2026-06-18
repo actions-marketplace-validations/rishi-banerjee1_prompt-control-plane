@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════════════════════════
-   Prompt Control Plane — Shared Design System
+   Prompt Control Plane: Shared Design System
    Dark/Light theme, typography, nav, footer, components
    ═══════════════════════════════════════════════════════════════════════════ */
 
@@ -467,7 +467,7 @@ footer a:hover { color: var(--text); }
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   New Components — ported from Understanding PCP page
+   New Components: ported from Understanding PCP page
    ═══════════════════════════════════════════════════════════════════════════ */
 
 /* ─── Live Demo Block ───────────────────────────────────────────────────── */

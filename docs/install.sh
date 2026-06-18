@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Prompt Control Plane — Quick Installer
+# Prompt Control Plane: Quick Installer
 # Usage: curl -fsSL https://getpcp.site/install.sh | bash
 
 set -euo pipefail
@@ -25,7 +25,7 @@ fi
 
 NODE_VERSION=$(node -v | sed 's/^v//' | cut -d. -f1)
 if [ "$NODE_VERSION" -lt 18 ]; then
-  echo -e "${RED}✗ Node.js $NODE_VERSION found — version 18+ required.${NC}"
+  echo -e "${RED}✗ Node.js $NODE_VERSION found: version 18+ required.${NC}"
   echo "  Upgrade at https://nodejs.org"
   exit 1
 fi

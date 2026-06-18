@@ -8,20 +8,20 @@
   <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
   <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
   <link rel="manifest" href="site.webmanifest">
-  <title>Documentation — Prompt Control Plane | Developer Reference</title>
+  <title>Documentation: Prompt Control Plane | Developer Reference</title>
   <meta name="description" content="Complete developer documentation for Prompt Control Plane. 20 MCP tools, CLI linter, GitHub Action, programmatic API, enterprise features, and architecture reference. Zero LLM calls, fully deterministic.">
   <meta name="keywords" content="prompt control plane docs, pcp CLI, MCP documentation, prompt linter API, prompt governance tools, enterprise prompt policy, audit trail, config lock, developer reference">
   <link rel="canonical" href="https://getpcp.site/docs.html">
 
   <!-- Open Graph -->
-  <meta property="og:title" content="Documentation — Prompt Control Plane">
+  <meta property="og:title" content="Documentation: Prompt Control Plane">
   <meta property="og:description" content="Complete developer documentation for Prompt Control Plane. 20 tools, CLI, GitHub Action, API, enterprise features.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://getpcp.site/docs.html">
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Documentation — Prompt Control Plane">
+  <meta name="twitter:title" content="Documentation: Prompt Control Plane">
   <meta name="twitter:description" content="Complete developer reference. 20 MCP tools, CLI linter, GitHub Action, programmatic API, enterprise governance features.">
 
   <!-- Schema.org structured data -->
@@ -29,8 +29,8 @@
   {
     "@context": "https://schema.org",
     "@type": "TechArticle",
-    "name": "Documentation — Prompt Control Plane",
-    "description": "Complete developer documentation for Prompt Control Plane — 20 MCP tools, CLI linter, GitHub Action, programmatic API, enterprise features.",
+    "name": "Documentation: Prompt Control Plane",
+    "description": "Complete developer documentation for Prompt Control Plane: 20 MCP tools, CLI linter, GitHub Action, programmatic API, enterprise features.",
     "url": "https://getpcp.site/docs.html",
     "isPartOf": {
       "@type": "WebSite",
@@ -543,7 +543,7 @@
       <p>Install the CLI globally, then optionally add MCP integration for AI-assisted workflows.</p>
 
       <div class="callout">
-        <p><strong>Language-agnostic.</strong> Your project can be Python, Java, Go, Rust, C#, Ruby &mdash; any language. Node.js 18+ is only required to run PCP itself. It never touches your codebase.</p>
+        <p><strong>Language-agnostic.</strong> Your project can be Python, Java, Go, Rust, C#, Ruby: any language. Node.js 18+ is only required to run PCP itself. It never touches your codebase.</p>
       </div>
 
       <h4><span class="step-num">1</span> npm global (recommended)</h4>
@@ -565,7 +565,7 @@ pcp preflight <span class="string">"Your prompt here"</span> --json</div>
       <div class="code-block">curl -fsSL https://getpcp.site/install.sh | bash</div>
 
       <h3>Your First Prompt</h3>
-      <p>Three ways to start &mdash; pick the one that fits your workflow:</p>
+      <p>Three ways to start: pick the one that fits your workflow:</p>
 
       <h4>Option A: CLI (fastest)</h4>
       <div class="code-block"><span class="comment"># Pre-flight: classify + score + route + policy check in one call</span>
@@ -589,11 +589,11 @@ pcp hook install --threshold 70</div>
 
       <p><span class="step-num">2</span> <strong>Review the PreviewPack</strong> response. It contains:</p>
       <ul>
-        <li><code>quality_before</code> &mdash; A multi-dimensional score from 0&ndash;100 with traceable deductions</li>
-        <li><code>compiled_prompt</code> &mdash; The structured, optimized prompt formatted for your target LLM</li>
-        <li><code>blocking_questions</code> &mdash; Ambiguities that must be resolved before approval</li>
-        <li><code>cost_estimate</code> &mdash; Token counts and costs across 10 models from 4 providers</li>
-        <li><code>model_recommendation</code> &mdash; The recommended model for this task</li>
+        <li><code>quality_before</code>: A multi-dimensional score from 0&ndash;100 with traceable deductions</li>
+        <li><code>compiled_prompt</code>: The structured, optimized prompt formatted for your target LLM</li>
+        <li><code>blocking_questions</code>: Ambiguities that must be resolved before approval</li>
+        <li><code>cost_estimate</code>: Token counts and costs across 10 models from 4 providers</li>
+        <li><code>model_recommendation</code>: The recommended model for this task</li>
       </ul>
 
       <p><span class="step-num">3</span> <strong>Answer blocking questions</strong> (if any) using <code>refine_prompt</code>:</p>
@@ -606,7 +606,7 @@ pcp hook install --threshold 70</div>
       <div class="code-block">approve_prompt({ session_id: <span class="string">"abc-123"</span> })</div>
 
       <div class="callout">
-        <p><strong>Key principle:</strong> All analysis is deterministic. The same input always produces the same output. Zero LLM calls happen inside the MCP &mdash; all intelligence comes from the host model (Claude, GPT, etc.).</p>
+        <p><strong>Key principle:</strong> All analysis is deterministic. The same input always produces the same output. Zero LLM calls happen inside the MCP: all intelligence comes from the host model (Claude, GPT, etc.).</p>
       </div>
 
 
@@ -615,7 +615,7 @@ pcp hook install --threshold 70</div>
       <!-- ════════════════════════════════════════════════════════════════════ -->
       <h2 id="architecture">Architecture</h2>
 
-      <p>Prompt Control Plane processes your prompts <strong>before</strong> they reach any LLM. It is a pre-LLM quality gate &mdash; every prompt is scored, analyzed, compiled, and policy-checked before execution. Zero LLM calls inside.</p>
+      <p>Prompt Control Plane processes your prompts <strong>before</strong> they reach any LLM. It is a pre-LLM quality gate: every prompt is scored, analyzed, compiled, and policy-checked before execution. Zero LLM calls inside.</p>
 
       <div class="arch-diagram">
         <svg viewBox="0 0 680 700" xmlns="http://www.w3.org/2000/svg">
@@ -640,9 +640,9 @@ pcp hook install --threshold 70</div>
           <!-- Big box: Prompt Control Plane -->
           <rect class="node-rect" x="80" y="72" width="520" height="400" fill="var(--surface)" stroke="var(--accent)" stroke-width="2" stroke-dasharray="6 3" rx="8" />
           <text x="340" y="96" text-anchor="middle" fill="var(--accent)" font-weight="700" font-size="14">Prompt Control Plane</text>
-          <text x="340" y="112" text-anchor="middle" fill="var(--text-muted)" font-size="10">All processing happens here &mdash; before the prompt reaches any LLM</text>
+          <text x="340" y="112" text-anchor="middle" fill="var(--text-muted)" font-size="10">All processing happens here: before the prompt reaches any LLM</text>
 
-          <!-- Policy Gate (Enterprise) — left side -->
+          <!-- Policy Gate (Enterprise): left side -->
           <rect class="node-rect" x="110" y="130" width="160" height="32" fill="var(--surface)" stroke="var(--accent)" />
           <text x="190" y="150" text-anchor="middle" fill="var(--accent)" font-weight="600" font-size="11">Policy Gate</text>
           <text x="190" y="176" text-anchor="middle" fill="var(--text-muted)" font-size="9">Enterprise only</text>
@@ -681,7 +681,7 @@ pcp hook install --threshold 70</div>
           <rect class="node-rect" x="310" y="418" width="260" height="32" fill="var(--surface)" stroke="var(--border)" />
           <text x="440" y="438" text-anchor="middle" fill="var(--text)" font-weight="600" font-size="11">7. Route to Optimal Model</text>
 
-          <!-- Audit Log (Enterprise) — left side bottom -->
+          <!-- Audit Log (Enterprise): left side bottom -->
           <line class="arrow-line" x1="190" y1="176" x2="190" y2="420" stroke="var(--accent)" stroke-dasharray="4 2" />
           <rect class="node-rect" x="110" y="420" width="160" height="32" fill="var(--surface)" stroke="var(--accent)" />
           <text x="190" y="440" text-anchor="middle" fill="var(--accent)" font-weight="600" font-size="11">Audit Log</text>
@@ -713,11 +713,11 @@ pcp hook install --threshold 70</div>
         </svg>
       </div>
 
-      <p>The pipeline analyzes intent, scores quality, detects risks, compiles to your target format, estimates cost across providers, and routes to the optimal model. The result is packaged into a <strong>PreviewPack</strong> for human review &mdash; nothing reaches the LLM until the user approves.</p>
+      <p>The pipeline analyzes intent, scores quality, detects risks, compiles to your target format, estimates cost across providers, and routes to the optimal model. The result is packaged into a <strong>PreviewPack</strong> for human review: nothing reaches the LLM until the user approves.</p>
 
       <!-- Pipeline Deep Dive -->
       <h3 id="pipeline">8 Phases, Every Request</h3>
-      <p>Click any phase to see what happens inside it &mdash; which functions run, what data they produce, and how it feeds the next step.</p>
+      <p>Click any phase to see what happens inside it: which functions run, what data they produce, and how it feeds the next step.</p>
 
       <div class="pipeline-flow" id="pipeline-flow">
         <!-- Nodes injected by JS -->
@@ -729,7 +729,7 @@ pcp hook install --threshold 70</div>
 
       <!-- PreviewPack breakdown -->
       <h3 id="previewpack">What&rsquo;s in a PreviewPack?</h3>
-      <p>Every call to <code>optimize_prompt</code>, <code>refine_prompt</code>, or <code>pre_flight</code> returns a PreviewPack &mdash; a complete analysis bundle for human review before anything is sent to an LLM.</p>
+      <p>Every call to <code>optimize_prompt</code>, <code>refine_prompt</code>, or <code>pre_flight</code> returns a PreviewPack: a complete analysis bundle for human review before anything is sent to an LLM.</p>
 
       <div class="tool-card">
         <table style="width:100%; border-collapse:collapse;">
@@ -817,7 +817,7 @@ pcp hook install --threshold 70</div>
             <tr>
               <td style="padding:8px 12px;"><code>storage_health</code></td>
               <td style="padding:8px 12px;"><code>"ok" | "degraded"</code></td>
-              <td style="padding:8px 12px;">Storage status &mdash; pipeline continues in degraded mode with fail-open semantics</td>
+              <td style="padding:8px 12px;">Storage status: pipeline continues in degraded mode with fail-open semantics</td>
               <td style="padding:8px 12px;"><span class="tag tag-free">All</span></td>
             </tr>
           </tbody>
@@ -826,9 +826,9 @@ pcp hook install --threshold 70</div>
 
       <p style="margin-top:1rem;"><strong>Enterprise-only pipeline stages</strong> that influence the PreviewPack (all configured via the <a href="admin.html" style="color:var(--accent);font-weight:600;">Enterprise Console</a>):</p>
       <ul style="margin-top:0.5rem; padding-left:1.5rem;">
-        <li><strong>Policy Gate</strong> &mdash; can block or warn before compilation begins. Set enforcement mode and strictness in the Enterprise Console.</li>
-        <li><strong>Custom Rules</strong> &mdash; your regex-based rules affect risk score and blocking decisions. Build rules visually in the Enterprise Console and deploy with one click via the <code>save_custom_rules</code> tool. Validate with <code>pcp doctor</code>.</li>
-        <li><strong>Audit Log</strong> &mdash; every decision is written to a hash-chained JSONL log with SHA-256 hash chaining. Explore and verify the chain visually in the Enterprise Console.</li>
+        <li><strong>Policy Gate</strong>: can block or warn before compilation begins. Set enforcement mode and strictness in the Enterprise Console.</li>
+        <li><strong>Custom Rules</strong>: your regex-based rules affect risk score and blocking decisions. Build rules visually in the Enterprise Console and deploy with one click via the <code>save_custom_rules</code> tool. Validate with <code>pcp doctor</code>.</li>
+        <li><strong>Audit Log</strong>: every decision is written to a hash-chained JSONL log with SHA-256 hash chaining. Explore and verify the chain visually in the Enterprise Console.</li>
       </ul>
 
       <!-- ════════════════════════════════════════════════════════════════════ -->
@@ -843,7 +843,7 @@ pcp hook install --threshold 70</div>
         </tr>
         <tr style="border-bottom:1px solid var(--border);">
           <td style="padding:6px 10px;font-weight:600;">Reproducible results</td>
-          <td style="padding:6px 10px;">Run the same prompt twice &mdash; get the same score, same routing, same cost estimate. No randomness, ever.</td>
+          <td style="padding:6px 10px;">Run the same prompt twice: get the same score, same routing, same cost estimate. No randomness, ever.</td>
         </tr>
         <tr style="border-bottom:1px solid var(--border);">
           <td style="padding:6px 10px;font-weight:600;">Accurate cost estimates</td>
@@ -851,7 +851,7 @@ pcp hook install --threshold 70</div>
         </tr>
         <tr style="border-bottom:1px solid var(--border);">
           <td style="padding:6px 10px;font-weight:600;">Reliable quality scores</td>
-          <td style="padding:6px 10px;">Multi-dimensional scoring catches vagueness, missing constraints, scope creep, and hallucination risk &mdash; before the prompt reaches an LLM.</td>
+          <td style="padding:6px 10px;">Multi-dimensional scoring catches vagueness, missing constraints, scope creep, and hallucination risk: before the prompt reaches an LLM.</td>
         </tr>
         <tr style="border-bottom:1px solid var(--border);">
           <td style="padding:6px 10px;font-weight:600;">Safe compression</td>
@@ -870,7 +870,7 @@ pcp hook install --threshold 70</div>
           <td style="padding:6px 10px;">Cryptographically chained log of every decision. If any entry is modified, the chain breaks. <span style="color:var(--text-muted);font-size:11px;">(Enterprise)</span></td>
         </tr>
       </table>
-      <p style="margin-top:12px;font-size:12px;color:var(--text-muted);">Extensively tested. Run the suite yourself to verify &mdash; completes in under 5 seconds.</p>
+      <p style="margin-top:12px;font-size:12px;color:var(--text-muted);">Extensively tested. Run the suite yourself to verify: completes in under 5 seconds.</p>
 
       <!-- ════════════════════════════════════════════════════════════════════ -->
       <!-- TOOL REFERENCE                                                      -->
@@ -937,7 +937,7 @@ pcp hook install --threshold 70</div>
           <div class="param-row"><span class="param-name">target</span> <span class="param-type">"claude" | "openai" | "generic"</span> <span class="param-desc">Output target format (default: "claude")</span></div>
         </div>
         <div class="tool-output">Returns</div>
-        <p class="tool-output-desc"><code>PreviewPack</code> &mdash; Contains <code>session_id</code>, <code>quality_before</code> (0&ndash;100), <code>compiled_prompt</code>, <code>blocking_questions</code>, <code>assumptions</code>, <code>cost_estimate</code>, <code>model_recommendation</code>, <code>compilation_checklist</code>, and <code>changes_made</code>.</p>
+        <p class="tool-output-desc"><code>PreviewPack</code>: Contains <code>session_id</code>, <code>quality_before</code> (0&ndash;100), <code>compiled_prompt</code>, <code>blocking_questions</code>, <code>assumptions</code>, <code>cost_estimate</code>, <code>model_recommendation</code>, <code>compilation_checklist</code>, and <code>changes_made</code>.</p>
       </div>
 
       <!-- check_prompt -->
@@ -1001,7 +1001,7 @@ pcp hook install --threshold 70</div>
           <div class="param-row"><span class="param-name">target</span> <span class="param-type">OutputTarget</span> <span class="param-desc">Provider preference (default: "claude")</span></div>
         </div>
         <div class="tool-output">Returns</div>
-        <p class="tool-output-desc"><code>ModelRecommendation</code> &mdash; Contains <code>primary</code> (model, provider, temperature, maxTokens), <code>fallback</code>, <code>confidence</code> (0&ndash;100), <code>costEstimate</code>, <code>rationale</code>, <code>tradeoffs</code>, <code>savings_vs_default</code>, and <code>decision_path</code> array.</p>
+        <p class="tool-output-desc"><code>ModelRecommendation</code>: Contains <code>primary</code> (model, provider, temperature, maxTokens), <code>fallback</code>, <code>confidence</code> (0&ndash;100), <code>costEstimate</code>, <code>rationale</code>, <code>tradeoffs</code>, <code>savings_vs_default</code>, and <code>decision_path</code> array.</p>
       </div>
 
       <!-- pre_flight -->
@@ -1088,7 +1088,7 @@ pcp hook install --threshold 70</div>
           <div class="param-row"><span class="param-name">target</span> <span class="param-type">OutputTarget</span> <span class="param-desc">Target platform for model recommendations</span></div>
         </div>
         <div class="tool-output">Returns</div>
-        <p class="tool-output-desc"><code>CostEstimate</code> &mdash; Contains <code>input_tokens</code>, <code>estimated_output_tokens</code>, per-model <code>costs</code> array (model, provider, input/output cost in USD), <code>recommended_model</code>, and <code>recommendation_reason</code>.</p>
+        <p class="tool-output-desc"><code>CostEstimate</code>: Contains <code>input_tokens</code>, <code>estimated_output_tokens</code>, per-model <code>costs</code> array (model, provider, input/output cost in USD), <code>recommended_model</code>, and <code>recommendation_reason</code>.</p>
         <p class="tool-output-desc" style="margin-top:8px;font-size:12px;color:var(--text-muted);">Pricing covers models across Anthropic, OpenAI, Google, and Perplexity. Updated regularly. See <a href="models.html" style="color:var(--accent);">Models</a> for supported models.</p>
       </div>
 
@@ -1211,7 +1211,7 @@ pcp hook install --threshold 70</div>
           <span class="tag tag-free">Free</span>
           <span class="tag tag-free">All Plans</span>
         </div>
-        <p class="tool-desc">Activates a Pro, Power, or Enterprise license key. Uses Ed25519 asymmetric signature verification (public key only, offline, zero dependencies). The license payload contains tier, issued_at, expires_at, and license_id &mdash; no PII.</p>
+        <p class="tool-desc">Activates a Pro, Power, or Enterprise license key. Uses Ed25519 asymmetric signature verification (public key only, offline, zero dependencies). The license payload contains tier, issued_at, expires_at, and license_id: no PII.</p>
         <div class="tool-params">
           <div class="tool-params-title">Parameters</div>
           <div class="param-row"><span class="param-name">license_key</span> <span class="param-type">string</span> <span class="param-required">required</span> <span class="param-desc">License key string (starts with pcp_)</span></div>
@@ -1258,7 +1258,7 @@ pcp hook install --threshold 70</div>
           <div class="param-row"><span class="param-name">limit</span> <span class="param-type">number (1-100)</span> <span class="param-desc">Max sessions to return (default: 100)</span></div>
         </div>
         <div class="tool-output">Returns</div>
-        <p class="tool-output-desc"><code>SessionListResponse</code> &mdash; Array of <code>SessionRecord</code> (session_id, state, task_type, quality_before, prompt_hash, target) plus <code>total_sessions</code> and <code>storage_path</code>.</p>
+        <p class="tool-output-desc"><code>SessionListResponse</code>: Array of <code>SessionRecord</code> (session_id, state, task_type, quality_before, prompt_hash, target) plus <code>total_sessions</code> and <code>storage_path</code>.</p>
       </div>
 
       <!-- export_session -->
@@ -1274,7 +1274,7 @@ pcp hook install --threshold 70</div>
           <div class="param-row"><span class="param-name">session_id</span> <span class="param-type">string</span> <span class="param-required">required</span> <span class="param-desc">Session ID to export</span></div>
         </div>
         <div class="tool-output">Returns</div>
-        <p class="tool-output-desc"><code>SessionExport</code> &mdash; Contains raw_prompt, compiled_prompt, quality_before, rule_set_hash, rule_set_version, and metadata (target, task_type, complexity, risk_score, custom_rules_applied, engine_version, policy_mode, policy_hash).</p>
+        <p class="tool-output-desc"><code>SessionExport</code>: Contains raw_prompt, compiled_prompt, quality_before, rule_set_hash, rule_set_version, and metadata (target, task_type, complexity, risk_score, custom_rules_applied, engine_version, policy_mode, policy_hash).</p>
       </div>
 
       <!-- delete_session -->
@@ -1309,7 +1309,7 @@ pcp hook install --threshold 70</div>
           <div class="param-row"><span class="param-name">dry_run</span> <span class="param-type">boolean</span> <span class="param-desc">Preview what would be deleted (default: false)</span></div>
         </div>
         <div class="tool-output">Returns</div>
-        <p class="tool-output-desc"><code>PurgeResult</code> &mdash; <code>deleted_count</code>, <code>retained_count</code>, <code>scanned_count</code>, <code>deleted_session_ids</code> (capped at 100), <code>dry_run</code>, <code>cutoff_date</code>, <code>effective_older_than_days</code>.</p>
+        <p class="tool-output-desc"><code>PurgeResult</code>: <code>deleted_count</code>, <code>retained_count</code>, <code>scanned_count</code>, <code>deleted_session_ids</code> (capped at 100), <code>dry_run</code>, <code>cutoff_date</code>, <code>effective_older_than_days</code>.</p>
       </div>
 
 
@@ -1321,7 +1321,7 @@ pcp hook install --threshold 70</div>
 
       <!-- Enterprise Governance Flow SVG -->
       <h3>Governance Flow</h3>
-      <p>Every prompt runs through a layered decision stack. Custom rules fire first, then the risk scorer, then the policy gate &mdash; in that order, deterministically.</p>
+      <p>Every prompt runs through a layered decision stack. Custom rules fire first, then the risk scorer, then the policy gate: in that order, deterministically.</p>
       <div style="overflow-x:auto;margin:32px 0 48px;">
         <svg viewBox="0 0 960 410" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:940px;display:block;margin:0 auto;font-family:'Inter',system-ui,sans-serif;">
           <defs>
@@ -1433,7 +1433,7 @@ pcp hook install --threshold 70</div>
           <line x1="22" y1="308" x2="288" y2="308" stroke="var(--border)" stroke-width="1"/>
           <text x="22" y="324" fill="var(--orange)" font-size="10" font-weight="600">Advisory (default)</text>
           <text x="22" y="340" fill="var(--text-muted)" font-size="10">Score logged, warning flag set.</text>
-          <text x="22" y="354" fill="var(--text-muted)" font-size="10">Prompt proceeds &mdash; no block.</text>
+          <text x="22" y="354" fill="var(--text-muted)" font-size="10">Prompt proceeds: no block.</text>
           <line x1="22" y1="364" x2="288" y2="364" stroke="var(--border)" stroke-width="1"/>
           <text x="22" y="380" fill="var(--red)" font-size="10" font-weight="600">Enforce (opt-in)</text>
           <text x="22" y="396" fill="var(--text-muted)" font-size="10">Prompt blocked if score &ge; threshold.</text>
@@ -1448,15 +1448,15 @@ pcp hook install --threshold 70</div>
       </div>
 
       <h3>Policy Enforcement <span class="tag-enterprise">Enterprise</span></h3>
-      <p>Switch from advisory mode (issues are reported but never block) to enforce mode, where BLOCKING rules gate every prompt operation.</p>
+      <p>Switch from advisory mode, where issues are reported, to enforce mode, where BLOCKING rules gate every prompt operation.</p>
       <h4>Setup</h4>
       <div class="code-block">configure_optimizer({
   policy_mode: <span class="string">"enforce"</span>
 })</div>
-      <h4>Advisory vs Enforce</h4>
+      <h4>Advisory and Enforce</h4>
       <ul>
-        <li><strong>advisory</strong> (default) &mdash; Rules fire and are reported in the PreviewPack, but no operation is blocked. Suitable for onboarding and iteration.</li>
-        <li><strong>enforce</strong> &mdash; BLOCKING rules prevent <code>approve_prompt</code> from succeeding. The response includes a <code>policy_violations</code> array describing each violation. Risk threshold gating also blocks high-risk prompts from approval.</li>
+        <li><strong>advisory</strong> (default): Rules fire and appear in the PreviewPack. Operations continue, which supports onboarding and iteration.</li>
+        <li><strong>enforce</strong>: BLOCKING rules prevent <code>approve_prompt</code> from succeeding. The response includes a <code>policy_violations</code> array describing each violation. Risk threshold gating also blocks high-risk prompts from approval.</li>
       </ul>
       <h4>When violations are found</h4>
       <p>In enforce mode, <code>approve_prompt</code> returns an error with <code>policy_violations</code> listing each triggered BLOCKING rule (rule_id, description, severity, risk_dimension). The user must resolve the issues via <code>refine_prompt</code> or adjust the prompt before re-attempting approval.</p>
@@ -1499,7 +1499,7 @@ pcp hook install --threshold 70</div>
   unlock: <span class="keyword">true</span>,
   lock_secret: <span class="string">"your-admin-passphrase"</span>
 })</div>
-      <p>The passphrase is stored as a SHA-256 hash only &mdash; never in plaintext. Every lock/unlock attempt (successful or blocked) is audit-logged if the audit trail is enabled.</p>
+      <p>The passphrase is stored as a SHA-256 hash only: never in plaintext. Every lock/unlock attempt (successful or blocked) is audit-logged if the audit trail is enabled.</p>
 
       <h3>Custom Rules <span class="tag-enterprise">Enterprise</span></h3>
       <p>Define organization-specific prompt governance rules that run alongside the built-in rule engine.</p>
@@ -1566,7 +1566,7 @@ purge_sessions({
       <!-- CLI LINTER                                                          -->
       <!-- ════════════════════════════════════════════════════════════════════ -->
       <h2 id="cli">CLI (<code>pcp</code>)</h2>
-      <p>A full CLI exposing the entire scoring, classification, routing, compression, and policy enforcement engine. No MCP dependency &mdash; works in any terminal or CI pipeline. Also available as <code>prompt-lint</code> (backward compatible).</p>
+      <p>A full CLI exposing the entire scoring, classification, routing, compression, and policy enforcement engine. No MCP dependency: works in any terminal or CI pipeline. Also available as <code>prompt-lint</code> (backward compatible).</p>
 
       <h3>Quick Start</h3>
       <div class="code-block"><span class="comment"># Pre-flight: classify + score + route + policy check in one call</span>
@@ -1641,7 +1641,7 @@ pcp optimize --file prompt.txt --json --target claude</div>
 }</div>
 
       <h3>Policy Enforcement</h3>
-      <p>The CLI respects the same governance config as the MCP. When the Enterprise Console sets <code>policy_mode</code> to <code>"enforce"</code>, the CLI blocks prompts that violate BLOCKING rules or exceed risk thresholds &mdash; returning exit code 3 with violation details.</p>
+      <p>The CLI respects the same governance config as the MCP. When the Enterprise Console sets <code>policy_mode</code> to <code>"enforce"</code>, the CLI blocks prompts that violate BLOCKING rules or exceed risk thresholds: returning exit code 3 with violation details.</p>
       <div class="code-block"><span class="comment"># Console writes enforce config, CLI respects it</span>
 pcp config --show --json   <span class="comment"># verify policy_mode</span>
 pcp preflight <span class="string">"vague prompt"</span> --json  <span class="comment"># exit 3 if blocked</span></div>
@@ -1662,10 +1662,10 @@ echo <span class="string">"Write a blog post"</span> | pcp check --threshold 70<
       <!-- HOOKS                                                                -->
       <!-- ════════════════════════════════════════════════════════════════════ -->
       <h2 id="hooks">Auto-Check Hooks</h2>
-      <p>Hooks automatically check every prompt before it reaches the LLM. Works with any MCP client that supports <code>UserPromptSubmit</code> hooks &mdash; Claude Code, Cursor, Windsurf, and others.</p>
+      <p>Hooks automatically check every prompt before it reaches the LLM. Works with any MCP client that supports <code>UserPromptSubmit</code> hooks: Claude Code, Cursor, Windsurf, and others.</p>
 
       <h3>How It Works</h3>
-      <p>When you submit a prompt in your MCP client, the hook silently runs <code>pcp check</code> on it. If the score falls below your threshold, inline feedback is injected into the conversation context &mdash; telling the LLM what to improve. Prompts above the threshold pass through untouched.</p>
+      <p>When you submit a prompt in your MCP client, the hook silently runs <code>pcp check</code> on it. If the score falls below your threshold, inline feedback is injected into the conversation context: telling the LLM what to improve. Prompts above the threshold pass through untouched.</p>
 
       <h3>Install</h3>
       <div class="code-block"><span class="comment"># Install for this project</span>
@@ -1690,8 +1690,8 @@ pcp hook uninstall --global  <span class="comment"># remove global hook</span></
       <h3>What Gets Created</h3>
       <p>The <code>install</code> command creates two files:</p>
       <ul>
-        <li><strong>Hook script</strong> (<code>.claude/hooks/pcp-preflight.mjs</code>) &mdash; runs <code>pcp check</code> on every prompt</li>
-        <li><strong>Settings entry</strong> (<code>.claude/settings.json</code>) &mdash; registers the hook with your MCP client</li>
+        <li><strong>Hook script</strong> (<code>.claude/hooks/pcp-preflight.mjs</code>): runs <code>pcp check</code> on every prompt</li>
+        <li><strong>Settings entry</strong> (<code>.claude/settings.json</code>): registers the hook with your MCP client</li>
       </ul>
       <p>Both are cleaned up completely by <code>uninstall</code>.</p>
 
@@ -1729,9 +1729,9 @@ pcp hook uninstall --global  <span class="comment"># remove global hook</span></
       <table class="data-table">
         <thead><tr><th>Input</th><th>Required</th><th>Default</th><th>Description</th></tr></thead>
         <tbody>
-          <tr><td><code>files</code></td><td>Yes</td><td>&mdash;</td><td>Glob pattern for prompt files</td></tr>
+          <tr><td><code>files</code></td><td>Yes</td><td>N/A</td><td>Glob pattern for prompt files</td></tr>
           <tr><td><code>subcommand</code></td><td>No</td><td>check</td><td>CLI subcommand: check (default), score, preflight</td></tr>
-          <tr><td><code>threshold</code></td><td>No</td><td>&mdash;</td><td>Minimum score (0&ndash;100). Overrides strictness.</td></tr>
+          <tr><td><code>threshold</code></td><td>No</td><td>N/A</td><td>Minimum score (0&ndash;100). Overrides strictness.</td></tr>
           <tr><td><code>strictness</code></td><td>No</td><td>standard</td><td>Preset: standard (60), strict (75), relaxed (40)</td></tr>
           <tr><td><code>version</code></td><td>No</td><td>tag ref</td><td>npm version to install</td></tr>
           <tr><td><code>comment</code></td><td>No</td><td>false</td><td>Post results as PR comment (requires <code>pull-requests: write</code>)</td></tr>
@@ -1740,7 +1740,7 @@ pcp hook uninstall --global  <span class="comment"># remove global hook</span></
       </table>
 
       <h3>PR Comment Bot</h3>
-      <p>When <code>comment: 'true'</code> is set, PCP posts a formatted markdown table to the pull request with per-file scores. Comments are idempotent &mdash; the <code>&lt;!-- pcp-bot --&gt;</code> marker ensures existing comments are updated instead of duplicated.</p>
+      <p>When <code>comment: 'true'</code> is set, PCP posts a formatted markdown table to the pull request with per-file scores. Comments are idempotent: the <code>&lt;!-- pcp-bot --&gt;</code> marker keeps one current comment per run.</p>
       <div class="code-block"><span class="comment"># Enable PR commenting</span>
 - name: Lint prompts
   uses: rishi-banerjee1/prompt-control-plane@v5
@@ -1748,7 +1748,7 @@ pcp hook uninstall --global  <span class="comment"># remove global hook</span></
     files: <span class="string">"prompts/**/*.md"</span>
     comment: <span class="string">'true'</span>
     <span class="comment"># token: ${{ secrets.GITHUB_TOKEN }}  # defaults to github.token</span></div>
-      <p>For fork PRs, the bot gracefully catches 403 errors and emits a <code>core.notice()</code> instead of failing the workflow.</p>
+      <p>For fork PRs, the bot catches 403 errors gracefully and emits a <code>core.notice()</code> while the workflow continues.</p>
 
 
       <!-- ════════════════════════════════════════════════════════════════════ -->
@@ -1788,7 +1788,7 @@ console.<span class="fn">log</span>(result.cost.costs);         <span class="com
       <table class="data-table">
         <thead><tr><th>Category</th><th>What&rsquo;s Available</th></tr></thead>
         <tbody>
-          <tr><td>Convenience</td><td><code>optimize()</code> &mdash; one-call pipeline</td></tr>
+          <tr><td>Convenience</td><td><code>optimize()</code>: one-call pipeline</td></tr>
           <tr><td>Analysis</td><td>Intent parsing, task detection, complexity classification</td></tr>
           <tr><td>Scoring</td><td>Quality scoring, structural checklist generation</td></tr>
           <tr><td>Compilation</td><td>Multi-target prompt compilation, context compression</td></tr>
@@ -1805,8 +1805,8 @@ console.<span class="fn">log</span>(result.cost.costs);         <span class="com
       <table class="data-table">
         <thead><tr><th>Import</th><th>Effect</th></tr></thead>
         <tbody>
-          <tr><td><code>import { optimize } from 'pcp-engine'</code></td><td>Pure API &mdash; no side effects, no server</td></tr>
-          <tr><td><code>import { validate } from 'pcp-engine/validate'</code></td><td>Lightweight validate API &mdash; zero MCP dependency</td></tr>
+          <tr><td><code>import { optimize } from 'pcp-engine'</code></td><td>Pure API: no side effects, no server</td></tr>
+          <tr><td><code>import { validate } from 'pcp-engine/validate'</code></td><td>Lightweight validate API: zero MCP dependency</td></tr>
           <tr><td><code>import 'pcp-engine/server'</code></td><td>Starts MCP stdio server (side-effect import)</td></tr>
         </tbody>
       </table>
@@ -1816,7 +1816,7 @@ console.<span class="fn">log</span>(result.cost.costs);         <span class="com
       <!-- VALIDATE API                                                        -->
       <!-- ════════════════════════════════════════════════════════════════════ -->
       <h2 id="validate-api">Validate API</h2>
-      <p>A lightweight entry point for framework integrations. Zero MCP dependency &mdash; imports only pure analysis modules. Ideal for LangChain guards, OpenAI wrappers, or any pipeline that needs a quick pass/fail check.</p>
+      <p>A lightweight entry point for framework integrations. Zero MCP dependency: imports only pure analysis modules. Ideal for LangChain guards, OpenAI wrappers, or any pipeline that needs a quick pass/fail check.</p>
 
       <h3>Usage</h3>
       <div class="code-block"><span class="keyword">import</span> { validate, quickScore } <span class="keyword">from</span> <span class="string">'pcp-engine/validate'</span>;
@@ -1848,7 +1848,7 @@ console.<span class="fn">log</span>(score);  <span class="comment">// 78</span><
       <!-- BENCHMARK                                                           -->
       <!-- ════════════════════════════════════════════════════════════════════ -->
       <h2 id="benchmark">Benchmark</h2>
-      <p>PCP ships with a curated dataset of 15 prompts spanning all task types and quality tiers. Use it as a regression guard &mdash; scores are locked with &plusmn;3 tolerance, so any rule change that drifts scores will be caught.</p>
+      <p>PCP ships with a curated dataset of 15 prompts spanning all task types and quality tiers. Use it as a regression guard: scores are locked with &plusmn;3 tolerance, so any rule change that drifts scores will be caught.</p>
 
       <h3>Running</h3>
       <div class="code-block"><span class="comment"># Human-readable table</span>
@@ -1858,7 +1858,7 @@ pcp benchmark
 pcp benchmark --json</div>
 
       <h3>Dataset</h3>
-      <p>The dataset lives at <code>benchmarks/prompts.json</code> and ships in the npm package. Each prompt includes expected score (&plusmn;3), expected risk level, and expected task type. The CLI compares actual vs expected and reports regressions.</p>
+      <p>The dataset lives at <code>benchmarks/prompts.json</code> and ships in the npm package. Each prompt includes expected score (&plusmn;3), expected risk level, and expected task type. The CLI compares actual results against expectations and reports regressions.</p>
 
       <h3>CI Integration</h3>
       <div class="code-block"><span class="comment"># Add to your CI pipeline as a regression guard</span>
@@ -1902,7 +1902,7 @@ pcp benchmark --json
     <span class="file">{session-id}.json</span>   <span class="desc"># Individual session files</span></div>
 
       <h3>Storage Health</h3>
-      <p>Every metered tool response includes a <code>storage_health</code> field: <code>"ok"</code> or <code>"degraded"</code>. In degraded mode, the pipeline continues with fail-open semantics (no data loss, but usage may not persist to disk). This design ensures zero downtime even if the filesystem is temporarily unavailable.</p>
+      <p>Every metered tool response includes a <code>storage_health</code> field: <code>"ok"</code> or <code>"degraded"</code>. In degraded mode, the pipeline continues with fail-open semantics. Data remains safe, and usage persistence may resume after filesystem recovery.</p>
 
       <h3>Session Limits</h3>
       <table class="data-table">
@@ -1991,14 +1991,14 @@ pcp benchmark --json
   <script>
   (function(){
     var PIPELINE = [
-      {num:'01',name:'Harden',color:'var(--accent)',desc:'Sanitizes the input before anything else runs. Malformed or adversarial strings are caught here — the rest of the pipeline only ever sees clean input.',output:'A sanitized prompt string, safe for analysis.'},
-      {num:'02',name:'Freemium Gate',color:'var(--orange)',desc:'Checks your lifetime quota, monthly quota, and per-minute rate limit. If you\'re over any limit, the request is rejected immediately with a clear message — it never reaches analysis.',output:'Allowed to proceed, or rejected with your current quota, remaining uses, and a link to upgrade.'},
-      {num:'03',name:'Policy Gate',color:'var(--blue)',desc:'Enterprise only. Evaluates the prompt against your configured policy rules before analysis begins. In enforce mode, any blocking violation stops the request here with a full explanation.',output:'A pass — or a list of policy violations explaining exactly why the prompt was rejected.'},
+      {num:'01',name:'Harden',color:'var(--accent)',desc:'Sanitizes the input before anything else runs. Malformed or adversarial strings are caught here: the rest of the pipeline only ever sees clean input.',output:'A sanitized prompt string, safe for analysis.'},
+      {num:'02',name:'Freemium Gate',color:'var(--orange)',desc:'Checks your lifetime quota, monthly quota, and per-minute rate limit. If you\'re over any limit, the request is rejected immediately with a clear message: it never reaches analysis.',output:'Allowed to proceed, or rejected with your current quota, remaining uses, and a link to upgrade.'},
+      {num:'03',name:'Policy Gate',color:'var(--blue)',desc:'Enterprise only. Evaluates the prompt against your configured policy rules before analysis begins. In enforce mode, any blocking violation stops the request here with a full explanation.',output:'A pass: or a list of policy violations explaining exactly why the prompt was rejected.'},
       {num:'04',name:'Analyze',color:'var(--accent)',desc:'The core of the engine. Determines what the prompt is asking for, who it\'s for, how complex it is, what ambiguities exist, and what questions need answering before it can be compiled.',output:'A complete picture of the prompt: task type, goal, target audience, detected ambiguities, risk score, and any blocking questions.'},
-      {num:'05',name:'Score',color:'var(--green)',desc:'Scores the prompt across 5 independent dimensions — Clarity, Specificity, Completeness, Constraints, and Efficiency — up to 20 points each. Every deduction has a traceable reason.',output:'A quality score from 0 to 100, plus a 9-item structural checklist showing exactly what\'s present and what\'s missing.'},
-      {num:'06',name:'Compile',color:'var(--accent)',desc:'Produces the final structured prompt in your chosen output format — Claude XML, OpenAI system/user, or plain Markdown. Adds context the original prompt was missing: role, goal, constraints, workflow.',output:'The compiled prompt in your target format, ready to use, along with a list of changes made.'},
-      {num:'07',name:'Estimate',color:'var(--orange)',desc:'Calculates token count and estimated cost across all supported providers. Then runs a two-step routing analysis to recommend which model best fits your task, risk level, budget, and latency needs.',output:'Cost breakdown across providers, a recommended model, estimated savings versus a baseline, and the reasoning behind the recommendation.'},
-      {num:'08',name:'Build &amp; Return',color:'var(--red)',desc:'Packages everything into the final result, saves the session, records usage, and writes to the audit trail (if enabled). Usage is only counted after a successful result — failed requests are never metered.',output:'The complete result: quality score, compiled prompt, cost estimate, detected issues, and a session ID you can use to refine or export later.'}
+      {num:'05',name:'Score',color:'var(--green)',desc:'Scores the prompt across 5 independent dimensions: Clarity, Specificity, Completeness, Constraints, and Efficiency: up to 20 points each. Every deduction has a traceable reason.',output:'A quality score from 0 to 100, plus a 9-item structural checklist showing exactly what\'s present and what\'s missing.'},
+      {num:'06',name:'Compile',color:'var(--accent)',desc:'Produces the final structured prompt in your chosen output format: Claude XML, OpenAI system/user, or plain Markdown. Adds context the original prompt was missing: role, goal, constraints, workflow.',output:'The compiled prompt in your target format, ready to use, along with a list of changes made.'},
+      {num:'07',name:'Estimate',color:'var(--orange)',desc:'Calculates token count and estimated cost across all supported providers. Then runs a two-step routing analysis to recommend which model best fits your task, risk level, budget, and latency needs.',output:'Cost breakdown across providers, a recommended model, estimated savings against a baseline, and the reasoning behind the recommendation.'},
+      {num:'08',name:'Build &amp; Return',color:'var(--red)',desc:'Packages everything into the final result, saves the session, records usage, and writes to the audit trail (if enabled). Usage is only counted after a successful result: failed requests are never metered.',output:'The complete result: quality score, compiled prompt, cost estimate, detected issues, and a session ID you can use to refine or export later.'}
     ];
 
     var flow = document.getElementById('pipeline-flow');

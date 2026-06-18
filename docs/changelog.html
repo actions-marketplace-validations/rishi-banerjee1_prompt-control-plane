@@ -8,20 +8,20 @@
   <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
   <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
   <link rel="manifest" href="site.webmanifest">
-  <title>Changelog &mdash; Prompt Control Plane | Release History</title>
+  <title>Changelog: Prompt Control Plane | Release History</title>
   <meta name="description" content="Full release history for Prompt Control Plane. Every version, every change, from v1.0.0 to the latest release. Deterministic prompt governance for LLM applications.">
   <meta name="keywords" content="prompt control plane changelog, prompt governance releases, prompt control plane updates, MCP server versions, prompt governance updates">
   <link rel="canonical" href="https://getpcp.site/changelog.html">
 
   <!-- Open Graph -->
-  <meta property="og:title" content="Changelog &mdash; Prompt Control Plane">
+  <meta property="og:title" content="Changelog: Prompt Control Plane">
   <meta property="og:description" content="Full release history for Prompt Control Plane. Every version, every change, full transparency.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://getpcp.site/changelog.html">
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Changelog &mdash; Prompt Control Plane">
+  <meta name="twitter:title" content="Changelog: Prompt Control Plane">
   <meta name="twitter:description" content="Full release history for Prompt Control Plane. Every version, every change, full transparency.">
 
   <!-- Schema.org structured data -->
@@ -29,7 +29,7 @@
   {
     "@context": "https://schema.org",
     "@type": "WebPage",
-    "name": "Changelog &mdash; Prompt Control Plane",
+    "name": "Changelog: Prompt Control Plane",
     "description": "Full release history for Prompt Control Plane. Every version, every change.",
     "url": "https://getpcp.site/changelog.html",
     "isPartOf": {
@@ -309,9 +309,9 @@
             </div>
             <div class="release-title">Dependency Security Remediation</div>
             <ul class="release-changes">
-              <li><strong>Root package audit clean</strong> &mdash; refreshed vulnerable transitive dependencies behind the MCP SDK, including <code>hono</code>, <code>@hono/node-server</code>, <code>fast-uri</code>, <code>qs</code>, <code>ip-address</code>, and <code>express-rate-limit</code></li>
-              <li><strong>Video explainer audit clean</strong> &mdash; updated the Remotion toolchain and vulnerable <code>ws</code>, <code>postcss</code>, <code>esbuild</code>, and <code>fast-uri</code> transitives</li>
-              <li><strong>Verification</strong> &mdash; root build, full test suite, CLI smoke test, and npm audit checks all pass</li>
+              <li><strong>Root package audit clean</strong>: refreshed vulnerable transitive dependencies behind the MCP SDK, including <code>hono</code>, <code>@hono/node-server</code>, <code>fast-uri</code>, <code>qs</code>, <code>ip-address</code>, and <code>express-rate-limit</code></li>
+              <li><strong>Video explainer audit clean</strong>: updated the Remotion toolchain and vulnerable <code>ws</code>, <code>postcss</code>, <code>esbuild</code>, and <code>fast-uri</code> transitives</li>
+              <li><strong>Verification</strong>: root build, full test suite, CLI smoke test, and npm audit checks all pass</li>
             </ul>
           </div>
         </div>
@@ -326,9 +326,9 @@
             </div>
             <div class="release-title">Dependency Updates</div>
             <ul class="release-changes">
-              <li><strong>zod</strong> &mdash; upgraded from 3.25.76 to 4.3.6</li>
-              <li><strong>@types/node</strong> &mdash; upgraded from 22.19.11 to 25.3.5 (dev)</li>
-              <li><strong>CI actions</strong> &mdash; setup-node v4 &rarr; v6, codeql-action v3 &rarr; v4, github-script v7 &rarr; v8</li>
+              <li><strong>zod</strong>: upgraded from 3.25.76 to 4.3.6</li>
+              <li><strong>@types/node</strong>: upgraded from 22.19.11 to 25.3.5 (dev)</li>
+              <li><strong>CI actions</strong>: setup-node v4 &rarr; v6, codeql-action v3 &rarr; v4, github-script v7 &rarr; v8</li>
             </ul>
           </div>
         </div>
@@ -343,11 +343,11 @@
             </div>
             <div class="release-title">Deep Audit &amp; Enterprise Console Fix</div>
             <ul class="release-changes">
-              <li><strong>Enterprise Console audit</strong> &mdash; Fixed nav structure to match standard pattern, corrected audit file path (<code>audit.jsonl</code> &rarr; <code>audit.log</code>), added missing <code>save_custom_rules</code> event type to audit filter, standardized footer</li>
-              <li><strong>CI command fix</strong> &mdash; Corrected wrong <code>npx pcp-engine pcp check</code> commands in docs (should be <code>pcp check</code> after global install)</li>
-              <li><strong>Provider count fix</strong> &mdash; features.html SVG corrected from 5 to 4 providers</li>
-              <li><strong>Pricing date fix</strong> &mdash; models.html updated to March 2026 (was February)</li>
-              <li><strong>Video v2</strong> &mdash; Scene transitions, peppy background music, honest cost comparison, removed test count display</li>
+              <li><strong>Enterprise Console audit</strong>: Fixed nav structure to match standard pattern, corrected audit file path (<code>audit.jsonl</code> &rarr; <code>audit.log</code>), added missing <code>save_custom_rules</code> event type to audit filter, standardized footer</li>
+              <li><strong>CI command fix</strong>: Corrected wrong <code>npx pcp-engine pcp check</code> commands in docs (should be <code>pcp check</code> after global install)</li>
+              <li><strong>Provider count fix</strong>: features.html SVG corrected from 5 to 4 providers</li>
+              <li><strong>Pricing date fix</strong>: models.html updated to March 2026 (was February)</li>
+              <li><strong>Video v2</strong>: Scene transitions, peppy background music, honest cost comparison, removed test count display</li>
             </ul>
           </div>
         </div>
@@ -362,11 +362,11 @@
             </div>
             <div class="release-title">Accuracy &amp; Docs Audit</div>
             <ul class="release-changes">
-              <li><strong>Honest cost comparison</strong> &mdash; Fixed savings display that clamped negative values to 0%. When routing to a pricier model (e.g., Sonnet vs GPT-4o baseline), the CLI and MCP now honestly show &ldquo;X% more expensive&rdquo; instead of &ldquo;Comparable cost.&rdquo;</li>
-              <li><strong>Model count corrected</strong> &mdash; 11 &rarr; 10 across all pages (matches actual PRICING_DATA: 3 Anthropic + 3 OpenAI + 2 Google + 2 Perplexity)</li>
-              <li><strong>Free tier updated</strong> &mdash; why.html and terms.html now correctly reflect 50 optimizations/month (was showing stale &ldquo;10 lifetime&rdquo; from pre-v5.1.0)</li>
-              <li><strong>Nav standardized</strong> &mdash; All 15 pages now share the same canonical nav: Features | Models | Docs | Pricing | Changelog. Removed stale Home and Enterprise Console links.</li>
-              <li><strong>Docs expanded</strong> &mdash; Added Validate API, Benchmark, and PR Comment Bot sections to docs.html. Added 4 missing CLI subcommands to reference table.</li>
+              <li><strong>Honest cost comparison</strong>: Fixed savings display that clamped negative values to 0%. When routing to a pricier model, such as Sonnet against a GPT-4o baseline, the CLI and MCP now show &ldquo;X% more expensive&rdquo; accurately.</li>
+              <li><strong>Model count corrected</strong>: 11 &rarr; 10 across all pages (matches actual PRICING_DATA: 3 Anthropic + 3 OpenAI + 2 Google + 2 Perplexity)</li>
+              <li><strong>Free tier updated</strong>: why.html and terms.html now correctly reflect 50 optimizations/month (was showing stale &ldquo;10 lifetime&rdquo; from pre-v5.1.0)</li>
+              <li><strong>Nav standardized</strong>: All 15 pages now share the same canonical nav: Features | Models | Docs | Pricing | Changelog. Removed stale Home and Enterprise Console links.</li>
+              <li><strong>Docs expanded</strong>: Added Validate API, Benchmark, and PR Comment Bot sections to docs.html. Added 4 missing CLI subcommands to reference table.</li>
               <li>Pricing version updated to 2026-03</li>
             </ul>
           </div>
@@ -382,11 +382,11 @@
             </div>
             <div class="release-title">CI-First Release</div>
             <ul class="release-changes">
-              <li><strong>GitHub Action PR Comment Bot</strong> &mdash; <code>comment: 'true'</code> posts a formatted markdown table to every PR with per-file scores, pass/fail status, and top issues. Idempotent updates via <code>&lt;!-- pcp-bot --&gt;</code> marker.</li>
-              <li><strong>Lightweight Validate API</strong> &mdash; <code>import { validate } from 'pcp-engine/validate'</code> for any Node.js backend. Zero MCP dependency.</li>
-              <li><strong>Benchmark Dataset + CLI</strong> &mdash; 15 curated prompts with locked expected scores (&plusmn;3 tolerance). <code>pcp benchmark</code> for regression testing.</li>
-              <li><strong>4 new CLI subcommands</strong> &mdash; <code>benchmark</code>, <code>demo</code>, <code>report</code>, <code>badge</code> (11 &rarr; 15 total)</li>
-              <li><strong>Product explainer video</strong> &mdash; 5-minute enterprise-ready walkthrough embedded on landing page</li>
+              <li><strong>GitHub Action PR Comment Bot</strong>: <code>comment: 'true'</code> posts a formatted markdown table to every PR with per-file scores, pass/fail status, and top issues. Idempotent updates via <code>&lt;!-- pcp-bot --&gt;</code> marker.</li>
+              <li><strong>Lightweight Validate API</strong>: <code>import { validate } from 'pcp-engine/validate'</code> for any Node.js backend. Zero MCP dependency.</li>
+              <li><strong>Benchmark Dataset + CLI</strong>: 15 curated prompts with locked expected scores (&plusmn;3 tolerance). <code>pcp benchmark</code> for regression testing.</li>
+              <li><strong>4 new CLI subcommands</strong>: <code>benchmark</code>, <code>demo</code>, <code>report</code>, <code>badge</code> (11 &rarr; 15 total)</li>
+              <li><strong>Product explainer video</strong>: 5-minute enterprise-ready walkthrough embedded on landing page</li>
               <li>832 tests across 38 test files</li>
             </ul>
           </div>
@@ -402,12 +402,12 @@
             </div>
             <div class="release-title">GitHub Format &amp; Docs Fixes</div>
             <ul class="release-changes">
-              <li><strong>GitHub format fix</strong> &mdash; <code>--format github</code>: confidence now reads from lint result instead of hardcoded <code>n/a</code></li>
-              <li><strong>Severity fix</strong> &mdash; Passing prompts now emit <code>::notice</code> instead of <code>::warning</code> (correct severity level)</li>
-              <li><strong>Annotation fix</strong> &mdash; Confidence included in error annotations too</li>
-              <li><strong>README</strong> &mdash; Added <code>pcp demo</code>, <code>pcp badge</code>, <code>pcp report</code> to CLI examples; <code>demo</code>/<code>badge</code>/<code>report</code> now listed under &ldquo;All subcommands&rdquo;</li>
-              <li><strong>README</strong> &mdash; Added <code>--format github</code>, <code>--warn-only</code>, <code>--output</code> CI flags documentation</li>
-              <li><strong>README</strong> &mdash; Architecture diagram upgraded from ASCII art to Mermaid flowchart</li>
+              <li><strong>GitHub format fix</strong>: <code>--format github</code>: confidence now reads from the lint result, replacing the old hardcoded <code>n/a</code></li>
+              <li><strong>Severity fix</strong>: Passing prompts now emit the correct <code>::notice</code> severity level</li>
+              <li><strong>Annotation fix</strong>: Confidence included in error annotations too</li>
+              <li><strong>README</strong>: Added <code>pcp demo</code>, <code>pcp badge</code>, <code>pcp report</code> to CLI examples; <code>demo</code>/<code>badge</code>/<code>report</code> now listed under &ldquo;All subcommands&rdquo;</li>
+              <li><strong>README</strong>: Added <code>--format github</code>, <code>--warn-only</code>, <code>--output</code> CI flags documentation</li>
+              <li><strong>README</strong>: Architecture diagram upgraded from ASCII art to Mermaid flowchart</li>
             </ul>
           </div>
         </div>
@@ -422,19 +422,19 @@
             </div>
             <div class="release-title">CLI Expansion + Modular Architecture</div>
             <ul class="release-changes">
-              <li><strong><code>pcp demo</code></strong> &mdash; Guided first-run experience with example prompts</li>
-              <li><strong><code>pcp badge</code></strong> &mdash; Generates shields.io PQS badge markdown for README</li>
-              <li><strong><code>pcp report</code></strong> &mdash; Produces <code>prompt-quality.json</code> + <code>prompt-quality.md</code> artifacts</li>
-              <li><strong><code>--format github</code></strong> &mdash; Outputs <code>::warning</code>/<code>::error</code> annotations for PR inline display</li>
-              <li><strong><code>--warn-only</code></strong> &mdash; Advisory CI mode (exit 0 even on failures)</li>
-              <li><strong><code>--output &lt;dir&gt;</code></strong> &mdash; Custom output directory for report files</li>
-              <li><strong>GitHub Action step summary</strong> &mdash; Markdown quality table in <code>$GITHUB_STEP_SUMMARY</code></li>
-              <li><strong>Confidence levels</strong> &mdash; Shown in check, score, and preflight human output</li>
-              <li><strong>PQS branding</strong> &mdash; &ldquo;Prompt Quality Score&rdquo; consistent branding throughout CLI output</li>
-              <li><strong>Modular tools architecture</strong> &mdash; Split 1957-line <code>tools.ts</code> into 6 focused files in <code>src/tools/</code></li>
-              <li><strong>MIGRATION.md</strong> &mdash; Step-by-step migration guide from old package names</li>
-              <li><strong>PQS_SPEC.md</strong> &mdash; Formal scoring specification</li>
-              <li><strong>Examples directory</strong> &mdash; 6 real-world prompt examples covering various quality levels</li>
+              <li><strong><code>pcp demo</code></strong>: Guided first-run experience with example prompts</li>
+              <li><strong><code>pcp badge</code></strong>: Generates shields.io PQS badge markdown for README</li>
+              <li><strong><code>pcp report</code></strong>: Produces <code>prompt-quality.json</code> + <code>prompt-quality.md</code> artifacts</li>
+              <li><strong><code>--format github</code></strong>: Outputs <code>::warning</code>/<code>::error</code> annotations for PR inline display</li>
+              <li><strong><code>--warn-only</code></strong>: Advisory CI mode (exit 0 even on failures)</li>
+              <li><strong><code>--output &lt;dir&gt;</code></strong>: Custom output directory for report files</li>
+              <li><strong>GitHub Action step summary</strong>: Markdown quality table in <code>$GITHUB_STEP_SUMMARY</code></li>
+              <li><strong>Confidence levels</strong>: Shown in check, score, and preflight human output</li>
+              <li><strong>PQS branding</strong>: &ldquo;Prompt Quality Score&rdquo; consistent branding throughout CLI output</li>
+              <li><strong>Modular tools architecture</strong>: Split 1957-line <code>tools.ts</code> into 6 focused files in <code>src/tools/</code></li>
+              <li><strong>MIGRATION.md</strong>: Step-by-step migration guide from old package names</li>
+              <li><strong>PQS_SPEC.md</strong>: Formal scoring specification</li>
+              <li><strong>Examples directory</strong>: 6 real-world prompt examples covering various quality levels</li>
               <li>8 golden snapshot tests for CLI output format stability</li>
             </ul>
           </div>
@@ -455,8 +455,8 @@
               <li><strong>CI pipeline</strong> added with Node 18/20/22 matrix testing</li>
               <li><strong>ReDoS protection</strong> for custom regex rules</li>
               <li><strong>Fail-closed enforcement</strong> in enterprise enforce mode</li>
-              <li><strong>Scoring honesty</strong> &mdash; quality score reflects input prompt only, compiled output gets structural checklist</li>
-              <li><strong>Documentation accuracy</strong> &mdash; fixed dependency count (3, not 2), model count (10, not 11), version alignment</li>
+              <li><strong>Scoring honesty</strong>: quality score reflects input prompt only, compiled output gets structural checklist</li>
+              <li><strong>Documentation accuracy</strong>: fixed dependency count (3, not 2), model count (10, not 11), version alignment</li>
               <li><strong>USD pricing</strong> added alongside INR</li>
               <li>CLAUDE.md and CONTRIBUTING.md added</li>
             </ul>
@@ -505,8 +505,8 @@
             </div>
             <div class="release-title">CLI Auto-Check Hooks</div>
             <ul class="release-changes">
-              <li><strong>CLI auto-check hooks</strong> &mdash; <code>pcp hook install</code> for UserPromptSubmit integration</li>
-              <li><strong><code>pcp doctor</code></strong> &mdash; installation health checker</li>
+              <li><strong>CLI auto-check hooks</strong>: <code>pcp hook install</code> for UserPromptSubmit integration</li>
+              <li><strong><code>pcp doctor</code></strong>: installation health checker</li>
               <li><strong><code>pcp hook</code></strong> subcommands for managing prompt hooks</li>
               <li>787 tests passing</li>
             </ul>
@@ -523,7 +523,7 @@
             </div>
             <div class="release-title">Enterprise Console Integration</div>
             <ul class="release-changes">
-              <li><strong>Tool 20 &mdash; <code>save_custom_rules</code></strong>: Deploy custom governance rules from the Enterprise Console to Prompt Control Plane. Validates, sorts deterministically, and returns a rule-set hash.</li>
+              <li><strong>Tool 20: <code>save_custom_rules</code></strong>: Deploy custom governance rules from the Enterprise Console to Prompt Control Plane. Validates, sorts deterministically, and returns a rule-set hash.</li>
               <li><strong>Enterprise Console &rarr; Product bridge</strong>: Build rules in the visual editor, click &ldquo;Copy &amp; Deploy&rdquo;, paste into any MCP-connected AI assistant. Works with any LLM.</li>
               <li>Consolidated Enterprise Features section in README with pricing table rows</li>
               <li>Terminology updated: &ldquo;Tamper-evident&rdquo; &rarr; &ldquo;Hash-chained&rdquo; across all public docs</li>
@@ -740,7 +740,7 @@
             <div class="release-title">Monetization</div>
             <ul class="release-changes">
               <li>Three-tier pricing: Free, Pro, and Power with usage-based metering</li>
-              <li>Ed25519 offline license activation &mdash; no accounts, no network calls</li>
+              <li>Ed25519 offline license activation: no accounts, no network calls</li>
               <li>Multi-LLM output targets: Claude XML, OpenAI system/user, and generic Markdown</li>
               <li>Six new tools bringing the total to 11</li>
             </ul>
@@ -761,7 +761,7 @@
               <li>Quality scoring on a 0&ndash;100 scale across five dimensions</li>
               <li>Structured prompt compilation targeting Claude&rsquo;s XML format</li>
               <li>Session management for iterative prompt refinement</li>
-              <li>Zero LLM calls &mdash; fully deterministic, runs entirely offline</li>
+              <li>Zero LLM calls: fully deterministic, runs entirely offline</li>
             </ul>
           </div>
         </div>

@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════════════════════════
-   Prompt Control Plane — Shared JS
+   Prompt Control Plane: Shared JS
    Theme toggle (dark/light), mobile nav toggle
    ═══════════════════════════════════════════════════════════════════════════ */
 
@@ -12,7 +12,7 @@
   function getPreferred() {
     const saved = localStorage.getItem(THEME_KEY);
     if (saved === 'light' || saved === 'dark') return saved;
-    return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+    return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light': 'dark';
   }
 
   function applyTheme(theme) {
@@ -40,7 +40,7 @@
     document.querySelectorAll('.theme-toggle').forEach(function (btn) {
       btn.addEventListener('click', function () {
         var current = document.documentElement.getAttribute('data-theme') || 'dark';
-        applyTheme(current === 'dark' ? 'light' : 'dark');
+        applyTheme(current === 'dark' ? 'light': 'dark');
       });
     });
 
