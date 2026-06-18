@@ -39,7 +39,7 @@
 ## [5.3.1] - 2026-03-06
 
 ### Fixed
-- Cost comparison: negative savings now correctly shown as "X% more expensive" instead of clamping to "Comparable cost"
+- Cost comparison: negative savings now correctly shown as "X% more expensive"; removed the old "Comparable cost" clamp
 - Model count: corrected from 11 to 10 across all pages (matches actual PRICING_DATA: 3 Anthropic + 3 OpenAI + 2 Google + 2 Perplexity)
 - Free tier display: why.html and terms.html now correctly show 50 optimizations/month (was stale "10 lifetime" from pre-v5.1.0)
 - Nav: standardized across all 15 pages to canonical set (Features | Models | Docs | Pricing | Changelog)
@@ -52,7 +52,7 @@
 - **GitHub Action PR Comment Bot**: `comment: 'true'` posts a formatted markdown table to every PR. Idempotent updates via `<!-- pcp-bot -->` marker. Graceful fork PR handling (catches 403, emits `core.notice()`).
 - **Lightweight Validate API**: `import { validate } from 'pcp-engine/validate'` for any Node.js backend: zero MCP dependency. Returns `{ pass, score, threshold, task_type, risk_level, issues[] }`.
 - **Benchmark Dataset**: `benchmarks/prompts.json`: 15 curated prompts with locked expected scores (±3 tolerance), risk levels, and task types.
-- **`pcp benchmark`**: Regression testing CLI command: runs all 15 benchmark prompts, compares actual vs expected, reports failures.
+- **`pcp benchmark`**: Regression testing CLI command: runs all 15 benchmark prompts, compares actual results against expected scores, reports failures.
 - **4 new CLI subcommands**: `benchmark`, `demo`, `report`, `badge`: total CLI subcommands: 11 → 15
 - **Product explainer video**: 5-minute enterprise-ready walkthrough embedded on landing page
 
@@ -68,7 +68,7 @@
 
 ### Fixed
 - `--format github`: confidence was hardcoded `n/a`: now reads from lint result (`r.confidence`)
-- `--format github`: passing prompts now emit `::notice` instead of `::warning` (correct severity)
+- `--format github`: passing prompts now emit the correct `::notice` severity
 - `--format github`: confidence included in error annotations too
 
 ### Changed
@@ -104,7 +104,7 @@
 ### Changed
 - **Modular tools architecture**: split 1957-line `tools.ts` into 6 focused files in `tools/`
 - **README restructured**: Quick Start first, Try It, GitHub Action, then Features
-- **Help system**: 4 primary commands + Advanced section; bare `pcp` shows help instead of erroring
+- **Help system**: 4 primary commands + Advanced section; bare `pcp` now shows help
 - **Website hero**: "Stop shipping bad prompts" + "Prompt Quality Engine" badge
 - **CONTRIBUTING.md**: added Recognition section (Contributors Wall + named credit)
 
@@ -330,7 +330,7 @@
 ## [2.3.2] - 2026-02-28
 
 ### Changed
-- **GitHub Action**: Deterministic install path (`$RUNNER_TEMP/prompt-lint-$$`) instead of `mktemp`. Added `--ignore-scripts` for supply-chain hardening.
+- **GitHub Action**: Deterministic install path (`$RUNNER_TEMP/prompt-lint-$$`) replaces `mktemp`. Added `--ignore-scripts` for supply-chain hardening.
 - **CI workflow**: Added `cache: 'npm'` to all `setup-node` steps for faster repeat runs.
 - **README**: Added action internals note, SHA-pinned example, version mapping docs.
 
