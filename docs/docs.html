@@ -589,7 +589,7 @@ pcp hook install --threshold 70</div>
 
       <p><span class="step-num">2</span> <strong>Review the PreviewPack</strong> response. It contains:</p>
       <ul>
-        <li><code>quality_before</code>: A multi-dimensional score from 0&ndash;100 with traceable deductions</li>
+        <li><code>quality_before</code>: A multi-dimensional score from 0-100 with traceable deductions</li>
         <li><code>compiled_prompt</code>: The structured, optimized prompt formatted for your target LLM</li>
         <li><code>blocking_questions</code>: Ambiguities that must be resolved before approval</li>
         <li><code>cost_estimate</code>: Token counts and costs across 10 models from 4 providers</li>
@@ -654,7 +654,7 @@ pcp hook install --threshold 70</div>
           <line class="arrow-line" x1="440" y1="162" x2="440" y2="178" stroke="var(--accent)" marker-end="url(#arrowDown)" />
 
           <rect class="node-rect" x="310" y="178" width="260" height="32" fill="var(--surface)" stroke="var(--border)" />
-          <text x="440" y="198" text-anchor="middle" fill="var(--text)" font-weight="600" font-size="11">2. Score Quality (0&ndash;100)</text>
+          <text x="440" y="198" text-anchor="middle" fill="var(--text)" font-weight="600" font-size="11">2. Score Quality (0-100)</text>
 
           <line class="arrow-line" x1="440" y1="210" x2="440" y2="226" stroke="var(--accent)" marker-end="url(#arrowDown)" />
 
@@ -664,7 +664,7 @@ pcp hook install --threshold 70</div>
           <line class="arrow-line" x1="440" y1="258" x2="440" y2="274" stroke="var(--accent)" marker-end="url(#arrowDown)" />
 
           <rect class="node-rect" x="310" y="274" width="260" height="32" fill="var(--surface)" stroke="var(--border)" />
-          <text x="440" y="294" text-anchor="middle" fill="var(--text)" font-weight="600" font-size="11">4. Compute Risk Score (0&ndash;100)</text>
+          <text x="440" y="294" text-anchor="middle" fill="var(--text)" font-weight="600" font-size="11">4. Compute Risk Score (0-100)</text>
 
           <line class="arrow-line" x1="440" y1="306" x2="440" y2="322" stroke="var(--accent)" marker-end="url(#arrowDown)" />
 
@@ -757,7 +757,7 @@ pcp hook install --threshold 70</div>
             <tr style="border-bottom:1px solid var(--border);">
               <td style="padding:8px 12px;"><code>quality_before</code></td>
               <td style="padding:8px 12px;">QualityScore</td>
-              <td style="padding:8px 12px;">Multi-dimensional quality score (0&ndash;100) with traceable deductions</td>
+              <td style="padding:8px 12px;">Multi-dimensional quality score (0-100) with traceable deductions</td>
               <td style="padding:8px 12px;"><span class="tag tag-free">All</span></td>
             </tr>
             <tr style="border-bottom:1px solid var(--border);">
@@ -937,7 +937,7 @@ pcp hook install --threshold 70</div>
           <div class="param-row"><span class="param-name">target</span> <span class="param-type">"claude" | "openai" | "generic"</span> <span class="param-desc">Output target format (default: "claude")</span></div>
         </div>
         <div class="tool-output">Returns</div>
-        <p class="tool-output-desc"><code>PreviewPack</code>: Contains <code>session_id</code>, <code>quality_before</code> (0&ndash;100), <code>compiled_prompt</code>, <code>blocking_questions</code>, <code>assumptions</code>, <code>cost_estimate</code>, <code>model_recommendation</code>, <code>compilation_checklist</code>, and <code>changes_made</code>.</p>
+        <p class="tool-output-desc"><code>PreviewPack</code>: Contains <code>session_id</code>, <code>quality_before</code> (0-100), <code>compiled_prompt</code>, <code>blocking_questions</code>, <code>assumptions</code>, <code>cost_estimate</code>, <code>model_recommendation</code>, <code>compilation_checklist</code>, and <code>changes_made</code>.</p>
       </div>
 
       <!-- check_prompt -->
@@ -954,7 +954,7 @@ pcp hook install --threshold 70</div>
           <div class="param-row"><span class="param-name">context</span> <span class="param-type">string</span> <span class="param-desc">Optional context</span></div>
         </div>
         <div class="tool-output">Returns</div>
-        <p class="tool-output-desc">Quality score (0&ndash;100), pass/fail verdict based on configured strictness threshold, top 2 issues, and an improvement suggestion.</p>
+        <p class="tool-output-desc">Quality score (0-100), pass/fail verdict based on configured strictness threshold, top 2 issues, and an improvement suggestion.</p>
       </div>
 
       <!-- classify_task -->
@@ -971,7 +971,7 @@ pcp hook install --threshold 70</div>
           <div class="param-row"><span class="param-name">context</span> <span class="param-type">string</span> <span class="param-desc">Optional context</span></div>
         </div>
         <div class="tool-output">Returns</div>
-        <p class="tool-output-desc"><code>taskType</code>, <code>complexity</code> (simple_factual / analytical / multi_step / creative / long_context / agent_orchestration), <code>riskScore</code> (0&ndash;100), <code>riskDimensions</code> (underspec, hallucination, scope, constraint), <code>suggestedProfile</code>, and <code>signals</code>.</p>
+        <p class="tool-output-desc"><code>taskType</code>, <code>complexity</code> (simple_factual / analytical / multi_step / creative / long_context / agent_orchestration), <code>riskScore</code> (0-100), <code>riskDimensions</code> (underspec, hallucination, scope, constraint), <code>suggestedProfile</code>, and <code>signals</code>.</p>
       </div>
 
       <!-- ── Routing ─────────────────────────────────────────────────────── -->
@@ -1001,7 +1001,7 @@ pcp hook install --threshold 70</div>
           <div class="param-row"><span class="param-name">target</span> <span class="param-type">OutputTarget</span> <span class="param-desc">Provider preference (default: "claude")</span></div>
         </div>
         <div class="tool-output">Returns</div>
-        <p class="tool-output-desc"><code>ModelRecommendation</code>: Contains <code>primary</code> (model, provider, temperature, maxTokens), <code>fallback</code>, <code>confidence</code> (0&ndash;100), <code>costEstimate</code>, <code>rationale</code>, <code>tradeoffs</code>, <code>savings_vs_default</code>, and <code>decision_path</code> array.</p>
+        <p class="tool-output-desc"><code>ModelRecommendation</code>: Contains <code>primary</code> (model, provider, temperature, maxTokens), <code>fallback</code>, <code>confidence</code> (0-100), <code>costEstimate</code>, <code>rationale</code>, <code>tradeoffs</code>, <code>savings_vs_default</code>, and <code>decision_path</code> array.</p>
       </div>
 
       <!-- pre_flight -->
@@ -1125,7 +1125,7 @@ pcp hook install --threshold 70</div>
           <div class="param-row"><span class="param-name">prune_count</span> <span class="param-type">number</span> <span class="param-desc">Number of lowest-scoring tools to prune (default: 5, prune mode only)</span></div>
         </div>
         <div class="tool-output">Returns</div>
-        <p class="tool-output-desc">Ranked tool list with <code>relevance_score</code> (0&ndash;100), <code>signals</code>, and <code>tokens_saved_estimate</code> per tool. Plus <code>pruned_count</code>, <code>pruned_tools</code>, and total <code>tokens_saved_estimate</code>.</p>
+        <p class="tool-output-desc">Ranked tool list with <code>relevance_score</code> (0-100), <code>signals</code>, and <code>tokens_saved_estimate</code> per tool. Plus <code>pruned_count</code>, <code>pruned_tools</code>, and total <code>tokens_saved_estimate</code>.</p>
       </div>
 
       <!-- ── Configuration ───────────────────────────────────────────────── -->
@@ -1374,7 +1374,7 @@ pcp hook install --threshold 70</div>
           <text x="390" y="122" text-anchor="middle" fill="var(--green)" font-size="11" font-weight="700">Risk Scorer</text>
           <text x="390" y="138" text-anchor="middle" fill="var(--text-muted)" font-size="10">14 built-in rules</text>
           <text x="390" y="154" text-anchor="middle" fill="var(--text-muted)" font-size="10">+ custom rule deltas</text>
-          <text x="390" y="170" text-anchor="middle" fill="var(--text-muted)" font-size="10">&rarr; risk_score 0&ndash;100</text>
+          <text x="390" y="170" text-anchor="middle" fill="var(--text-muted)" font-size="10">&rarr; risk_score 0-100</text>
 
           <!-- Arrow 3 → 4 -->
           <line x1="458" y1="139" x2="488" y2="139" stroke="var(--accent)" stroke-width="1.5" marker-end="url(#eg-arrow)"/>
@@ -1532,7 +1532,7 @@ pcp hook install --threshold 70</div>
           <tr><td>applies_to</td><td>string</td><td>"code" | "prose" | "all"</td></tr>
           <tr><td>severity</td><td>string</td><td>"BLOCKING" | "NON-BLOCKING"</td></tr>
           <tr><td>risk_dimension</td><td>string</td><td>"hallucination" | "constraint" | "underspec" | "scope"</td></tr>
-          <tr><td>risk_weight</td><td>number</td><td>1&ndash;25</td></tr>
+          <tr><td>risk_weight</td><td>number</td><td>1-25</td></tr>
         </tbody>
       </table>
       <p>Hard cap: 25 rules per configuration. Invalid regex patterns are skipped with a warning (skip-on-error pattern).</p>
@@ -1614,7 +1614,7 @@ pcp optimize --file prompt.txt --json --target claude</div>
           <tr><td><code>--intent &lt;text&gt;</code></td><td>Intent description (for compress)</td></tr>
           <tr><td><code>--strict</code></td><td>Use strict threshold (75)</td></tr>
           <tr><td><code>--relaxed</code></td><td>Use relaxed threshold (40)</td></tr>
-          <tr><td><code>--threshold N</code></td><td>Custom threshold (0&ndash;100)</td></tr>
+          <tr><td><code>--threshold N</code></td><td>Custom threshold (0-100)</td></tr>
         </tbody>
       </table>
 
@@ -1731,7 +1731,7 @@ pcp hook uninstall --global  <span class="comment"># remove global hook</span></
         <tbody>
           <tr><td><code>files</code></td><td>Yes</td><td>N/A</td><td>Glob pattern for prompt files</td></tr>
           <tr><td><code>subcommand</code></td><td>No</td><td>check</td><td>CLI subcommand: check (default), score, preflight</td></tr>
-          <tr><td><code>threshold</code></td><td>No</td><td>N/A</td><td>Minimum score (0&ndash;100). Overrides strictness.</td></tr>
+          <tr><td><code>threshold</code></td><td>No</td><td>N/A</td><td>Minimum score (0-100). Overrides strictness.</td></tr>
           <tr><td><code>strictness</code></td><td>No</td><td>standard</td><td>Preset: standard (60), strict (75), relaxed (40)</td></tr>
           <tr><td><code>version</code></td><td>No</td><td>tag ref</td><td>npm version to install</td></tr>
           <tr><td><code>comment</code></td><td>No</td><td>false</td><td>Post results as PR comment (requires <code>pull-requests: write</code>)</td></tr>

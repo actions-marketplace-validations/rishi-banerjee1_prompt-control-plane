@@ -309,7 +309,7 @@
 - **Reasoning Complexity Classifier**: Classifies prompts into 6 complexity types: `simple_factual`, `analytical`, `multi_step`, `creative`, `long_context`, `agent_orchestration`. Returns complexity, confidence, and signals.
 - **Optimization Profiles**: 5 built-in presets: `cost_minimizer`, `balanced`, `quality_first`, `creative`, `enterprise_safe`. Each provides defaults for model tier, temperature, and sensitivity settings.
 - **Model Routing Engine**: 2-step deterministic routing: (1) pick tier from complexity + risk, (2) apply budget/latency overrides. Returns recommendation with `decision_path` audit trail, savings estimate, confidence, and fallback model.
-- **Risk Scoring**: Dimensional risk scoring across 4 axes (underspec, hallucination, scope, constraint). Score 0–100 drives routing decisions.
+- **Risk Scoring**: Dimensional risk scoring across 4 axes (underspec, hallucination, scope, constraint). Score 0-100 drives routing decisions.
 - **Perplexity support**: Sonar and Sonar Pro models added for cost estimation and routing. Included in pricing and routing recommendations only (not a compile/output target).
 - **3 new capabilities** (14 total):
   - `classify_task` (FREE): Classify prompt by task type, complexity, risk, and suggested profile.
@@ -324,7 +324,7 @@
 - **No breaking changes** to existing tools, types, or CLI. All 11 original MCP tools, `prompt-lint` CLI, and GitHub Action are unchanged. Existing linter workflows continue without modification.
 - Architecture constraint preserved: **zero LLM calls inside. Deterministic. Offline. Reproducible.**
 - `pre_flight` does NOT call `optimize_prompt` internally: no double-metering. `classify_task` + `route_model` are free and unlimited.
-- Risk score (0–100) drives routing; `riskLevel` is derived for display only (`0-29=low`, `30-59=medium`, `60-100=high`).
+- Risk score (0-100) drives routing; `riskLevel` is derived for display only (`0-29=low`, `30-59=medium`, `60-100=high`).
 - All v3 tool outputs include `schema_version: 1` for forward-compatible versioning.
 
 ## [2.3.2] - 2026-02-28

@@ -763,7 +763,7 @@
 
       <ol>
         <li><strong>Analyze</strong>: What does the user actually want? Is this a coding task, a writing task, research, planning? What are the implicit assumptions? Are there blocking questions?</li>
-        <li><strong>Score</strong>: Rate the prompt 0&ndash;100 across multiple quality dimensions, each with weighted penalties for specific weaknesses</li>
+        <li><strong>Score</strong>: Rate the prompt 0-100 across multiple quality dimensions, each with weighted penalties for specific weaknesses</li>
         <li><strong>Compile</strong>: Restructure it with a role definition, success criteria, safety constraints, workflow steps, and uncertainty policies</li>
         <li><strong>Checklist</strong>: 9-point structural coverage check (does it have a goal? constraints? inputs? outputs?)</li>
         <li><strong>Cost Estimate</strong>: Exact token counts and dollar costs across 10 models from 4 providers</li>
@@ -804,9 +804,9 @@
       <p>Here&rsquo;s the actual git log: the real story is that this was built in 3 intense sessions, not 2 weeks:</p>
 
       <ul>
-        <li><strong>Session 1 (Feb 26, 1am&ndash;7pm):</strong> 11 commits. Started at 1:18am with the initial server. By 3am, the full pipeline worked. After a break, came back at 3pm to ship the npm package and publish v1.2.</li>
-        <li><strong>Session 2 (Feb 27, 8pm&ndash;11pm):</strong> 3 commits. The big one: v2.1.0 landed with the 3-tier freemium model, Ed25519 license system, 11 tools, persistent storage.</li>
-        <li><strong>Session 3 (Feb 28, 12am&ndash;2am):</strong> 7 commits. Programmatic API, E2E tests, landing page, MCP Registry publication, directory submissions, and these writeup docs.</li>
+        <li><strong>Session 1 (Feb 26, 1am-7pm):</strong> 11 commits. Started at 1:18am with the initial server. By 3am, the full pipeline worked. After a break, came back at 3pm to ship the npm package and publish v1.2.</li>
+        <li><strong>Session 2 (Feb 27, 8pm-11pm):</strong> 3 commits. The big one: v2.1.0 landed with the 3-tier freemium model, Ed25519 license system, 11 tools, persistent storage.</li>
+        <li><strong>Session 3 (Feb 28, 12am-2am):</strong> 7 commits. Programmatic API, E2E tests, landing page, MCP Registry publication, directory submissions, and these writeup docs.</li>
       </ul>
 
       <p><strong>Elapsed time:</strong> 49 hours from first commit to last. <strong>Active coding:</strong> ~10 hours across 3 sessions. The rest was sleeping, eating, and living life.</p>
@@ -1210,10 +1210,10 @@
               <tr><td>First commit</td><td>Feb 26, 2026 at 1:18am IST</td></tr>
               <tr><td>Latest release (v5.3.4)</td><td>Jun 18, 2026</td></tr>
               <tr><td>Wall clock elapsed (MVP to v5)</td><td>~7 days</td></tr>
-              <tr><td>Initial build (Feb 26–28)</td><td>~49 hours active time: ~10 hours coding</td></tr>
-              <tr><td>Post-launch evolution (Feb 28–Jun 18)</td><td>13 releases shipped: v4.0 through v5.3.4</td></tr>
-              <tr><td>Total commits (MVP)</td><td>21 (Feb 26–28)</td></tr>
-              <tr><td>Total commits (all)</td><td>70+ (Feb 26–Mar 6)</td></tr>
+              <tr><td>Initial build (Feb 26-28)</td><td>~49 hours active time: ~10 hours coding</td></tr>
+              <tr><td>Post-launch evolution (Feb 28-Jun 18)</td><td>13 releases shipped: v4.0 through v5.3.4</td></tr>
+              <tr><td>Total commits (MVP)</td><td>21 (Feb 26-28)</td></tr>
+              <tr><td>Total commits (all)</td><td>70+ (Feb 26-Mar 6)</td></tr>
             </tbody>
           </table>
         </div>
@@ -1224,7 +1224,7 @@
 
       <div class="tldr">
         <div class="tldr-label">TL;DR</div>
-        <strong>49-hour MVP sprint</strong> (Feb 26–28) from first keystroke to published npm package, listed on 6 directories. Only ~10 hours active coding; the rest was sleep and life. Then <strong>continued evolution</strong> (Feb 28–Mar 6) across 11 releases: v4.0 rebrand, v4.0.2 infrastructure, v4.0.3 privacy, v4.1.0 enterprise, v5.0.0 full CLI suite + hooks, v5.3.0 CI-first. Total: 11 releases, 70+ commits, 20 MCP tools, 15 CLI subcommands, auto-check hooks. Zero infrastructure cost. Claude Code wrote the implementation; I designed the architecture and made the decisions.
+        <strong>49-hour MVP sprint</strong> (Feb 26-28) from first keystroke to published npm package, listed on 6 directories. Only ~10 hours active coding; the rest was sleep and life. Then <strong>continued evolution</strong> (Feb 28-Mar 6) across 11 releases: v4.0 rebrand, v4.0.2 infrastructure, v4.0.3 privacy, v4.1.0 enterprise, v5.0.0 full CLI suite + hooks, v5.3.0 CI-first. Total: 11 releases, 70+ commits, 20 MCP tools, 15 CLI subcommands, auto-check hooks. Zero infrastructure cost. Claude Code wrote the implementation; I designed the architecture and made the decisions.
       </div>
 
       <hr>
@@ -1378,7 +1378,7 @@
           </tbody>
         </table>
 
-        <p><em>Commands 12&ndash;15 (<code>benchmark</code>, <code>demo</code>, <code>report</code>, <code>badge</code>) were added in v5.3.0.</em></p>
+        <p><em>Commands 12-15 (<code>benchmark</code>, <code>demo</code>, <code>report</code>, <code>badge</code>) were added in v5.3.0.</em></p>
 
         <p>All <code>--json</code> output uses a consistent envelope: <code>request_id</code> (UUID v4), <code>version</code>, <code>schema_version</code>, and <code>policy_mode</code>. When governance blocks execution in enforce mode, the CLI exits with code 3 and includes violation details in the JSON output.</p>
 

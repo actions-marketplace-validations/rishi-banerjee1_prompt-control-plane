@@ -509,7 +509,7 @@ The `optimize()` function runs the exact same pipeline as the `optimize_prompt` 
 |--------|-------------|
 | `optimize(prompt, context?, target?)` | Full pipeline → `OptimizeResult` |
 | `analyzePrompt(prompt, context?)` | Raw prompt → `Intent` (parsed intent object) |
-| `scorePrompt(intent, context?)` | Intent → `QualityScore` (0–100) |
+| `scorePrompt(intent, context?)` | Intent → `QualityScore` (0-100) |
 | `compilePrompt(intent, context?, target?)` | Intent → compiled prompt string |
 | `generateChecklist(compiledPrompt)` | Compiled prompt → structural coverage |
 | `estimateCost(text, taskType, riskLevel, target?)` | Text → `CostEstimate` (10 models) |
@@ -642,7 +642,7 @@ Every session export includes `rule_set_hash`, `rule_set_version`, `risk_score`,
 
 ### Preflight Pipeline
 
-All v3 outputs are **deterministic, offline, and reproducible**: no LLM calls are made inside the MCP. Risk score (0–100) drives routing decisions; `riskLevel` (`low` / `medium` / `high`) is derived for display only.
+All v3 outputs are **deterministic, offline, and reproducible**: no LLM calls are made inside the MCP. Risk score (0-100) drives routing decisions; `riskLevel` (`low` / `medium` / `high`) is derived for display only.
 
 The `pre_flight` tool runs the full decision pipeline in a single call: classify your prompt, assess risk, route to the optimal model, and score quality. No compilation, no approval loop: just instant intelligence about what your prompt needs.
 
@@ -683,7 +683,7 @@ The `route_model` tool recommends the optimal model using a 2-step deterministic
 | `simple_factual` | small (Haiku, GPT-4o-mini, Flash) | N/A |
 | `analytical` | mid (Sonnet, GPT-4o, Gemini Pro) | N/A |
 | `multi_step` | mid | → top if risk ≥ 40 |
-| `creative` | mid (temp 0.8–1.0) | N/A |
+| `creative` | mid (temp 0.8-1.0) | N/A |
 | `long_context` | mid (200K+ windows) | N/A |
 | `agent_orchestration` | mid | → top if risk ≥ 40 |
 
@@ -711,7 +711,7 @@ Every decision is recorded in `decision_path` for full auditability. All tool ou
 <details>
 <summary><strong>Quality Scoring System</strong></summary>
 
-Prompts are scored 0–100 across multiple weighted dimensions. Each deduction is traceable: you'll see exactly why your score dropped and what to fix.
+Prompts are scored 0-100 across multiple weighted dimensions. Each deduction is traceable: you'll see exactly why your score dropped and what to fix.
 
 Scoring adapts to task type: code tasks reward file paths and code references; writing/communication tasks reward audience, tone, platform, and length constraints.
 
@@ -1216,7 +1216,7 @@ Reason:         Balanced task: Sonnet offers the best
 - [x] Dual entry points: `"."` (API) + `"./server"` (MCP server)
 - [x] Curl installer: `curl -fsSL .../install.sh | bash`
 - [x] Razorpay checkout integration: tier-specific purchase URLs
-- [x] v3.0 Decision Engine: complexity classifier, 5 optimization profiles, model routing with decision_path, risk scoring (0–100), Perplexity routing
+- [x] v3.0 Decision Engine: complexity classifier, 5 optimization profiles, model routing with decision_path, risk scoring (0-100), Perplexity routing
 - [x] 3 new tools: `classify_task`, `route_model`, `pre_flight` (14 total in v3.0)
 - [x] v3.1 Smart Compression: multi-stage pipeline with zone protection, standard/aggressive modes
 - [x] v3.1 Tool Pruning: task-aware relevance scoring, mention protection, always-relevant tools
