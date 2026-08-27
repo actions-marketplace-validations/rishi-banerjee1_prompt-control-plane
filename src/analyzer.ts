@@ -461,9 +461,9 @@ const AGENT_PATTERNS = [
   /\b(agent|orchestrat|automat|pipeline|workflow\s+engine)\b/i,
 ];
 const MULTI_STEP_PATTERNS = [
-  /\b(first|second|third|then|after\s+that|next|finally)\b/gi,
-  /\d+\.\s+\w/g,
-  /\bstep\s+\d+/gi,
+  /\b(?:first|second|third|then|after\s{1,10}that|next|finally)\b/gi,
+  /(?:^|[.;)\]}\n]\s{0,5})\d{1,5}\.\s{1,5}\w/g,  // Bounded quantifiers + anchored to sentence boundary (CodeQL #2)
+  /\bstep\s{1,10}\d+/gi,
 ];
 const CREATIVE_PATTERNS = [
   /\b(brainstorm|ideate|imagine|creative|novel|original|unique|innovative)\b/i,

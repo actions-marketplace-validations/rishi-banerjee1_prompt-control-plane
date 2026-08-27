@@ -8,20 +8,20 @@
   <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
   <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
   <link rel="manifest" href="site.webmanifest">
-  <title>Documentation — Prompt Control Plane | Developer Reference</title>
+  <title>Documentation: Prompt Control Plane | Developer Reference</title>
   <meta name="description" content="Complete developer documentation for Prompt Control Plane. 20 MCP tools, CLI linter, GitHub Action, programmatic API, enterprise features, and architecture reference. Zero LLM calls, fully deterministic.">
   <meta name="keywords" content="prompt control plane docs, pcp CLI, MCP documentation, prompt linter API, prompt governance tools, enterprise prompt policy, audit trail, config lock, developer reference">
   <link rel="canonical" href="https://getpcp.site/docs.html">
 
   <!-- Open Graph -->
-  <meta property="og:title" content="Documentation — Prompt Control Plane">
+  <meta property="og:title" content="Documentation: Prompt Control Plane">
   <meta property="og:description" content="Complete developer documentation for Prompt Control Plane. 20 tools, CLI, GitHub Action, API, enterprise features.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://getpcp.site/docs.html">
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Documentation — Prompt Control Plane">
+  <meta name="twitter:title" content="Documentation: Prompt Control Plane">
   <meta name="twitter:description" content="Complete developer reference. 20 MCP tools, CLI linter, GitHub Action, programmatic API, enterprise governance features.">
 
   <!-- Schema.org structured data -->
@@ -29,8 +29,8 @@
   {
     "@context": "https://schema.org",
     "@type": "TechArticle",
-    "name": "Documentation — Prompt Control Plane",
-    "description": "Complete developer documentation for Prompt Control Plane — 20 MCP tools, CLI linter, GitHub Action, programmatic API, enterprise features.",
+    "name": "Documentation: Prompt Control Plane",
+    "description": "Complete developer documentation for Prompt Control Plane: 20 MCP tools, CLI linter, GitHub Action, programmatic API, enterprise features.",
     "url": "https://getpcp.site/docs.html",
     "isPartOf": {
       "@type": "WebSite",
@@ -40,424 +40,10 @@
   }
   </script>
 
-  <link rel="stylesheet" href="shared.css">
-  <script src="shared.js"></script>
-
-  <style>
-    /* ─── Docs Layout: sidebar + main ──────────────────────────────────────── */
-    .docs-layout {
-      display: grid;
-      grid-template-columns: 240px 1fr;
-      gap: 48px;
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 0 24px;
-      align-items: start;
-    }
-
-    /* ─── Sidebar TOC ────────────────────────────────────────────────────────── */
-    .docs-sidebar {
-      position: sticky;
-      top: 80px;
-      max-height: calc(100vh - 100px);
-      overflow-y: auto;
-      padding: 16px 0;
-    }
-    .docs-sidebar .toc-title {
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--text-muted);
-      margin-bottom: 12px;
-      font-weight: 700;
-    }
-    .docs-sidebar ul {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
-    .docs-sidebar li {
-      margin-bottom: 2px;
-    }
-    .docs-sidebar a {
-      display: block;
-      padding: 5px 12px;
-      font-size: 13px;
-      color: var(--text-muted);
-      border-radius: 6px;
-      transition: all 0.15s;
-      border-left: 2px solid transparent;
-    }
-    .docs-sidebar a:hover {
-      color: var(--text);
-      background: var(--accent-glow);
-    }
-    .docs-sidebar a.active {
-      color: var(--accent);
-      border-left-color: var(--accent);
-      background: var(--accent-glow);
-      font-weight: 600;
-    }
-    .docs-sidebar .toc-sub {
-      padding-left: 16px;
-    }
-    .docs-sidebar .toc-sub a {
-      font-size: 12px;
-      padding: 3px 12px;
-    }
-
-    /* Mobile TOC toggle */
-    .toc-mobile-toggle {
-      display: none;
-      width: 100%;
-      padding: 12px 16px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      color: var(--text);
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-      margin-bottom: 24px;
-      text-align: left;
-    }
-    .toc-mobile-toggle::after {
-      content: '\25BC';
-      float: right;
-      font-size: 10px;
-      color: var(--text-muted);
-    }
-    .toc-mobile-toggle.open::after {
-      content: '\25B2';
-    }
-
-    @media (max-width: 860px) {
-      .docs-layout {
-        grid-template-columns: 1fr;
-        gap: 0;
-      }
-      .docs-sidebar {
-        position: static;
-        max-height: none;
-        display: none;
-        margin-bottom: 32px;
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: 8px;
-        padding: 16px;
-      }
-      .docs-sidebar.open {
-        display: block;
-      }
-      .toc-mobile-toggle {
-        display: block;
-      }
-    }
-
-    /* ─── Docs Hero ──────────────────────────────────────────────────────────── */
-    .docs-hero {
-      padding: 80px 0 48px;
-      text-align: center;
-    }
-    .docs-hero h1 {
-      font-size: 36px;
-      font-weight: 800;
-      letter-spacing: -0.03em;
-      line-height: 1.2;
-      margin-bottom: 16px;
-    }
-    .docs-hero .subtitle {
-      font-size: 16px;
-      color: var(--text-muted);
-      max-width: 600px;
-      margin: 0 auto;
-      line-height: 1.6;
-    }
-    @media (max-width: 700px) {
-      .docs-hero { padding: 56px 0 32px; }
-      .docs-hero h1 { font-size: 28px; }
-    }
-
-    /* ─── Docs Main Content ──────────────────────────────────────────────────── */
-    .docs-main {
-      padding: 32px 0 80px;
-      min-width: 0;
-    }
-    .docs-main h2 {
-      font-size: 24px;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      margin-top: 56px;
-      margin-bottom: 16px;
-      padding-top: 24px;
-      border-top: 1px solid var(--border);
-    }
-    .docs-main h2:first-child {
-      margin-top: 0;
-      border-top: none;
-      padding-top: 0;
-    }
-    .docs-main h3 {
-      font-size: 17px;
-      font-weight: 600;
-      margin-top: 32px;
-      margin-bottom: 10px;
-    }
-    .docs-main h4 {
-      font-size: 14px;
-      font-weight: 600;
-      margin-top: 24px;
-      margin-bottom: 8px;
-      color: var(--text);
-    }
-    .docs-main p {
-      font-size: 14px;
-      color: var(--text-muted);
-      line-height: 1.7;
-      margin-bottom: 16px;
-    }
-    .docs-main ul, .docs-main ol {
-      font-size: 14px;
-      color: var(--text-muted);
-      line-height: 1.7;
-      margin-bottom: 16px;
-      padding-left: 24px;
-    }
-    .docs-main li {
-      margin-bottom: 6px;
-    }
-
-    /* ─── Code blocks ────────────────────────────────────────────────────────── */
-    .code-block {
-      background: var(--code-bg);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 16px 20px;
-      font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
-      font-size: 13px;
-      color: var(--green);
-      overflow-x: auto;
-      line-height: 1.7;
-      white-space: pre;
-      margin-bottom: 20px;
-    }
-    .code-block .comment { color: var(--text-muted); }
-    .code-block .keyword { color: var(--accent); }
-    .code-block .string { color: var(--orange); }
-    .code-block .fn { color: var(--blue); }
-
-    /* ─── Inline code ────────────────────────────────────────────────────────── */
-    .docs-main code {
-      font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
-      font-size: 12.5px;
-      background: var(--code-bg);
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      padding: 1px 6px;
-    }
-    .code-block code {
-      background: none;
-      border: none;
-      padding: 0;
-      font-size: inherit;
-    }
-
-    /* ─── Tool Cards ─────────────────────────────────────────────────────────── */
-    .tool-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 20px;
-      margin-bottom: 16px;
-    }
-    .tool-card-header {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 10px;
-      flex-wrap: wrap;
-    }
-    .tool-name {
-      font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
-      font-size: 14px;
-      font-weight: 700;
-      color: var(--text);
-    }
-    .tool-desc {
-      font-size: 13px;
-      color: var(--text-muted);
-      line-height: 1.5;
-      margin-bottom: 12px;
-    }
-    .tool-params {
-      margin-bottom: 12px;
-    }
-    .tool-params-title {
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      color: var(--text-muted);
-      margin-bottom: 6px;
-      font-weight: 700;
-    }
-    .param-row {
-      display: flex;
-      gap: 8px;
-      padding: 4px 0;
-      font-size: 13px;
-      align-items: baseline;
-    }
-    .param-name {
-      font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
-      font-size: 12px;
-      color: var(--accent);
-      white-space: nowrap;
-    }
-    .param-type {
-      font-size: 11px;
-      color: var(--text-muted);
-      background: var(--code-bg);
-      border: 1px solid var(--border);
-      padding: 0 5px;
-      border-radius: 3px;
-      white-space: nowrap;
-    }
-    .param-desc {
-      color: var(--text-muted);
-      font-size: 12.5px;
-    }
-    .param-required {
-      font-size: 10px;
-      color: var(--orange);
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-    }
-    .tool-output {
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      color: var(--text-muted);
-      margin-bottom: 4px;
-      font-weight: 700;
-    }
-    .tool-output-desc {
-      font-size: 13px;
-      color: var(--text-muted);
-      line-height: 1.5;
-    }
-
-    /* ─── Category Header ────────────────────────────────────────────────────── */
-    .tool-category {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-top: 28px;
-      margin-bottom: 16px;
-      padding-bottom: 8px;
-      border-bottom: 1px solid var(--border);
-    }
-    .tool-category-icon {
-      font-size: 18px;
-    }
-    .tool-category-name {
-      font-size: 15px;
-      font-weight: 700;
-      color: var(--text);
-    }
-    .tool-category-count {
-      font-size: 12px;
-      color: var(--text-muted);
-    }
-
-    /* ─── Enterprise badge ───────────────────────────────────────────────────── */
-    .tag-enterprise {
-      background: rgba(124, 92, 252, 0.12);
-      color: var(--accent);
-      font-size: 10px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      padding: 2px 8px;
-      border-radius: 4px;
-      display: inline-block;
-    }
-
-    /* ─── Architecture SVG ───────────────────────────────────────────────────── */
-    .arch-diagram {
-      margin: 32px 0;
-      text-align: center;
-    }
-    .arch-diagram svg {
-      max-width: 100%;
-      height: auto;
-    }
-    .arch-diagram svg text {
-      font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
-      font-size: 12px;
-    }
-    .arch-diagram svg .node-rect {
-      rx: 8;
-      ry: 8;
-      stroke-width: 1.5;
-    }
-    .arch-diagram svg .arrow-line {
-      stroke-width: 1.5;
-      fill: none;
-    }
-    .arch-diagram svg .arrow-head {
-      stroke-width: 1.5;
-    }
-
-    /* ─── Step numbers ───────────────────────────────────────────────────────── */
-    .step-num {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      background: var(--accent-glow);
-      color: var(--accent);
-      font-weight: 700;
-      font-size: 12px;
-      flex-shrink: 0;
-      margin-right: 8px;
-    }
-
-    /* ─── Callout ────────────────────────────────────────────────────────────── */
-    .callout {
-      background: var(--accent-glow);
-      border-left: 3px solid var(--accent);
-      border-radius: 0 8px 8px 0;
-      padding: 14px 18px;
-      margin-bottom: 20px;
-    }
-    .callout p {
-      color: var(--text);
-      margin-bottom: 0;
-    }
-    .callout-warning {
-      background: rgba(251, 146, 60, 0.08);
-      border-left-color: var(--orange);
-    }
-
-    /* ─── Directory tree ─────────────────────────────────────────────────────── */
-    .dir-tree {
-      font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
-      font-size: 13px;
-      line-height: 1.8;
-      color: var(--text-muted);
-      background: var(--code-bg);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 16px 20px;
-      margin-bottom: 20px;
-    }
-    .dir-tree .dir { color: var(--accent); font-weight: 600; }
-    .dir-tree .file { color: var(--text-muted); }
-    .dir-tree .desc { color: var(--text-muted); opacity: 0.6; }
-  </style>
+  <link rel="stylesheet" href="shared.css?v=20260827">
+  <link rel="stylesheet" href="csp-page-docs.css?v=20260827">
+  <link rel="stylesheet" href="csp-inline.css?v=20260827">
+  <script src="shared.js?v=20260827"></script>
 </head>
 <body>
 
@@ -543,7 +129,7 @@
       <p>Install the CLI globally, then optionally add MCP integration for AI-assisted workflows.</p>
 
       <div class="callout">
-        <p><strong>Language-agnostic.</strong> Your project can be Python, Java, Go, Rust, C#, Ruby &mdash; any language. Node.js 18+ is only required to run PCP itself. It never touches your codebase.</p>
+        <p><strong>Language-agnostic.</strong> Your project can be Python, Java, Go, Rust, C#, Ruby: any language. Node.js 20+ is only required to run PCP itself. It never touches your codebase.</p>
       </div>
 
       <h4><span class="step-num">1</span> npm global (recommended)</h4>
@@ -565,7 +151,7 @@ pcp preflight <span class="string">"Your prompt here"</span> --json</div>
       <div class="code-block">curl -fsSL https://getpcp.site/install.sh | bash</div>
 
       <h3>Your First Prompt</h3>
-      <p>Three ways to start &mdash; pick the one that fits your workflow:</p>
+      <p>Three ways to start: pick the one that fits your workflow:</p>
 
       <h4>Option A: CLI (fastest)</h4>
       <div class="code-block"><span class="comment"># Pre-flight: classify + score + route + policy check in one call</span>
@@ -589,11 +175,11 @@ pcp hook install --threshold 70</div>
 
       <p><span class="step-num">2</span> <strong>Review the PreviewPack</strong> response. It contains:</p>
       <ul>
-        <li><code>quality_before</code> &mdash; A multi-dimensional score from 0&ndash;100 with traceable deductions</li>
-        <li><code>compiled_prompt</code> &mdash; The structured, optimized prompt formatted for your target LLM</li>
-        <li><code>blocking_questions</code> &mdash; Ambiguities that must be resolved before approval</li>
-        <li><code>cost_estimate</code> &mdash; Token counts and costs across 10 models from 4 providers</li>
-        <li><code>model_recommendation</code> &mdash; The recommended model for this task</li>
+        <li><code>quality_before</code>: A multi-dimensional score from 0-100 with traceable deductions</li>
+        <li><code>compiled_prompt</code>: The structured, optimized prompt formatted for your target LLM</li>
+        <li><code>blocking_questions</code>: Ambiguities that must be resolved before approval</li>
+        <li><code>cost_estimate</code>: Token counts and costs across 21 costed models from 4 providers</li>
+        <li><code>model_recommendation</code>: The recommended model for this task</li>
       </ul>
 
       <p><span class="step-num">3</span> <strong>Answer blocking questions</strong> (if any) using <code>refine_prompt</code>:</p>
@@ -606,7 +192,7 @@ pcp hook install --threshold 70</div>
       <div class="code-block">approve_prompt({ session_id: <span class="string">"abc-123"</span> })</div>
 
       <div class="callout">
-        <p><strong>Key principle:</strong> All analysis is deterministic. The same input always produces the same output. Zero LLM calls happen inside the MCP &mdash; all intelligence comes from the host model (Claude, GPT, etc.).</p>
+        <p><strong>Key principle:</strong> All analysis is deterministic. The same input always produces the same output. Zero LLM calls happen inside the MCP: all intelligence comes from the host model (Claude, GPT, etc.).</p>
       </div>
 
 
@@ -615,7 +201,7 @@ pcp hook install --threshold 70</div>
       <!-- ════════════════════════════════════════════════════════════════════ -->
       <h2 id="architecture">Architecture</h2>
 
-      <p>Prompt Control Plane processes your prompts <strong>before</strong> they reach any LLM. It is a pre-LLM quality gate &mdash; every prompt is scored, analyzed, compiled, and policy-checked before execution. Zero LLM calls inside.</p>
+      <p>Prompt Control Plane processes your prompts <strong>before</strong> they reach any LLM. It is a pre-LLM quality gate: every prompt is scored, analyzed, compiled, and policy-checked before execution. Zero LLM calls inside.</p>
 
       <div class="arch-diagram">
         <svg viewBox="0 0 680 700" xmlns="http://www.w3.org/2000/svg">
@@ -640,9 +226,9 @@ pcp hook install --threshold 70</div>
           <!-- Big box: Prompt Control Plane -->
           <rect class="node-rect" x="80" y="72" width="520" height="400" fill="var(--surface)" stroke="var(--accent)" stroke-width="2" stroke-dasharray="6 3" rx="8" />
           <text x="340" y="96" text-anchor="middle" fill="var(--accent)" font-weight="700" font-size="14">Prompt Control Plane</text>
-          <text x="340" y="112" text-anchor="middle" fill="var(--text-muted)" font-size="10">All processing happens here &mdash; before the prompt reaches any LLM</text>
+          <text x="340" y="112" text-anchor="middle" fill="var(--text-muted)" font-size="10">All processing happens here: before the prompt reaches any LLM</text>
 
-          <!-- Policy Gate (Enterprise) — left side -->
+          <!-- Policy Gate (Enterprise): left side -->
           <rect class="node-rect" x="110" y="130" width="160" height="32" fill="var(--surface)" stroke="var(--accent)" />
           <text x="190" y="150" text-anchor="middle" fill="var(--accent)" font-weight="600" font-size="11">Policy Gate</text>
           <text x="190" y="176" text-anchor="middle" fill="var(--text-muted)" font-size="9">Enterprise only</text>
@@ -654,7 +240,7 @@ pcp hook install --threshold 70</div>
           <line class="arrow-line" x1="440" y1="162" x2="440" y2="178" stroke="var(--accent)" marker-end="url(#arrowDown)" />
 
           <rect class="node-rect" x="310" y="178" width="260" height="32" fill="var(--surface)" stroke="var(--border)" />
-          <text x="440" y="198" text-anchor="middle" fill="var(--text)" font-weight="600" font-size="11">2. Score Quality (0&ndash;100)</text>
+          <text x="440" y="198" text-anchor="middle" fill="var(--text)" font-weight="600" font-size="11">2. Score Quality (0-100)</text>
 
           <line class="arrow-line" x1="440" y1="210" x2="440" y2="226" stroke="var(--accent)" marker-end="url(#arrowDown)" />
 
@@ -664,7 +250,7 @@ pcp hook install --threshold 70</div>
           <line class="arrow-line" x1="440" y1="258" x2="440" y2="274" stroke="var(--accent)" marker-end="url(#arrowDown)" />
 
           <rect class="node-rect" x="310" y="274" width="260" height="32" fill="var(--surface)" stroke="var(--border)" />
-          <text x="440" y="294" text-anchor="middle" fill="var(--text)" font-weight="600" font-size="11">4. Compute Risk Score (0&ndash;100)</text>
+          <text x="440" y="294" text-anchor="middle" fill="var(--text)" font-weight="600" font-size="11">4. Compute Risk Score (0-100)</text>
 
           <line class="arrow-line" x1="440" y1="306" x2="440" y2="322" stroke="var(--accent)" marker-end="url(#arrowDown)" />
 
@@ -681,7 +267,7 @@ pcp hook install --threshold 70</div>
           <rect class="node-rect" x="310" y="418" width="260" height="32" fill="var(--surface)" stroke="var(--border)" />
           <text x="440" y="438" text-anchor="middle" fill="var(--text)" font-weight="600" font-size="11">7. Route to Optimal Model</text>
 
-          <!-- Audit Log (Enterprise) — left side bottom -->
+          <!-- Audit Log (Enterprise): left side bottom -->
           <line class="arrow-line" x1="190" y1="176" x2="190" y2="420" stroke="var(--accent)" stroke-dasharray="4 2" />
           <rect class="node-rect" x="110" y="420" width="160" height="32" fill="var(--surface)" stroke="var(--accent)" />
           <text x="190" y="440" text-anchor="middle" fill="var(--accent)" font-weight="600" font-size="11">Audit Log</text>
@@ -713,11 +299,11 @@ pcp hook install --threshold 70</div>
         </svg>
       </div>
 
-      <p>The pipeline analyzes intent, scores quality, detects risks, compiles to your target format, estimates cost across providers, and routes to the optimal model. The result is packaged into a <strong>PreviewPack</strong> for human review &mdash; nothing reaches the LLM until the user approves.</p>
+      <p>The pipeline analyzes intent, scores quality, detects risks, compiles to your target format, estimates cost across providers, and routes to the optimal model. The result is packaged into a <strong>PreviewPack</strong> for human review: nothing reaches the LLM until the user approves.</p>
 
       <!-- Pipeline Deep Dive -->
       <h3 id="pipeline">8 Phases, Every Request</h3>
-      <p>Click any phase to see what happens inside it &mdash; which functions run, what data they produce, and how it feeds the next step.</p>
+      <p>Click any phase to see what happens inside it: which functions run, what data they produce, and how it feeds the next step.</p>
 
       <div class="pipeline-flow" id="pipeline-flow">
         <!-- Nodes injected by JS -->
@@ -729,148 +315,148 @@ pcp hook install --threshold 70</div>
 
       <!-- PreviewPack breakdown -->
       <h3 id="previewpack">What&rsquo;s in a PreviewPack?</h3>
-      <p>Every call to <code>optimize_prompt</code>, <code>refine_prompt</code>, or <code>pre_flight</code> returns a PreviewPack &mdash; a complete analysis bundle for human review before anything is sent to an LLM.</p>
+      <p>Every call to <code>optimize_prompt</code>, <code>refine_prompt</code>, or <code>pre_flight</code> returns a PreviewPack: a complete analysis bundle for human review before anything is sent to an LLM.</p>
 
       <div class="tool-card">
-        <table style="width:100%; border-collapse:collapse;">
+        <table class="csp-style-032">
           <thead>
-            <tr style="border-bottom:1px solid var(--border); text-align:left;">
-              <th style="padding:8px 12px;">Field</th>
-              <th style="padding:8px 12px;">Type</th>
-              <th style="padding:8px 12px;">Description</th>
-              <th style="padding:8px 12px;">Tier</th>
+            <tr class="csp-style-033">
+              <th class="csp-style-034">Field</th>
+              <th class="csp-style-034">Type</th>
+              <th class="csp-style-034">Description</th>
+              <th class="csp-style-034">Tier</th>
             </tr>
           </thead>
           <tbody>
-            <tr style="border-bottom:1px solid var(--border);">
-              <td style="padding:8px 12px;"><code>request_id</code></td>
-              <td style="padding:8px 12px;">string</td>
-              <td style="padding:8px 12px;">Unique ID for traceability</td>
-              <td style="padding:8px 12px;"><span class="tag tag-free">All</span></td>
+            <tr class="csp-style-035">
+              <td class="csp-style-034"><code>request_id</code></td>
+              <td class="csp-style-034">string</td>
+              <td class="csp-style-034">Unique ID for traceability</td>
+              <td class="csp-style-034"><span class="tag tag-free">All</span></td>
             </tr>
-            <tr style="border-bottom:1px solid var(--border);">
-              <td style="padding:8px 12px;"><code>session_id</code></td>
-              <td style="padding:8px 12px;">string</td>
-              <td style="padding:8px 12px;">Session identifier for iterative refinement</td>
-              <td style="padding:8px 12px;"><span class="tag tag-free">All</span></td>
+            <tr class="csp-style-035">
+              <td class="csp-style-034"><code>session_id</code></td>
+              <td class="csp-style-034">string</td>
+              <td class="csp-style-034">Session identifier for iterative refinement</td>
+              <td class="csp-style-034"><span class="tag tag-free">All</span></td>
             </tr>
-            <tr style="border-bottom:1px solid var(--border);">
-              <td style="padding:8px 12px;"><code>quality_before</code></td>
-              <td style="padding:8px 12px;">QualityScore</td>
-              <td style="padding:8px 12px;">Multi-dimensional quality score (0&ndash;100) with traceable deductions</td>
-              <td style="padding:8px 12px;"><span class="tag tag-free">All</span></td>
+            <tr class="csp-style-035">
+              <td class="csp-style-034"><code>quality_before</code></td>
+              <td class="csp-style-034">QualityScore</td>
+              <td class="csp-style-034">Multi-dimensional quality score (0-100) with traceable deductions</td>
+              <td class="csp-style-034"><span class="tag tag-free">All</span></td>
             </tr>
-            <tr style="border-bottom:1px solid var(--border);">
-              <td style="padding:8px 12px;"><code>compiled_prompt</code></td>
-              <td style="padding:8px 12px;">string</td>
-              <td style="padding:8px 12px;">The optimized prompt in target format (Claude XML, OpenAI, or Markdown)</td>
-              <td style="padding:8px 12px;"><span class="tag tag-free">All</span></td>
+            <tr class="csp-style-035">
+              <td class="csp-style-034"><code>compiled_prompt</code></td>
+              <td class="csp-style-034">string</td>
+              <td class="csp-style-034">The optimized prompt in target format (Claude XML, OpenAI, or Markdown)</td>
+              <td class="csp-style-034"><span class="tag tag-free">All</span></td>
             </tr>
-            <tr style="border-bottom:1px solid var(--border);">
-              <td style="padding:8px 12px;"><code>intent_spec</code></td>
-              <td style="padding:8px 12px;">Intent</td>
-              <td style="padding:8px 12px;">Decomposed intent: task type, audience, tone, constraints, definition of done</td>
-              <td style="padding:8px 12px;"><span class="tag tag-free">All</span></td>
+            <tr class="csp-style-035">
+              <td class="csp-style-034"><code>intent_spec</code></td>
+              <td class="csp-style-034">Intent</td>
+              <td class="csp-style-034">Decomposed intent: task type, audience, tone, constraints, definition of done</td>
+              <td class="csp-style-034"><span class="tag tag-free">All</span></td>
             </tr>
-            <tr style="border-bottom:1px solid var(--border);">
-              <td style="padding:8px 12px;"><code>compilation_checklist</code></td>
-              <td style="padding:8px 12px;">object</td>
-              <td style="padding:8px 12px;">9-item structural coverage checklist (role, goal, constraints, etc.)</td>
-              <td style="padding:8px 12px;"><span class="tag tag-free">All</span></td>
+            <tr class="csp-style-035">
+              <td class="csp-style-034"><code>compilation_checklist</code></td>
+              <td class="csp-style-034">object</td>
+              <td class="csp-style-034">9-item structural coverage checklist (role, goal, constraints, etc.)</td>
+              <td class="csp-style-034"><span class="tag tag-free">All</span></td>
             </tr>
-            <tr style="border-bottom:1px solid var(--border);">
-              <td style="padding:8px 12px;"><code>blocking_questions</code></td>
-              <td style="padding:8px 12px;">Question[]</td>
-              <td style="padding:8px 12px;">Questions that must be resolved before the prompt is ready</td>
-              <td style="padding:8px 12px;"><span class="tag tag-free">All</span></td>
+            <tr class="csp-style-035">
+              <td class="csp-style-034"><code>blocking_questions</code></td>
+              <td class="csp-style-034">Question[]</td>
+              <td class="csp-style-034">Questions that must be resolved before the prompt is ready</td>
+              <td class="csp-style-034"><span class="tag tag-free">All</span></td>
             </tr>
-            <tr style="border-bottom:1px solid var(--border);">
-              <td style="padding:8px 12px;"><code>assumptions</code></td>
-              <td style="padding:8px 12px;">Assumption[]</td>
-              <td style="padding:8px 12px;">Assumptions made during compilation (review &amp; override)</td>
-              <td style="padding:8px 12px;"><span class="tag tag-free">All</span></td>
+            <tr class="csp-style-035">
+              <td class="csp-style-034"><code>assumptions</code></td>
+              <td class="csp-style-034">Assumption[]</td>
+              <td class="csp-style-034">Assumptions made during compilation (review &amp; override)</td>
+              <td class="csp-style-034"><span class="tag tag-free">All</span></td>
             </tr>
-            <tr style="border-bottom:1px solid var(--border);">
-              <td style="padding:8px 12px;"><code>cost_estimate</code></td>
-              <td style="padding:8px 12px;">CostEstimate</td>
-              <td style="padding:8px 12px;">Token counts + cost across 10 models from 4 providers</td>
-              <td style="padding:8px 12px;"><span class="tag tag-free">All</span></td>
+            <tr class="csp-style-035">
+              <td class="csp-style-034"><code>cost_estimate</code></td>
+              <td class="csp-style-034">CostEstimate</td>
+              <td class="csp-style-034">Token counts + cost across 21 costed models from 4 providers</td>
+              <td class="csp-style-034"><span class="tag tag-free">All</span></td>
             </tr>
-            <tr style="border-bottom:1px solid var(--border);">
-              <td style="padding:8px 12px;"><code>model_recommendation</code></td>
-              <td style="padding:8px 12px;">string</td>
-              <td style="padding:8px 12px;">Optimal model based on task complexity, risk, and budget</td>
-              <td style="padding:8px 12px;"><span class="tag tag-free">All</span></td>
+            <tr class="csp-style-035">
+              <td class="csp-style-034"><code>model_recommendation</code></td>
+              <td class="csp-style-034">string</td>
+              <td class="csp-style-034">Optimal model based on task complexity, risk, and budget</td>
+              <td class="csp-style-034"><span class="tag tag-free">All</span></td>
             </tr>
-            <tr style="border-bottom:1px solid var(--border);">
-              <td style="padding:8px 12px;"><code>changes_made</code></td>
-              <td style="padding:8px 12px;">string[]</td>
-              <td style="padding:8px 12px;">List of modifications applied during compilation</td>
-              <td style="padding:8px 12px;"><span class="tag tag-free">All</span></td>
+            <tr class="csp-style-035">
+              <td class="csp-style-034"><code>changes_made</code></td>
+              <td class="csp-style-034">string[]</td>
+              <td class="csp-style-034">List of modifications applied during compilation</td>
+              <td class="csp-style-034"><span class="tag tag-free">All</span></td>
             </tr>
-            <tr style="border-bottom:1px solid var(--border);">
-              <td style="padding:8px 12px;"><code>target</code></td>
-              <td style="padding:8px 12px;">OutputTarget</td>
-              <td style="padding:8px 12px;"><code>claude</code> (XML), <code>openai</code> (system/user), or <code>generic</code> (Markdown)</td>
-              <td style="padding:8px 12px;"><span class="tag tag-free">All</span></td>
+            <tr class="csp-style-035">
+              <td class="csp-style-034"><code>target</code></td>
+              <td class="csp-style-034">OutputTarget</td>
+              <td class="csp-style-034"><code>claude</code> (XML), <code>openai</code> (system/user), or <code>generic</code> (Markdown)</td>
+              <td class="csp-style-034"><span class="tag tag-free">All</span></td>
             </tr>
             <tr>
-              <td style="padding:8px 12px;"><code>storage_health</code></td>
-              <td style="padding:8px 12px;"><code>"ok" | "degraded"</code></td>
-              <td style="padding:8px 12px;">Storage status &mdash; pipeline continues in degraded mode with fail-open semantics</td>
-              <td style="padding:8px 12px;"><span class="tag tag-free">All</span></td>
+              <td class="csp-style-034"><code>storage_health</code></td>
+              <td class="csp-style-034"><code>"ok" | "degraded"</code></td>
+              <td class="csp-style-034">Storage status: pipeline continues in degraded mode with fail-open semantics</td>
+              <td class="csp-style-034"><span class="tag tag-free">All</span></td>
             </tr>
           </tbody>
         </table>
       </div>
 
-      <p style="margin-top:1rem;"><strong>Enterprise-only pipeline stages</strong> that influence the PreviewPack (all configured via the <a href="admin.html" style="color:var(--accent);font-weight:600;">Enterprise Console</a>):</p>
-      <ul style="margin-top:0.5rem; padding-left:1.5rem;">
-        <li><strong>Policy Gate</strong> &mdash; can block or warn before compilation begins. Set enforcement mode and strictness in the Enterprise Console.</li>
-        <li><strong>Custom Rules</strong> &mdash; your regex-based rules affect risk score and blocking decisions. Build rules visually in the Enterprise Console and deploy with one click via the <code>save_custom_rules</code> tool. Validate with <code>pcp doctor</code>.</li>
-        <li><strong>Audit Log</strong> &mdash; every decision is written to a hash-chained JSONL log with SHA-256 hash chaining. Explore and verify the chain visually in the Enterprise Console.</li>
+      <p class="csp-style-036"><strong>Enterprise-only pipeline stages</strong> that influence the PreviewPack (all configured via the <a href="admin.html" class="csp-style-037">Enterprise Console</a>):</p>
+      <ul class="csp-style-038">
+        <li><strong>Policy Gate</strong>: can block or warn before compilation begins. Set enforcement mode and strictness in the Enterprise Console.</li>
+        <li><strong>Custom Rules</strong>: your regex-based rules affect risk score and blocking decisions. Build rules visually in the Enterprise Console and deploy with one click via the <code>save_custom_rules</code> tool. Validate with <code>pcp doctor</code>.</li>
+        <li><strong>Audit Log</strong>: every decision is written to a hash-chained JSONL log with SHA-256 hash chaining. Explore and verify the chain visually in the Enterprise Console.</li>
       </ul>
 
       <!-- ════════════════════════════════════════════════════════════════════ -->
       <!-- VERIFICATION                                                        -->
       <!-- ════════════════════════════════════════════════════════════════════ -->
-      <h2 id="verification" style="margin-top:48px;">Verification</h2>
+      <h2 id="verification" class="csp-style-039">Verification</h2>
       <p>Prompt Control Plane is designed to be trustworthy by default. Here&rsquo;s what that means in practice.</p>
-      <table style="width:100%;font-size:13px;border-collapse:collapse;margin-top:16px;">
-        <tr style="border-bottom:2px solid var(--border);text-align:left;">
-          <th style="padding:8px 10px;">Guarantee</th>
-          <th style="padding:8px 10px;">What It Means For You</th>
+      <table class="csp-style-040">
+        <tr class="csp-style-041">
+          <th class="csp-style-042">Guarantee</th>
+          <th class="csp-style-042">What It Means For You</th>
         </tr>
-        <tr style="border-bottom:1px solid var(--border);">
-          <td style="padding:6px 10px;font-weight:600;">Reproducible results</td>
-          <td style="padding:6px 10px;">Run the same prompt twice &mdash; get the same score, same routing, same cost estimate. No randomness, ever.</td>
+        <tr class="csp-style-035">
+          <td class="csp-style-043">Reproducible results</td>
+          <td class="csp-style-044">Run the same prompt twice: get the same score, same routing, same cost estimate. No randomness, ever.</td>
         </tr>
-        <tr style="border-bottom:1px solid var(--border);">
-          <td style="padding:6px 10px;font-weight:600;">Accurate cost estimates</td>
-          <td style="padding:6px 10px;">Pricing verified against live provider rates for Anthropic, OpenAI, Google, and Perplexity. Updated regularly.</td>
+        <tr class="csp-style-035">
+          <td class="csp-style-043">Accurate cost estimates</td>
+          <td class="csp-style-044">Pricing verified against live provider rates for Anthropic, OpenAI, Google, and Perplexity. Updated regularly.</td>
         </tr>
-        <tr style="border-bottom:1px solid var(--border);">
-          <td style="padding:6px 10px;font-weight:600;">Reliable quality scores</td>
-          <td style="padding:6px 10px;">Multi-dimensional scoring catches vagueness, missing constraints, scope creep, and hallucination risk &mdash; before the prompt reaches an LLM.</td>
+        <tr class="csp-style-035">
+          <td class="csp-style-043">Reliable quality scores</td>
+          <td class="csp-style-044">Multi-dimensional scoring catches vagueness, missing constraints, scope creep, and hallucination risk: before the prompt reaches an LLM.</td>
         </tr>
-        <tr style="border-bottom:1px solid var(--border);">
-          <td style="padding:6px 10px;font-weight:600;">Safe compression</td>
-          <td style="padding:6px 10px;">Guaranteed to never increase token count. Code blocks, tables, and structured content are always preserved.</td>
+        <tr class="csp-style-035">
+          <td class="csp-style-043">Safe compression</td>
+          <td class="csp-style-044">Guaranteed to never increase token count. Code blocks, tables, and structured content are always preserved.</td>
         </tr>
-        <tr style="border-bottom:1px solid var(--border);">
-          <td style="padding:6px 10px;font-weight:600;">Stable contracts</td>
-          <td style="padding:6px 10px;">Output shapes are locked and versioned. Integrations won&rsquo;t break across updates.</td>
+        <tr class="csp-style-035">
+          <td class="csp-style-043">Stable contracts</td>
+          <td class="csp-style-044">Output shapes are locked and versioned. Integrations won&rsquo;t break across updates.</td>
         </tr>
-        <tr style="border-bottom:1px solid var(--border);">
-          <td style="padding:6px 10px;font-weight:600;">Fully offline</td>
-          <td style="padding:6px 10px;">Zero external calls. Your prompts never leave your machine. No API keys required for analysis.</td>
+        <tr class="csp-style-035">
+          <td class="csp-style-043">Fully offline</td>
+          <td class="csp-style-044">Zero external calls. Your prompts never leave your machine. No API keys required for analysis.</td>
         </tr>
         <tr>
-          <td style="padding:6px 10px;font-weight:600;">Hash-chained audit</td>
-          <td style="padding:6px 10px;">Cryptographically chained log of every decision. If any entry is modified, the chain breaks. <span style="color:var(--text-muted);font-size:11px;">(Enterprise)</span></td>
+          <td class="csp-style-043">Hash-chained audit</td>
+          <td class="csp-style-044">Cryptographically chained log of every decision. If any entry is modified, the chain breaks. <span class="csp-style-045">(Enterprise)</span></td>
         </tr>
       </table>
-      <p style="margin-top:12px;font-size:12px;color:var(--text-muted);">Extensively tested. Run the suite yourself to verify &mdash; completes in under 5 seconds.</p>
+      <p class="csp-style-046">Extensively tested. Run the suite yourself to verify: completes in under 5 seconds.</p>
 
       <!-- ════════════════════════════════════════════════════════════════════ -->
       <!-- TOOL REFERENCE                                                      -->
@@ -878,41 +464,41 @@ pcp hook install --threshold 70</div>
       <h2 id="tool-reference">Tool Reference</h2>
       <p>Prompt Control Plane exposes 20 tools via MCP. Three are metered (count against your plan); the rest are free and unlimited. Every response includes a <code>request_id</code> for traceability.</p>
 
-      <div class="tool-card" style="margin-bottom:32px;">
-        <h3 style="margin-top:0;">All 20 Tools at a Glance</h3>
-        <table style="width:100%; border-collapse:collapse; font-size:13px;">
+      <div class="tool-card csp-style-047">
+        <h3 class="csp-style-048">All 20 Tools at a Glance</h3>
+        <table class="csp-style-049">
           <thead>
-            <tr style="border-bottom:2px solid var(--border); text-align:left;">
-              <th style="padding:6px 10px;">Tool</th>
-              <th style="padding:6px 10px;">Category</th>
-              <th style="padding:6px 10px;">Cost</th>
-              <th style="padding:6px 10px;">Plan</th>
+            <tr class="csp-style-050">
+              <th class="csp-style-044">Tool</th>
+              <th class="csp-style-044">Category</th>
+              <th class="csp-style-044">Cost</th>
+              <th class="csp-style-044">Plan</th>
             </tr>
           </thead>
           <tbody>
-            <tr style="border-bottom:1px solid var(--border);"><td style="padding:6px 10px;"><code>optimize_prompt</code></td><td>Analysis</td><td><span class="tag tag-metered">Metered</span></td><td>All Plans</td></tr>
-            <tr style="border-bottom:1px solid var(--border);"><td style="padding:6px 10px;"><code>check_prompt</code></td><td>Analysis</td><td><span class="tag tag-free">Free</span></td><td>All Plans</td></tr>
-            <tr style="border-bottom:1px solid var(--border);"><td style="padding:6px 10px;"><code>classify_task</code></td><td>Analysis</td><td><span class="tag tag-free">Free</span></td><td>All Plans</td></tr>
-            <tr style="border-bottom:1px solid var(--border);"><td style="padding:6px 10px;"><code>route_model</code></td><td>Routing</td><td><span class="tag tag-free">Free</span></td><td>All Plans</td></tr>
-            <tr style="border-bottom:1px solid var(--border);"><td style="padding:6px 10px;"><code>pre_flight</code></td><td>Routing</td><td><span class="tag tag-metered">Metered</span></td><td>All Plans</td></tr>
-            <tr style="border-bottom:1px solid var(--border);"><td style="padding:6px 10px;"><code>refine_prompt</code></td><td>Refinement</td><td><span class="tag tag-metered">Metered</span></td><td>All Plans</td></tr>
-            <tr style="border-bottom:1px solid var(--border);"><td style="padding:6px 10px;"><code>approve_prompt</code></td><td>Refinement</td><td><span class="tag tag-free">Free</span></td><td>All Plans</td></tr>
-            <tr style="border-bottom:1px solid var(--border);"><td style="padding:6px 10px;"><code>estimate_cost</code></td><td>Cost</td><td><span class="tag tag-free">Free</span></td><td>All Plans</td></tr>
-            <tr style="border-bottom:1px solid var(--border);"><td style="padding:6px 10px;"><code>compress_context</code></td><td>Cost</td><td><span class="tag tag-free">Free</span></td><td>All Plans</td></tr>
-            <tr style="border-bottom:1px solid var(--border);"><td style="padding:6px 10px;"><code>prune_tools</code></td><td>Cost</td><td><span class="tag tag-free">Free</span></td><td>All Plans</td></tr>
-            <tr style="border-bottom:1px solid var(--border);"><td style="padding:6px 10px;"><code>configure_optimizer</code></td><td>Config</td><td><span class="tag tag-free">Free</span></td><td>All Plans*</td></tr>
-            <tr style="border-bottom:1px solid var(--border);"><td style="padding:6px 10px;"><code>get_usage</code></td><td>Config</td><td><span class="tag tag-free">Free</span></td><td>All Plans</td></tr>
-            <tr style="border-bottom:1px solid var(--border);"><td style="padding:6px 10px;"><code>prompt_stats</code></td><td>Config</td><td><span class="tag tag-free">Free</span></td><td>All Plans</td></tr>
-            <tr style="border-bottom:1px solid var(--border);"><td style="padding:6px 10px;"><code>set_license</code></td><td>License</td><td><span class="tag tag-free">Free</span></td><td>All Plans</td></tr>
-            <tr style="border-bottom:1px solid var(--border);"><td style="padding:6px 10px;"><code>license_status</code></td><td>License</td><td><span class="tag tag-free">Free</span></td><td>All Plans</td></tr>
-            <tr style="border-bottom:1px solid var(--border);"><td style="padding:6px 10px;"><code>list_sessions</code></td><td>Sessions</td><td><span class="tag tag-free">Free</span></td><td style="color:var(--accent);font-weight:600;">Enterprise</td></tr>
-            <tr style="border-bottom:1px solid var(--border);"><td style="padding:6px 10px;"><code>export_session</code></td><td>Sessions</td><td><span class="tag tag-free">Free</span></td><td style="color:var(--accent);font-weight:600;">Enterprise</td></tr>
-            <tr style="border-bottom:1px solid var(--border);"><td style="padding:6px 10px;"><code>delete_session</code></td><td>Sessions</td><td><span class="tag tag-free">Free</span></td><td style="color:var(--accent);font-weight:600;">Enterprise</td></tr>
-            <tr style="border-bottom:1px solid var(--border);"><td style="padding:6px 10px;"><code>purge_sessions</code></td><td>Sessions</td><td><span class="tag tag-free">Free</span></td><td style="color:var(--accent);font-weight:600;">Enterprise</td></tr>
-            <tr><td style="padding:6px 10px;"><code>save_custom_rules</code></td><td>Governance</td><td><span class="tag tag-free">Free</span></td><td style="color:var(--accent);font-weight:600;">Enterprise</td></tr>
+            <tr class="csp-style-035"><td class="csp-style-044"><code>optimize_prompt</code></td><td>Analysis</td><td><span class="tag tag-metered">Metered</span></td><td>All Plans</td></tr>
+            <tr class="csp-style-035"><td class="csp-style-044"><code>check_prompt</code></td><td>Analysis</td><td><span class="tag tag-free">Free</span></td><td>All Plans</td></tr>
+            <tr class="csp-style-035"><td class="csp-style-044"><code>classify_task</code></td><td>Analysis</td><td><span class="tag tag-free">Free</span></td><td>All Plans</td></tr>
+            <tr class="csp-style-035"><td class="csp-style-044"><code>route_model</code></td><td>Routing</td><td><span class="tag tag-free">Free</span></td><td>All Plans</td></tr>
+            <tr class="csp-style-035"><td class="csp-style-044"><code>pre_flight</code></td><td>Routing</td><td><span class="tag tag-metered">Metered</span></td><td>All Plans</td></tr>
+            <tr class="csp-style-035"><td class="csp-style-044"><code>refine_prompt</code></td><td>Refinement</td><td><span class="tag tag-metered">Metered</span></td><td>All Plans</td></tr>
+            <tr class="csp-style-035"><td class="csp-style-044"><code>approve_prompt</code></td><td>Refinement</td><td><span class="tag tag-free">Free</span></td><td>All Plans</td></tr>
+            <tr class="csp-style-035"><td class="csp-style-044"><code>estimate_cost</code></td><td>Cost</td><td><span class="tag tag-free">Free</span></td><td>All Plans</td></tr>
+            <tr class="csp-style-035"><td class="csp-style-044"><code>compress_context</code></td><td>Cost</td><td><span class="tag tag-free">Free</span></td><td>All Plans</td></tr>
+            <tr class="csp-style-035"><td class="csp-style-044"><code>prune_tools</code></td><td>Cost</td><td><span class="tag tag-free">Free</span></td><td>All Plans</td></tr>
+            <tr class="csp-style-035"><td class="csp-style-044"><code>configure_optimizer</code></td><td>Config</td><td><span class="tag tag-free">Free</span></td><td>All Plans*</td></tr>
+            <tr class="csp-style-035"><td class="csp-style-044"><code>get_usage</code></td><td>Config</td><td><span class="tag tag-free">Free</span></td><td>All Plans</td></tr>
+            <tr class="csp-style-035"><td class="csp-style-044"><code>prompt_stats</code></td><td>Config</td><td><span class="tag tag-free">Free</span></td><td>All Plans</td></tr>
+            <tr class="csp-style-035"><td class="csp-style-044"><code>set_license</code></td><td>License</td><td><span class="tag tag-free">Free</span></td><td>All Plans</td></tr>
+            <tr class="csp-style-035"><td class="csp-style-044"><code>license_status</code></td><td>License</td><td><span class="tag tag-free">Free</span></td><td>All Plans</td></tr>
+            <tr class="csp-style-035"><td class="csp-style-044"><code>list_sessions</code></td><td>Sessions</td><td><span class="tag tag-free">Free</span></td><td class="csp-style-037">Enterprise</td></tr>
+            <tr class="csp-style-035"><td class="csp-style-044"><code>export_session</code></td><td>Sessions</td><td><span class="tag tag-free">Free</span></td><td class="csp-style-037">Enterprise</td></tr>
+            <tr class="csp-style-035"><td class="csp-style-044"><code>delete_session</code></td><td>Sessions</td><td><span class="tag tag-free">Free</span></td><td class="csp-style-037">Enterprise</td></tr>
+            <tr class="csp-style-035"><td class="csp-style-044"><code>purge_sessions</code></td><td>Sessions</td><td><span class="tag tag-free">Free</span></td><td class="csp-style-037">Enterprise</td></tr>
+            <tr><td class="csp-style-044"><code>save_custom_rules</code></td><td>Governance</td><td><span class="tag tag-free">Free</span></td><td class="csp-style-037">Enterprise</td></tr>
           </tbody>
         </table>
-        <p style="font-size:12px; color:var(--text-muted); margin-top:8px;">*configure_optimizer: Enterprise settings (policy_mode, audit_log, config lock, session_retention_days) require Enterprise tier.</p>
+        <p class="csp-style-051">*configure_optimizer: Enterprise settings (policy_mode, audit_log, config lock, session_retention_days) require Enterprise tier.</p>
       </div>
 
       <!-- ── Analysis ────────────────────────────────────────────────────── -->
@@ -934,10 +520,10 @@ pcp hook install --threshold 70</div>
           <div class="tool-params-title">Parameters</div>
           <div class="param-row"><span class="param-name">raw_prompt</span> <span class="param-type">string</span> <span class="param-required">required</span> <span class="param-desc">The raw user prompt to optimize (max 100KB)</span></div>
           <div class="param-row"><span class="param-name">context</span> <span class="param-type">string</span> <span class="param-desc">Optional context: repo info, file contents, preferences</span></div>
-          <div class="param-row"><span class="param-name">target</span> <span class="param-type">"claude" | "openai" | "generic"</span> <span class="param-desc">Output target format (default: "claude")</span></div>
+          <div class="param-row"><span class="param-name">target</span> <span class="param-type">"claude" | "openai" | "google" | "perplexity" | "generic"</span> <span class="param-desc">Output/provider target (default: "claude"). Google, Perplexity, and generic compile to Markdown.</span></div>
         </div>
         <div class="tool-output">Returns</div>
-        <p class="tool-output-desc"><code>PreviewPack</code> &mdash; Contains <code>session_id</code>, <code>quality_before</code> (0&ndash;100), <code>compiled_prompt</code>, <code>blocking_questions</code>, <code>assumptions</code>, <code>cost_estimate</code>, <code>model_recommendation</code>, <code>compilation_checklist</code>, and <code>changes_made</code>.</p>
+        <p class="tool-output-desc"><code>PreviewPack</code>: Contains <code>session_id</code>, <code>quality_before</code> (0-100), <code>compiled_prompt</code>, <code>blocking_questions</code>, <code>assumptions</code>, <code>cost_estimate</code>, <code>model_recommendation</code>, <code>compilation_checklist</code>, and <code>changes_made</code>.</p>
       </div>
 
       <!-- check_prompt -->
@@ -954,7 +540,7 @@ pcp hook install --threshold 70</div>
           <div class="param-row"><span class="param-name">context</span> <span class="param-type">string</span> <span class="param-desc">Optional context</span></div>
         </div>
         <div class="tool-output">Returns</div>
-        <p class="tool-output-desc">Quality score (0&ndash;100), pass/fail verdict based on configured strictness threshold, top 2 issues, and an improvement suggestion.</p>
+        <p class="tool-output-desc">Quality score (0-100), pass/fail verdict based on configured strictness threshold, top 2 issues, and an improvement suggestion.</p>
       </div>
 
       <!-- classify_task -->
@@ -971,7 +557,7 @@ pcp hook install --threshold 70</div>
           <div class="param-row"><span class="param-name">context</span> <span class="param-type">string</span> <span class="param-desc">Optional context</span></div>
         </div>
         <div class="tool-output">Returns</div>
-        <p class="tool-output-desc"><code>taskType</code>, <code>complexity</code> (simple_factual / analytical / multi_step / creative / long_context / agent_orchestration), <code>riskScore</code> (0&ndash;100), <code>riskDimensions</code> (underspec, hallucination, scope, constraint), <code>suggestedProfile</code>, and <code>signals</code>.</p>
+        <p class="tool-output-desc"><code>taskType</code>, <code>complexity</code> (simple_factual / analytical / multi_step / creative / long_context / agent_orchestration), <code>riskScore</code> (0-100), <code>riskDimensions</code> (underspec, hallucination, scope, constraint), <code>suggestedProfile</code>, and <code>signals</code>.</p>
       </div>
 
       <!-- ── Routing ─────────────────────────────────────────────────────── -->
@@ -1001,7 +587,7 @@ pcp hook install --threshold 70</div>
           <div class="param-row"><span class="param-name">target</span> <span class="param-type">OutputTarget</span> <span class="param-desc">Provider preference (default: "claude")</span></div>
         </div>
         <div class="tool-output">Returns</div>
-        <p class="tool-output-desc"><code>ModelRecommendation</code> &mdash; Contains <code>primary</code> (model, provider, temperature, maxTokens), <code>fallback</code>, <code>confidence</code> (0&ndash;100), <code>costEstimate</code>, <code>rationale</code>, <code>tradeoffs</code>, <code>savings_vs_default</code>, and <code>decision_path</code> array.</p>
+        <p class="tool-output-desc"><code>ModelRecommendation</code>: Contains <code>primary</code> (model, provider, temperature, maxTokens), <code>fallback</code>, <code>confidence</code> (0-100), <code>costEstimate</code>, <code>rationale</code>, <code>tradeoffs</code>, <code>savings_vs_default</code>, and <code>decision_path</code> array.</p>
       </div>
 
       <!-- pre_flight -->
@@ -1081,15 +667,15 @@ pcp hook install --threshold 70</div>
           <span class="tag tag-free">Free</span>
           <span class="tag tag-free">All Plans</span>
         </div>
-        <p class="tool-desc">Estimates token count and cost across all supported providers for any prompt text. No session needed. Covers 10 models from Anthropic, OpenAI, Google, and Perplexity.</p>
+        <p class="tool-desc">Estimates token count and cost across all supported providers for any prompt text. No session needed. Covers 21 costed models from Anthropic, OpenAI, Google, and Perplexity.</p>
         <div class="tool-params">
           <div class="tool-params-title">Parameters</div>
           <div class="param-row"><span class="param-name">prompt_text</span> <span class="param-type">string</span> <span class="param-required">required</span> <span class="param-desc">The prompt text to estimate</span></div>
           <div class="param-row"><span class="param-name">target</span> <span class="param-type">OutputTarget</span> <span class="param-desc">Target platform for model recommendations</span></div>
         </div>
         <div class="tool-output">Returns</div>
-        <p class="tool-output-desc"><code>CostEstimate</code> &mdash; Contains <code>input_tokens</code>, <code>estimated_output_tokens</code>, per-model <code>costs</code> array (model, provider, input/output cost in USD), <code>recommended_model</code>, and <code>recommendation_reason</code>.</p>
-        <p class="tool-output-desc" style="margin-top:8px;font-size:12px;color:var(--text-muted);">Pricing covers models across Anthropic, OpenAI, Google, and Perplexity. Updated regularly. See <a href="models.html" style="color:var(--accent);">Models</a> for supported models.</p>
+        <p class="tool-output-desc"><code>CostEstimate</code>: Contains <code>input_tokens</code>, <code>estimated_output_tokens</code>, per-model <code>costs</code> array (model, provider, input/output cost in USD), <code>recommended_model</code>, and <code>recommendation_reason</code>.</p>
+        <p class="tool-output-desc csp-style-052">Pricing covers deterministic catalog entries across Anthropic, OpenAI, Google, and Perplexity. Updated regularly. See <a href="models.html" class="csp-style-001">Models</a> for supported models.</p>
       </div>
 
       <!-- compress_context -->
@@ -1125,7 +711,7 @@ pcp hook install --threshold 70</div>
           <div class="param-row"><span class="param-name">prune_count</span> <span class="param-type">number</span> <span class="param-desc">Number of lowest-scoring tools to prune (default: 5, prune mode only)</span></div>
         </div>
         <div class="tool-output">Returns</div>
-        <p class="tool-output-desc">Ranked tool list with <code>relevance_score</code> (0&ndash;100), <code>signals</code>, and <code>tokens_saved_estimate</code> per tool. Plus <code>pruned_count</code>, <code>pruned_tools</code>, and total <code>tokens_saved_estimate</code>.</p>
+        <p class="tool-output-desc">Ranked tool list with <code>relevance_score</code> (0-100), <code>signals</code>, and <code>tokens_saved_estimate</code> per tool. Plus <code>pruned_count</code>, <code>pruned_tools</code>, and total <code>tokens_saved_estimate</code>.</p>
       </div>
 
       <!-- ── Configuration ───────────────────────────────────────────────── -->
@@ -1211,7 +797,7 @@ pcp hook install --threshold 70</div>
           <span class="tag tag-free">Free</span>
           <span class="tag tag-free">All Plans</span>
         </div>
-        <p class="tool-desc">Activates a Pro, Power, or Enterprise license key. Uses Ed25519 asymmetric signature verification (public key only, offline, zero dependencies). The license payload contains tier, issued_at, expires_at, and license_id &mdash; no PII.</p>
+        <p class="tool-desc">Activates a Pro, Power, or Enterprise license key. Uses Ed25519 asymmetric signature verification (public key only, offline, zero dependencies). The license payload contains tier, issued_at, expires_at, and license_id: no PII.</p>
         <div class="tool-params">
           <div class="tool-params-title">Parameters</div>
           <div class="param-row"><span class="param-name">license_key</span> <span class="param-type">string</span> <span class="param-required">required</span> <span class="param-desc">License key string (starts with pcp_)</span></div>
@@ -1248,7 +834,7 @@ pcp hook install --threshold 70</div>
         <div class="tool-card-header">
           <span class="tool-name">list_sessions</span>
           <span class="tag tag-free">Free</span>
-          <span class="tag" style="background:var(--accent);color:#fff;">Enterprise</span>
+          <span class="tag csp-style-053">Enterprise</span>
         </div>
         <p class="tool-desc">Lists all optimization sessions with metadata (no raw prompts). Returns newest-first, with task type, quality score, state, and prompt hash.</p>
         <div class="tool-params">
@@ -1258,7 +844,7 @@ pcp hook install --threshold 70</div>
           <div class="param-row"><span class="param-name">limit</span> <span class="param-type">number (1-100)</span> <span class="param-desc">Max sessions to return (default: 100)</span></div>
         </div>
         <div class="tool-output">Returns</div>
-        <p class="tool-output-desc"><code>SessionListResponse</code> &mdash; Array of <code>SessionRecord</code> (session_id, state, task_type, quality_before, prompt_hash, target) plus <code>total_sessions</code> and <code>storage_path</code>.</p>
+        <p class="tool-output-desc"><code>SessionListResponse</code>: Array of <code>SessionRecord</code> (session_id, state, task_type, quality_before, prompt_hash, target) plus <code>total_sessions</code> and <code>storage_path</code>.</p>
       </div>
 
       <!-- export_session -->
@@ -1266,7 +852,7 @@ pcp hook install --threshold 70</div>
         <div class="tool-card-header">
           <span class="tool-name">export_session</span>
           <span class="tag tag-free">Free</span>
-          <span class="tag" style="background:var(--accent);color:#fff;">Enterprise</span>
+          <span class="tag csp-style-053">Enterprise</span>
         </div>
         <p class="tool-desc">Exports full session details including raw prompt, compiled prompt, and reproducibility metadata. Auto-calculates rule_set_hash, rule_set_version, risk_score, and custom_rules_applied.</p>
         <div class="tool-params">
@@ -1274,7 +860,7 @@ pcp hook install --threshold 70</div>
           <div class="param-row"><span class="param-name">session_id</span> <span class="param-type">string</span> <span class="param-required">required</span> <span class="param-desc">Session ID to export</span></div>
         </div>
         <div class="tool-output">Returns</div>
-        <p class="tool-output-desc"><code>SessionExport</code> &mdash; Contains raw_prompt, compiled_prompt, quality_before, rule_set_hash, rule_set_version, and metadata (target, task_type, complexity, risk_score, custom_rules_applied, engine_version, policy_mode, policy_hash).</p>
+        <p class="tool-output-desc"><code>SessionExport</code>: Contains raw_prompt, compiled_prompt, quality_before, rule_set_hash, rule_set_version, and metadata (target, task_type, complexity, risk_score, custom_rules_applied, engine_version, policy_mode, policy_hash).</p>
       </div>
 
       <!-- delete_session -->
@@ -1282,7 +868,7 @@ pcp hook install --threshold 70</div>
         <div class="tool-card-header">
           <span class="tool-name">delete_session</span>
           <span class="tag tag-free">Free</span>
-          <span class="tag" style="background:var(--accent);color:#fff;">Enterprise</span>
+          <span class="tag csp-style-053">Enterprise</span>
         </div>
         <p class="tool-desc">Deletes a single optimization session by ID. Audit-logged in Enterprise tier.</p>
         <div class="tool-params">
@@ -1298,7 +884,7 @@ pcp hook install --threshold 70</div>
         <div class="tool-card-header">
           <span class="tool-name">purge_sessions</span>
           <span class="tag tag-free">Free</span>
-          <span class="tag" style="background:var(--accent);color:#fff;">Enterprise</span>
+          <span class="tag csp-style-053">Enterprise</span>
         </div>
         <p class="tool-desc">Bulk-purges optimization sessions by age policy or deletes all. Safe-by-default: requires explicit parameters. Supports dry_run preview, keep_last protection, and config-based session_retention_days fallback.</p>
         <div class="tool-params">
@@ -1309,7 +895,7 @@ pcp hook install --threshold 70</div>
           <div class="param-row"><span class="param-name">dry_run</span> <span class="param-type">boolean</span> <span class="param-desc">Preview what would be deleted (default: false)</span></div>
         </div>
         <div class="tool-output">Returns</div>
-        <p class="tool-output-desc"><code>PurgeResult</code> &mdash; <code>deleted_count</code>, <code>retained_count</code>, <code>scanned_count</code>, <code>deleted_session_ids</code> (capped at 100), <code>dry_run</code>, <code>cutoff_date</code>, <code>effective_older_than_days</code>.</p>
+        <p class="tool-output-desc"><code>PurgeResult</code>: <code>deleted_count</code>, <code>retained_count</code>, <code>scanned_count</code>, <code>deleted_session_ids</code> (capped at 100), <code>dry_run</code>, <code>cutoff_date</code>, <code>effective_older_than_days</code>.</p>
       </div>
 
 
@@ -1321,9 +907,9 @@ pcp hook install --threshold 70</div>
 
       <!-- Enterprise Governance Flow SVG -->
       <h3>Governance Flow</h3>
-      <p>Every prompt runs through a layered decision stack. Custom rules fire first, then the risk scorer, then the policy gate &mdash; in that order, deterministically.</p>
-      <div style="overflow-x:auto;margin:32px 0 48px;">
-        <svg viewBox="0 0 960 410" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:940px;display:block;margin:0 auto;font-family:'Inter',system-ui,sans-serif;">
+      <p>Every prompt runs through a layered decision stack. Custom rules fire first, then the risk scorer, then the policy gate: in that order, deterministically.</p>
+      <div class="csp-style-054">
+        <svg viewBox="0 0 960 410" xmlns="http://www.w3.org/2000/svg" class="csp-style-055">
           <defs>
             <marker id="eg-arrow" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
               <polygon points="0 0, 8 3, 0 6" fill="var(--accent)"/>
@@ -1374,7 +960,7 @@ pcp hook install --threshold 70</div>
           <text x="390" y="122" text-anchor="middle" fill="var(--green)" font-size="11" font-weight="700">Risk Scorer</text>
           <text x="390" y="138" text-anchor="middle" fill="var(--text-muted)" font-size="10">14 built-in rules</text>
           <text x="390" y="154" text-anchor="middle" fill="var(--text-muted)" font-size="10">+ custom rule deltas</text>
-          <text x="390" y="170" text-anchor="middle" fill="var(--text-muted)" font-size="10">&rarr; risk_score 0&ndash;100</text>
+          <text x="390" y="170" text-anchor="middle" fill="var(--text-muted)" font-size="10">&rarr; risk_score 0-100</text>
 
           <!-- Arrow 3 → 4 -->
           <line x1="458" y1="139" x2="488" y2="139" stroke="var(--accent)" stroke-width="1.5" marker-end="url(#eg-arrow)"/>
@@ -1433,7 +1019,7 @@ pcp hook install --threshold 70</div>
           <line x1="22" y1="308" x2="288" y2="308" stroke="var(--border)" stroke-width="1"/>
           <text x="22" y="324" fill="var(--orange)" font-size="10" font-weight="600">Advisory (default)</text>
           <text x="22" y="340" fill="var(--text-muted)" font-size="10">Score logged, warning flag set.</text>
-          <text x="22" y="354" fill="var(--text-muted)" font-size="10">Prompt proceeds &mdash; no block.</text>
+          <text x="22" y="354" fill="var(--text-muted)" font-size="10">Prompt proceeds: no block.</text>
           <line x1="22" y1="364" x2="288" y2="364" stroke="var(--border)" stroke-width="1"/>
           <text x="22" y="380" fill="var(--red)" font-size="10" font-weight="600">Enforce (opt-in)</text>
           <text x="22" y="396" fill="var(--text-muted)" font-size="10">Prompt blocked if score &ge; threshold.</text>
@@ -1448,15 +1034,15 @@ pcp hook install --threshold 70</div>
       </div>
 
       <h3>Policy Enforcement <span class="tag-enterprise">Enterprise</span></h3>
-      <p>Switch from advisory mode (issues are reported but never block) to enforce mode, where BLOCKING rules gate every prompt operation.</p>
+      <p>Switch from advisory mode, where issues are reported, to enforce mode, where BLOCKING rules gate every prompt operation.</p>
       <h4>Setup</h4>
       <div class="code-block">configure_optimizer({
   policy_mode: <span class="string">"enforce"</span>
 })</div>
-      <h4>Advisory vs Enforce</h4>
+      <h4>Advisory and Enforce</h4>
       <ul>
-        <li><strong>advisory</strong> (default) &mdash; Rules fire and are reported in the PreviewPack, but no operation is blocked. Suitable for onboarding and iteration.</li>
-        <li><strong>enforce</strong> &mdash; BLOCKING rules prevent <code>approve_prompt</code> from succeeding. The response includes a <code>policy_violations</code> array describing each violation. Risk threshold gating also blocks high-risk prompts from approval.</li>
+        <li><strong>advisory</strong> (default): Rules fire and appear in the PreviewPack. Operations continue, which supports onboarding and iteration.</li>
+        <li><strong>enforce</strong>: BLOCKING rules prevent <code>approve_prompt</code> from succeeding. The response includes a <code>policy_violations</code> array describing each violation. Risk threshold gating also blocks high-risk prompts from approval.</li>
       </ul>
       <h4>When violations are found</h4>
       <p>In enforce mode, <code>approve_prompt</code> returns an error with <code>policy_violations</code> listing each triggered BLOCKING rule (rule_id, description, severity, risk_dimension). The user must resolve the issues via <code>refine_prompt</code> or adjust the prompt before re-attempting approval.</p>
@@ -1499,7 +1085,7 @@ pcp hook install --threshold 70</div>
   unlock: <span class="keyword">true</span>,
   lock_secret: <span class="string">"your-admin-passphrase"</span>
 })</div>
-      <p>The passphrase is stored as a SHA-256 hash only &mdash; never in plaintext. Every lock/unlock attempt (successful or blocked) is audit-logged if the audit trail is enabled.</p>
+      <p>The passphrase is stored as a SHA-256 hash only: never in plaintext. Every lock/unlock attempt (successful or blocked) is audit-logged if the audit trail is enabled.</p>
 
       <h3>Custom Rules <span class="tag-enterprise">Enterprise</span></h3>
       <p>Define organization-specific prompt governance rules that run alongside the built-in rule engine.</p>
@@ -1507,7 +1093,7 @@ pcp hook install --threshold 70</div>
       <p>Place your rules in <code>~/.prompt-control-plane/custom-rules.json</code>:</p>
       <div class="code-block">{
   <span class="string">"schema_version"</span>: 1,
-  <span class="string">"created_at"</span>: 1709280000,
+  <span class="string">"created_at"</span>: Date.now(),
   <span class="string">"rules"</span>: [
     {
       <span class="string">"id"</span>: <span class="string">"require_error_handling"</span>,
@@ -1532,7 +1118,7 @@ pcp hook install --threshold 70</div>
           <tr><td>applies_to</td><td>string</td><td>"code" | "prose" | "all"</td></tr>
           <tr><td>severity</td><td>string</td><td>"BLOCKING" | "NON-BLOCKING"</td></tr>
           <tr><td>risk_dimension</td><td>string</td><td>"hallucination" | "constraint" | "underspec" | "scope"</td></tr>
-          <tr><td>risk_weight</td><td>number</td><td>1&ndash;25</td></tr>
+          <tr><td>risk_weight</td><td>number</td><td>1-25</td></tr>
         </tbody>
       </table>
       <p>Hard cap: 25 rules per configuration. Invalid regex patterns are skipped with a warning (skip-on-error pattern).</p>
@@ -1566,7 +1152,7 @@ purge_sessions({
       <!-- CLI LINTER                                                          -->
       <!-- ════════════════════════════════════════════════════════════════════ -->
       <h2 id="cli">CLI (<code>pcp</code>)</h2>
-      <p>A full CLI exposing the entire scoring, classification, routing, compression, and policy enforcement engine. No MCP dependency &mdash; works in any terminal or CI pipeline. Also available as <code>prompt-lint</code> (backward compatible).</p>
+      <p>A full CLI exposing the entire scoring, classification, routing, compression, and policy enforcement engine. No MCP dependency: works in any terminal or CI pipeline. Also available as <code>prompt-lint</code> (backward compatible).</p>
 
       <h3>Quick Start</h3>
       <div class="code-block"><span class="comment"># Pre-flight: classify + score + route + policy check in one call</span>
@@ -1614,7 +1200,7 @@ pcp optimize --file prompt.txt --json --target claude</div>
           <tr><td><code>--intent &lt;text&gt;</code></td><td>Intent description (for compress)</td></tr>
           <tr><td><code>--strict</code></td><td>Use strict threshold (75)</td></tr>
           <tr><td><code>--relaxed</code></td><td>Use relaxed threshold (40)</td></tr>
-          <tr><td><code>--threshold N</code></td><td>Custom threshold (0&ndash;100)</td></tr>
+          <tr><td><code>--threshold N</code></td><td>Custom threshold (0-100)</td></tr>
         </tbody>
       </table>
 
@@ -1633,7 +1219,7 @@ pcp optimize --file prompt.txt --json --target claude</div>
       <p>All <code>--json</code> output follows a consistent envelope:</p>
       <div class="code-block">{
   <span class="string">"request_id"</span>: <span class="string">"uuid-v4"</span>,
-  <span class="string">"version"</span>: <span class="string">"5.3.3"</span>,
+  <span class="string">"version"</span>: <span class="string">"5.3.4"</span>,
   <span class="string">"schema_version"</span>: 1,
   <span class="string">"subcommand"</span>: <span class="string">"preflight"</span>,
   <span class="string">"policy_mode"</span>: <span class="string">"advisory"</span>,
@@ -1641,7 +1227,7 @@ pcp optimize --file prompt.txt --json --target claude</div>
 }</div>
 
       <h3>Policy Enforcement</h3>
-      <p>The CLI respects the same governance config as the MCP. When the Enterprise Console sets <code>policy_mode</code> to <code>"enforce"</code>, the CLI blocks prompts that violate BLOCKING rules or exceed risk thresholds &mdash; returning exit code 3 with violation details.</p>
+      <p>The CLI respects the same governance config as the MCP. When the Enterprise Console sets <code>policy_mode</code> to <code>"enforce"</code>, the CLI blocks prompts that violate BLOCKING rules or exceed risk thresholds: returning exit code 3 with violation details.</p>
       <div class="code-block"><span class="comment"># Console writes enforce config, CLI respects it</span>
 pcp config --show --json   <span class="comment"># verify policy_mode</span>
 pcp preflight <span class="string">"vague prompt"</span> --json  <span class="comment"># exit 3 if blocked</span></div>
@@ -1662,10 +1248,10 @@ echo <span class="string">"Write a blog post"</span> | pcp check --threshold 70<
       <!-- HOOKS                                                                -->
       <!-- ════════════════════════════════════════════════════════════════════ -->
       <h2 id="hooks">Auto-Check Hooks</h2>
-      <p>Hooks automatically check every prompt before it reaches the LLM. Works with any MCP client that supports <code>UserPromptSubmit</code> hooks &mdash; Claude Code, Cursor, Windsurf, and others.</p>
+      <p>Hooks automatically check every prompt before it reaches the LLM. Works with any MCP client that supports <code>UserPromptSubmit</code> hooks: Claude Code, Cursor, Windsurf, and others.</p>
 
       <h3>How It Works</h3>
-      <p>When you submit a prompt in your MCP client, the hook silently runs <code>pcp check</code> on it. If the score falls below your threshold, inline feedback is injected into the conversation context &mdash; telling the LLM what to improve. Prompts above the threshold pass through untouched.</p>
+      <p>When you submit a prompt in your MCP client, the hook silently runs <code>pcp check</code> on it. If the score falls below your threshold, inline feedback is injected into the conversation context: telling the LLM what to improve. Prompts above the threshold pass through untouched.</p>
 
       <h3>Install</h3>
       <div class="code-block"><span class="comment"># Install for this project</span>
@@ -1690,8 +1276,8 @@ pcp hook uninstall --global  <span class="comment"># remove global hook</span></
       <h3>What Gets Created</h3>
       <p>The <code>install</code> command creates two files:</p>
       <ul>
-        <li><strong>Hook script</strong> (<code>.claude/hooks/pcp-preflight.mjs</code>) &mdash; runs <code>pcp check</code> on every prompt</li>
-        <li><strong>Settings entry</strong> (<code>.claude/settings.json</code>) &mdash; registers the hook with your MCP client</li>
+        <li><strong>Hook script</strong> (<code>.claude/hooks/pcp-preflight.mjs</code>): runs <code>pcp check</code> on every prompt</li>
+        <li><strong>Settings entry</strong> (<code>.claude/settings.json</code>): registers the hook with your MCP client</li>
       </ul>
       <p>Both are cleaned up completely by <code>uninstall</code>.</p>
 
@@ -1729,9 +1315,9 @@ pcp hook uninstall --global  <span class="comment"># remove global hook</span></
       <table class="data-table">
         <thead><tr><th>Input</th><th>Required</th><th>Default</th><th>Description</th></tr></thead>
         <tbody>
-          <tr><td><code>files</code></td><td>Yes</td><td>&mdash;</td><td>Glob pattern for prompt files</td></tr>
+          <tr><td><code>files</code></td><td>Yes</td><td>N/A</td><td>Glob pattern for prompt files</td></tr>
           <tr><td><code>subcommand</code></td><td>No</td><td>check</td><td>CLI subcommand: check (default), score, preflight</td></tr>
-          <tr><td><code>threshold</code></td><td>No</td><td>&mdash;</td><td>Minimum score (0&ndash;100). Overrides strictness.</td></tr>
+          <tr><td><code>threshold</code></td><td>No</td><td>N/A</td><td>Minimum score (0-100). Overrides strictness.</td></tr>
           <tr><td><code>strictness</code></td><td>No</td><td>standard</td><td>Preset: standard (60), strict (75), relaxed (40)</td></tr>
           <tr><td><code>version</code></td><td>No</td><td>tag ref</td><td>npm version to install</td></tr>
           <tr><td><code>comment</code></td><td>No</td><td>false</td><td>Post results as PR comment (requires <code>pull-requests: write</code>)</td></tr>
@@ -1740,7 +1326,7 @@ pcp hook uninstall --global  <span class="comment"># remove global hook</span></
       </table>
 
       <h3>PR Comment Bot</h3>
-      <p>When <code>comment: 'true'</code> is set, PCP posts a formatted markdown table to the pull request with per-file scores. Comments are idempotent &mdash; the <code>&lt;!-- pcp-bot --&gt;</code> marker ensures existing comments are updated instead of duplicated.</p>
+      <p>When <code>comment: 'true'</code> is set, PCP posts a formatted markdown table to the pull request with per-file scores. Comments are idempotent: the <code>&lt;!-- pcp-bot --&gt;</code> marker keeps one current comment per run.</p>
       <div class="code-block"><span class="comment"># Enable PR commenting</span>
 - name: Lint prompts
   uses: rishi-banerjee1/prompt-control-plane@v5
@@ -1748,7 +1334,7 @@ pcp hook uninstall --global  <span class="comment"># remove global hook</span></
     files: <span class="string">"prompts/**/*.md"</span>
     comment: <span class="string">'true'</span>
     <span class="comment"># token: ${{ secrets.GITHUB_TOKEN }}  # defaults to github.token</span></div>
-      <p>For fork PRs, the bot gracefully catches 403 errors and emits a <code>core.notice()</code> instead of failing the workflow.</p>
+      <p>For fork PRs, the bot catches 403 errors gracefully and emits a <code>core.notice()</code> while the workflow continues.</p>
 
 
       <!-- ════════════════════════════════════════════════════════════════════ -->
@@ -1788,7 +1374,7 @@ console.<span class="fn">log</span>(result.cost.costs);         <span class="com
       <table class="data-table">
         <thead><tr><th>Category</th><th>What&rsquo;s Available</th></tr></thead>
         <tbody>
-          <tr><td>Convenience</td><td><code>optimize()</code> &mdash; one-call pipeline</td></tr>
+          <tr><td>Convenience</td><td><code>optimize()</code>: one-call pipeline</td></tr>
           <tr><td>Analysis</td><td>Intent parsing, task detection, complexity classification</td></tr>
           <tr><td>Scoring</td><td>Quality scoring, structural checklist generation</td></tr>
           <tr><td>Compilation</td><td>Multi-target prompt compilation, context compression</td></tr>
@@ -1805,8 +1391,8 @@ console.<span class="fn">log</span>(result.cost.costs);         <span class="com
       <table class="data-table">
         <thead><tr><th>Import</th><th>Effect</th></tr></thead>
         <tbody>
-          <tr><td><code>import { optimize } from 'pcp-engine'</code></td><td>Pure API &mdash; no side effects, no server</td></tr>
-          <tr><td><code>import { validate } from 'pcp-engine/validate'</code></td><td>Lightweight validate API &mdash; zero MCP dependency</td></tr>
+          <tr><td><code>import { optimize } from 'pcp-engine'</code></td><td>Pure API: no side effects, no server</td></tr>
+          <tr><td><code>import { validate } from 'pcp-engine/validate'</code></td><td>Lightweight validate API: zero MCP dependency</td></tr>
           <tr><td><code>import 'pcp-engine/server'</code></td><td>Starts MCP stdio server (side-effect import)</td></tr>
         </tbody>
       </table>
@@ -1816,7 +1402,7 @@ console.<span class="fn">log</span>(result.cost.costs);         <span class="com
       <!-- VALIDATE API                                                        -->
       <!-- ════════════════════════════════════════════════════════════════════ -->
       <h2 id="validate-api">Validate API</h2>
-      <p>A lightweight entry point for framework integrations. Zero MCP dependency &mdash; imports only pure analysis modules. Ideal for LangChain guards, OpenAI wrappers, or any pipeline that needs a quick pass/fail check.</p>
+      <p>A lightweight entry point for framework integrations. Zero MCP dependency: imports only pure analysis modules. Ideal for LangChain guards, OpenAI wrappers, or any pipeline that needs a quick pass/fail check.</p>
 
       <h3>Usage</h3>
       <div class="code-block"><span class="keyword">import</span> { validate, quickScore } <span class="keyword">from</span> <span class="string">'pcp-engine/validate'</span>;
@@ -1848,7 +1434,7 @@ console.<span class="fn">log</span>(score);  <span class="comment">// 78</span><
       <!-- BENCHMARK                                                           -->
       <!-- ════════════════════════════════════════════════════════════════════ -->
       <h2 id="benchmark">Benchmark</h2>
-      <p>PCP ships with a curated dataset of 15 prompts spanning all task types and quality tiers. Use it as a regression guard &mdash; scores are locked with &plusmn;3 tolerance, so any rule change that drifts scores will be caught.</p>
+      <p>PCP ships with a curated dataset of 15 prompts spanning all task types and quality tiers. Use it as a regression guard: scores are locked with &plusmn;3 tolerance, so any rule change that drifts scores will be caught.</p>
 
       <h3>Running</h3>
       <div class="code-block"><span class="comment"># Human-readable table</span>
@@ -1858,7 +1444,7 @@ pcp benchmark
 pcp benchmark --json</div>
 
       <h3>Dataset</h3>
-      <p>The dataset lives at <code>benchmarks/prompts.json</code> and ships in the npm package. Each prompt includes expected score (&plusmn;3), expected risk level, and expected task type. The CLI compares actual vs expected and reports regressions.</p>
+      <p>The dataset lives at <code>benchmarks/prompts.json</code> and ships in the npm package. Each prompt includes expected score (&plusmn;3), expected risk level, and expected task type. The CLI compares actual results against expectations and reports regressions.</p>
 
       <h3>CI Integration</h3>
       <div class="code-block"><span class="comment"># Add to your CI pipeline as a regression guard</span>
@@ -1902,7 +1488,7 @@ pcp benchmark --json
     <span class="file">{session-id}.json</span>   <span class="desc"># Individual session files</span></div>
 
       <h3>Storage Health</h3>
-      <p>Every metered tool response includes a <code>storage_health</code> field: <code>"ok"</code> or <code>"degraded"</code>. In degraded mode, the pipeline continues with fail-open semantics (no data loss, but usage may not persist to disk). This design ensures zero downtime even if the filesystem is temporarily unavailable.</p>
+      <p>Every metered tool response includes a <code>storage_health</code> field: <code>"ok"</code> or <code>"degraded"</code>. In degraded mode, the pipeline continues with fail-open semantics. Data remains safe, and usage persistence may resume after filesystem recovery.</p>
 
       <h3>Session Limits</h3>
       <table class="data-table">
@@ -1951,97 +1537,10 @@ pcp benchmark --json
   </footer>
 
   <!-- Mobile TOC toggle script -->
-  <script>
-    (function () {
-      var toggle = document.getElementById('toc-toggle');
-      var sidebar = document.getElementById('toc-sidebar');
-      if (toggle && sidebar) {
-        toggle.addEventListener('click', function () {
-          sidebar.classList.toggle('open');
-          toggle.classList.toggle('open');
-        });
-      }
-
-      // Active TOC link on scroll
-      var headings = document.querySelectorAll('.docs-main h2[id], .docs-main .tool-category[id]');
-      var tocLinks = document.querySelectorAll('.docs-sidebar a');
-
-      function updateActiveToc() {
-        var scrollPos = window.scrollY + 120;
-        var current = '';
-        headings.forEach(function (h) {
-          if (h.offsetTop <= scrollPos) {
-            current = h.getAttribute('id');
-          }
-        });
-        tocLinks.forEach(function (a) {
-          a.classList.remove('active');
-          if (a.getAttribute('href') === '#' + current) {
-            a.classList.add('active');
-          }
-        });
-      }
-
-      window.addEventListener('scroll', updateActiveToc, { passive: true });
-      updateActiveToc();
-    })();
-  </script>
+  <script src="docs.js?v=20260827"></script>
 
   <!-- Pipeline Deep Dive -->
-  <script>
-  (function(){
-    var PIPELINE = [
-      {num:'01',name:'Harden',color:'var(--accent)',desc:'Sanitizes the input before anything else runs. Malformed or adversarial strings are caught here — the rest of the pipeline only ever sees clean input.',output:'A sanitized prompt string, safe for analysis.'},
-      {num:'02',name:'Freemium Gate',color:'var(--orange)',desc:'Checks your lifetime quota, monthly quota, and per-minute rate limit. If you\'re over any limit, the request is rejected immediately with a clear message — it never reaches analysis.',output:'Allowed to proceed, or rejected with your current quota, remaining uses, and a link to upgrade.'},
-      {num:'03',name:'Policy Gate',color:'var(--blue)',desc:'Enterprise only. Evaluates the prompt against your configured policy rules before analysis begins. In enforce mode, any blocking violation stops the request here with a full explanation.',output:'A pass — or a list of policy violations explaining exactly why the prompt was rejected.'},
-      {num:'04',name:'Analyze',color:'var(--accent)',desc:'The core of the engine. Determines what the prompt is asking for, who it\'s for, how complex it is, what ambiguities exist, and what questions need answering before it can be compiled.',output:'A complete picture of the prompt: task type, goal, target audience, detected ambiguities, risk score, and any blocking questions.'},
-      {num:'05',name:'Score',color:'var(--green)',desc:'Scores the prompt across 5 independent dimensions — Clarity, Specificity, Completeness, Constraints, and Efficiency — up to 20 points each. Every deduction has a traceable reason.',output:'A quality score from 0 to 100, plus a 9-item structural checklist showing exactly what\'s present and what\'s missing.'},
-      {num:'06',name:'Compile',color:'var(--accent)',desc:'Produces the final structured prompt in your chosen output format — Claude XML, OpenAI system/user, or plain Markdown. Adds context the original prompt was missing: role, goal, constraints, workflow.',output:'The compiled prompt in your target format, ready to use, along with a list of changes made.'},
-      {num:'07',name:'Estimate',color:'var(--orange)',desc:'Calculates token count and estimated cost across all supported providers. Then runs a two-step routing analysis to recommend which model best fits your task, risk level, budget, and latency needs.',output:'Cost breakdown across providers, a recommended model, estimated savings versus a baseline, and the reasoning behind the recommendation.'},
-      {num:'08',name:'Build &amp; Return',color:'var(--red)',desc:'Packages everything into the final result, saves the session, records usage, and writes to the audit trail (if enabled). Usage is only counted after a successful result — failed requests are never metered.',output:'The complete result: quality score, compiled prompt, cost estimate, detected issues, and a session ID you can use to refine or export later.'}
-    ];
 
-    var flow = document.getElementById('pipeline-flow');
-    if(!flow) return;
-
-    PIPELINE.forEach(function(p, i){
-      var node = document.createElement('div');
-      node.className = 'pipe-node';
-      node.innerHTML = '<div class="pipe-box" style="--c:'+p.color+'"><div class="pipe-num">'+p.num+'</div><div class="pipe-name" style="color:'+p.color+'">'+p.name+'</div></div>';
-      node.addEventListener('click', function(){
-        document.querySelectorAll('.pipe-node').forEach(function(n){n.classList.remove('active');});
-        node.classList.add('active');
-        showDetail(p);
-      });
-      flow.appendChild(node);
-      if(i < PIPELINE.length - 1){
-        var arrow = document.createElement('div');
-        arrow.className = 'pipe-arrow';
-        arrow.textContent = '\u2192';
-        flow.appendChild(arrow);
-      }
-    });
-
-    function showDetail(p){
-      var detail = document.getElementById('pipe-detail');
-      var content = document.getElementById('pipe-detail-content');
-      content.innerHTML =
-        '<h4 style="color:'+p.color+';">Phase '+p.num+': '+p.name+'</h4>'+
-        '<p style="margin:10px 0 16px;">'+p.desc+'</p>'+
-        '<div>'+
-          '<div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);margin-bottom:8px;">What you get back</div>'+
-          '<p style="font-size:14px;color:var(--green);background:var(--code-bg);padding:10px 14px;border-radius:8px;margin:0;line-height:1.5;">'+p.output+'</p>'+
-        '</div>';
-      detail.style.display = 'block';
-    }
-
-    // Auto-show first phase
-    if(PIPELINE.length > 0){
-      var firstNode = flow.querySelector('.pipe-node');
-      if(firstNode){ firstNode.classList.add('active'); showDetail(PIPELINE[0]); }
-    }
-  })();
-  </script>
 
 </body>
 </html>

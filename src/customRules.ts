@@ -2,16 +2,17 @@
 // File-based loading, saving, validation, deterministic hashing, rule evaluation
 
 import * as fs from 'node:fs/promises';
+import { constants as fsConstants } from 'node:fs';
 import * as path from 'node:path';
-import { createHash } from 'node:crypto';
-import { platform } from 'node:os';
+import { createHash, randomBytes } from 'node:crypto';
+import { platform, homedir } from 'node:os';
 import { log } from './logger.js';
 import type { CustomRule, CustomRulesConfig, TaskType, RuleMatch } from './types.js';
 
 // ─── Constants ─────────────────────────────────────────────────────────────
 
 const DEFAULT_DATA_DIR = path.join(
-  process.env.HOME || process.env.USERPROFILE || '/tmp',
+  homedir(),
   '.prompt-control-plane',
 );
 
@@ -370,19 +371,19 @@ export class CustomRulesManager {
       rules: sorted,
     };
 
-    // 5. Write to disk
+    // 5. Atomic write via fs.open with O_CREAT|O_EXCL|O_WRONLY (CodeQL js/insecure-temporary-file)
+    // Using explicit file handle prevents symlink attacks on predictable paths
     await fs.mkdir(this.dataDir, { recursive: true });
     const filePath = path.join(this.dataDir, 'custom-rules.json');
-    await fs.writeFile(filePath, JSON.stringify(config, null, 2), 'utf-8');
-
-    // 6. Set file permissions (chmod 600 on POSIX — same pattern as license.ts)
-    if (platform() !== 'win32') {
-      try {
-        await fs.chmod(filePath, 0o600);
-      } catch {
-        // Best-effort — skip on permission errors (e.g., some CI envs)
-      }
+    const tmpPath = filePath + `.tmp-${randomBytes(8).toString('hex')}`;
+    const fileMode = platform() !== 'win32' ? 0o600 : 0o666;
+    const fh = await fs.open(tmpPath, fsConstants.O_CREAT | fsConstants.O_EXCL | fsConstants.O_WRONLY, fileMode);
+    try {
+      await fh.writeFile(JSON.stringify(config, null, 2), 'utf-8');
+    } finally {
+      await fh.close();
     }
+    await fs.rename(tmpPath, filePath);
 
     // 7. Return confirmation with hash
     const hash = this.calculateRuleSetHash(sorted);

@@ -8,20 +8,20 @@
   <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
   <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
   <link rel="manifest" href="site.webmanifest">
-  <title>Changelog &mdash; Prompt Control Plane | Release History</title>
+  <title>Changelog: Prompt Control Plane | Release History</title>
   <meta name="description" content="Full release history for Prompt Control Plane. Every version, every change, from v1.0.0 to the latest release. Deterministic prompt governance for LLM applications.">
   <meta name="keywords" content="prompt control plane changelog, prompt governance releases, prompt control plane updates, MCP server versions, prompt governance updates">
   <link rel="canonical" href="https://getpcp.site/changelog.html">
 
   <!-- Open Graph -->
-  <meta property="og:title" content="Changelog &mdash; Prompt Control Plane">
+  <meta property="og:title" content="Changelog: Prompt Control Plane">
   <meta property="og:description" content="Full release history for Prompt Control Plane. Every version, every change, full transparency.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://getpcp.site/changelog.html">
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Changelog &mdash; Prompt Control Plane">
+  <meta name="twitter:title" content="Changelog: Prompt Control Plane">
   <meta name="twitter:description" content="Full release history for Prompt Control Plane. Every version, every change, full transparency.">
 
   <!-- Schema.org structured data -->
@@ -29,7 +29,7 @@
   {
     "@context": "https://schema.org",
     "@type": "WebPage",
-    "name": "Changelog &mdash; Prompt Control Plane",
+    "name": "Changelog: Prompt Control Plane",
     "description": "Full release history for Prompt Control Plane. Every version, every change.",
     "url": "https://getpcp.site/changelog.html",
     "isPartOf": {
@@ -40,221 +40,10 @@
   }
   </script>
 
-  <link rel="stylesheet" href="shared.css">
-  <script src="shared.js"></script>
-
-  <style>
-    /* ─── Page-specific: Hero ─────────────────────────────────────────────── */
-    .changelog-hero {
-      padding: 80px 0 64px;
-      text-align: center;
-    }
-    .changelog-hero h1 {
-      font-size: 36px;
-      font-weight: 800;
-      letter-spacing: -0.03em;
-      line-height: 1.2;
-      margin-bottom: 16px;
-    }
-    .changelog-hero .subtitle {
-      font-size: 16px;
-      color: var(--text-muted);
-      max-width: 560px;
-      margin: 0 auto;
-      line-height: 1.6;
-    }
-
-    @media (max-width: 700px) {
-      .changelog-hero { padding: 56px 0 40px; }
-      .changelog-hero h1 { font-size: 28px; }
-    }
-
-    /* ─── Page-specific: Timeline ─────────────────────────────────────────── */
-    .timeline {
-      position: relative;
-      padding-left: 32px;
-    }
-    .timeline::before {
-      content: '';
-      position: absolute;
-      left: 7px;
-      top: 8px;
-      bottom: 8px;
-      width: 2px;
-      background: var(--border);
-      border-radius: 1px;
-    }
-
-    .release {
-      position: relative;
-      margin-bottom: 40px;
-    }
-    .release:last-child {
-      margin-bottom: 0;
-    }
-
-    .release::before {
-      content: '';
-      position: absolute;
-      left: -32px;
-      top: 10px;
-      width: 16px;
-      height: 16px;
-      border-radius: 50%;
-      background: var(--surface);
-      border: 3px solid var(--accent);
-      z-index: 1;
-    }
-    .release.release-major::before {
-      background: var(--accent);
-      border-color: var(--accent);
-      box-shadow: 0 0 0 4px var(--accent-glow);
-    }
-    .release.release-patch::before {
-      border-color: var(--text-muted);
-    }
-
-    .release-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 24px 28px;
-      transition: border-color 0.15s;
-    }
-    .release-card:hover {
-      border-color: var(--accent);
-    }
-
-    .release-header {
-      display: flex;
-      align-items: baseline;
-      gap: 12px;
-      flex-wrap: wrap;
-      margin-bottom: 4px;
-    }
-    .release-version {
-      font-size: 20px;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-    }
-    .release-version a {
-      color: var(--text);
-      text-decoration: none;
-    }
-    .release-version a:hover {
-      color: var(--accent);
-    }
-    .release-date {
-      font-size: 13px;
-      color: var(--text-muted);
-    }
-    .release-title {
-      font-size: 15px;
-      font-weight: 600;
-      color: var(--accent);
-      margin-bottom: 16px;
-    }
-
-    .release-changes {
-      list-style: none;
-      padding: 0;
-    }
-    .release-changes li {
-      position: relative;
-      padding: 5px 0 5px 20px;
-      font-size: 14px;
-      color: var(--text-muted);
-      line-height: 1.6;
-    }
-    .release-changes li::before {
-      content: '';
-      position: absolute;
-      left: 4px;
-      top: 13px;
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: var(--border);
-    }
-
-    .release-tag {
-      display: inline-block;
-      padding: 2px 8px;
-      border-radius: 4px;
-      font-size: 10px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      margin-left: 8px;
-      vertical-align: middle;
-    }
-    .release-tag-breaking {
-      background: rgba(248, 113, 113, 0.12);
-      color: var(--red);
-    }
-    .release-tag-new {
-      background: var(--tag-free-bg);
-      color: var(--green);
-    }
-    .release-tag-security {
-      background: rgba(251, 146, 60, 0.12);
-      color: var(--orange);
-    }
-
-    /* ─── Page-specific: Footer grid (matches 404.html pattern) ───────────── */
-    .footer-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 32px;
-      text-align: left;
-      margin-bottom: 32px;
-    }
-    .footer-col h4 {
-      font-size: 13px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: var(--text);
-      margin-bottom: 12px;
-    }
-    .footer-col a {
-      display: block;
-      font-size: 13px;
-      color: var(--text-muted);
-      padding: 3px 0;
-    }
-    .footer-col a:hover {
-      color: var(--text);
-    }
-    .footer-copy {
-      text-align: center;
-      font-size: 13px;
-      color: var(--text-muted);
-      padding-top: 24px;
-      border-top: 1px solid var(--border);
-    }
-
-    @media (max-width: 500px) {
-      .footer-grid { grid-template-columns: 1fr; gap: 24px; }
-    }
-
-    /* ─── Page-specific: CTA ──────────────────────────────────────────────── */
-    .cta-section {
-      padding: 64px 0;
-      text-align: center;
-    }
-    .cta-section h2 {
-      font-size: 28px;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      margin-bottom: 12px;
-    }
-    .cta-section p {
-      font-size: 15px;
-      color: var(--text-muted);
-      margin-bottom: 24px;
-    }
-  </style>
+  <link rel="stylesheet" href="shared.css?v=20260827">
+  <link rel="stylesheet" href="csp-page-changelog.css?v=20260827">
+  <link rel="stylesheet" href="csp-inline.css?v=20260827">
+  <script src="shared.js?v=20260827"></script>
 </head>
 <body>
 
@@ -299,6 +88,24 @@
     <div class="container">
       <div class="timeline">
 
+        <!-- ── v5.3.4 ─────────────────────────────────────────────────────── -->
+        <div class="release release-patch">
+          <div class="release-card">
+            <div class="release-header">
+              <span class="release-version"><a href="https://github.com/rishi-banerjee1/prompt-control-plane/releases/tag/v5.3.4">v5.3.4</a></span>
+              <span class="release-tag release-tag-security">Security</span>
+              <span class="release-date">June 18, 2026</span>
+            </div>
+            <div class="release-title">Dependency Security Remediation</div>
+            <ul class="release-changes">
+              <li><strong>Root package audit clean</strong>: refreshed vulnerable transitive dependencies behind the MCP SDK, including <code>hono</code>, <code>@hono/node-server</code>, <code>fast-uri</code>, <code>qs</code>, <code>ip-address</code>, and <code>express-rate-limit</code></li>
+              <li><strong>Video explainer audit clean</strong>: updated the Remotion toolchain and vulnerable <code>ws</code>, <code>postcss</code>, <code>esbuild</code>, and <code>fast-uri</code> transitives</li>
+              <li><strong>Public copy language guard</strong>: added an automated test covering dash-family typography and weak contrast framing across docs, README, changelog, and package metadata</li>
+              <li><strong>Verification</strong>: root build, full test suite, CLI smoke test, and npm audit checks all pass</li>
+            </ul>
+          </div>
+        </div>
+
         <!-- ── v5.3.3 ─────────────────────────────────────────────────────── -->
         <div class="release release-patch">
           <div class="release-card">
@@ -309,9 +116,9 @@
             </div>
             <div class="release-title">Dependency Updates</div>
             <ul class="release-changes">
-              <li><strong>zod</strong> &mdash; upgraded from 3.25.76 to 4.3.6</li>
-              <li><strong>@types/node</strong> &mdash; upgraded from 22.19.11 to 25.3.5 (dev)</li>
-              <li><strong>CI actions</strong> &mdash; setup-node v4 &rarr; v6, codeql-action v3 &rarr; v4, github-script v7 &rarr; v8</li>
+              <li><strong>zod</strong>: upgraded from 3.25.76 to 4.3.6</li>
+              <li><strong>@types/node</strong>: upgraded from 22.19.11 to 25.3.5 (dev)</li>
+              <li><strong>CI actions</strong>: setup-node v4 &rarr; v6, codeql-action v3 &rarr; v4, github-script v7 &rarr; v8</li>
             </ul>
           </div>
         </div>
@@ -326,11 +133,11 @@
             </div>
             <div class="release-title">Deep Audit &amp; Enterprise Console Fix</div>
             <ul class="release-changes">
-              <li><strong>Enterprise Console audit</strong> &mdash; Fixed nav structure to match standard pattern, corrected audit file path (<code>audit.jsonl</code> &rarr; <code>audit.log</code>), added missing <code>save_custom_rules</code> event type to audit filter, standardized footer</li>
-              <li><strong>CI command fix</strong> &mdash; Corrected wrong <code>npx pcp-engine pcp check</code> commands in docs (should be <code>pcp check</code> after global install)</li>
-              <li><strong>Provider count fix</strong> &mdash; features.html SVG corrected from 5 to 4 providers</li>
-              <li><strong>Pricing date fix</strong> &mdash; models.html updated to March 2026 (was February)</li>
-              <li><strong>Video v2</strong> &mdash; Scene transitions, peppy background music, honest cost comparison, removed test count display</li>
+              <li><strong>Enterprise Console audit</strong>: Fixed nav structure to match standard pattern, corrected audit file path (<code>audit.jsonl</code> &rarr; <code>audit.log</code>), added missing <code>save_custom_rules</code> event type to audit filter, standardized footer</li>
+              <li><strong>CI command fix</strong>: Corrected wrong <code>npx pcp-engine pcp check</code> commands in docs (should be <code>pcp check</code> after global install)</li>
+              <li><strong>Provider count fix</strong>: features.html SVG corrected from 5 to 4 providers</li>
+              <li><strong>Pricing date fix</strong>: models.html updated to March 2026 (was February)</li>
+              <li><strong>Video v2</strong>: Scene transitions, peppy background music, honest cost comparison, removed test count display</li>
             </ul>
           </div>
         </div>
@@ -345,11 +152,11 @@
             </div>
             <div class="release-title">Accuracy &amp; Docs Audit</div>
             <ul class="release-changes">
-              <li><strong>Honest cost comparison</strong> &mdash; Fixed savings display that clamped negative values to 0%. When routing to a pricier model (e.g., Sonnet vs GPT-4o baseline), the CLI and MCP now honestly show &ldquo;X% more expensive&rdquo; instead of &ldquo;Comparable cost.&rdquo;</li>
-              <li><strong>Model count corrected</strong> &mdash; 11 &rarr; 10 across all pages (matches actual PRICING_DATA: 3 Anthropic + 3 OpenAI + 2 Google + 2 Perplexity)</li>
-              <li><strong>Free tier updated</strong> &mdash; why.html and terms.html now correctly reflect 50 optimizations/month (was showing stale &ldquo;10 lifetime&rdquo; from pre-v5.1.0)</li>
-              <li><strong>Nav standardized</strong> &mdash; All 15 pages now share the same canonical nav: Features | Models | Docs | Pricing | Changelog. Removed stale Home and Enterprise Console links.</li>
-              <li><strong>Docs expanded</strong> &mdash; Added Validate API, Benchmark, and PR Comment Bot sections to docs.html. Added 4 missing CLI subcommands to reference table.</li>
+              <li><strong>Honest cost comparison</strong>: Fixed savings display that clamped negative values to 0%. When routing to a pricier model, such as Sonnet against a GPT-4o baseline, the CLI and MCP now show &ldquo;X% more expensive&rdquo; accurately.</li>
+              <li><strong>Model count corrected</strong>: 11 &rarr; 10 across all pages (matches actual PRICING_DATA: 3 Anthropic + 3 OpenAI + 2 Google + 2 Perplexity)</li>
+              <li><strong>Free tier updated</strong>: why.html and terms.html now correctly reflect 50 optimizations/month (was showing stale &ldquo;10 lifetime&rdquo; from pre-v5.1.0)</li>
+              <li><strong>Nav standardized</strong>: All 15 pages now share the same canonical nav: Features | Models | Docs | Pricing | Changelog. Removed stale Home and Enterprise Console links.</li>
+              <li><strong>Docs expanded</strong>: Added Validate API, Benchmark, and PR Comment Bot sections to docs.html. Added 4 missing CLI subcommands to reference table.</li>
               <li>Pricing version updated to 2026-03</li>
             </ul>
           </div>
@@ -365,11 +172,11 @@
             </div>
             <div class="release-title">CI-First Release</div>
             <ul class="release-changes">
-              <li><strong>GitHub Action PR Comment Bot</strong> &mdash; <code>comment: 'true'</code> posts a formatted markdown table to every PR with per-file scores, pass/fail status, and top issues. Idempotent updates via <code>&lt;!-- pcp-bot --&gt;</code> marker.</li>
-              <li><strong>Lightweight Validate API</strong> &mdash; <code>import { validate } from 'pcp-engine/validate'</code> for any Node.js backend. Zero MCP dependency.</li>
-              <li><strong>Benchmark Dataset + CLI</strong> &mdash; 15 curated prompts with locked expected scores (&plusmn;3 tolerance). <code>pcp benchmark</code> for regression testing.</li>
-              <li><strong>4 new CLI subcommands</strong> &mdash; <code>benchmark</code>, <code>demo</code>, <code>report</code>, <code>badge</code> (11 &rarr; 15 total)</li>
-              <li><strong>Product explainer video</strong> &mdash; 5-minute enterprise-ready walkthrough embedded on landing page</li>
+              <li><strong>GitHub Action PR Comment Bot</strong>: <code>comment: 'true'</code> posts a formatted markdown table to every PR with per-file scores, pass/fail status, and top issues. Idempotent updates via <code>&lt;!-- pcp-bot --&gt;</code> marker.</li>
+              <li><strong>Lightweight Validate API</strong>: <code>import { validate } from 'pcp-engine/validate'</code> for any Node.js backend. Zero MCP dependency.</li>
+              <li><strong>Benchmark Dataset + CLI</strong>: 15 curated prompts with locked expected scores (&plusmn;3 tolerance). <code>pcp benchmark</code> for regression testing.</li>
+              <li><strong>4 new CLI subcommands</strong>: <code>benchmark</code>, <code>demo</code>, <code>report</code>, <code>badge</code> (11 &rarr; 15 total)</li>
+              <li><strong>Product explainer video</strong>: 5-minute enterprise-ready walkthrough embedded on landing page</li>
               <li>832 tests across 38 test files</li>
             </ul>
           </div>
@@ -385,12 +192,12 @@
             </div>
             <div class="release-title">GitHub Format &amp; Docs Fixes</div>
             <ul class="release-changes">
-              <li><strong>GitHub format fix</strong> &mdash; <code>--format github</code>: confidence now reads from lint result instead of hardcoded <code>n/a</code></li>
-              <li><strong>Severity fix</strong> &mdash; Passing prompts now emit <code>::notice</code> instead of <code>::warning</code> (correct severity level)</li>
-              <li><strong>Annotation fix</strong> &mdash; Confidence included in error annotations too</li>
-              <li><strong>README</strong> &mdash; Added <code>pcp demo</code>, <code>pcp badge</code>, <code>pcp report</code> to CLI examples; <code>demo</code>/<code>badge</code>/<code>report</code> now listed under &ldquo;All subcommands&rdquo;</li>
-              <li><strong>README</strong> &mdash; Added <code>--format github</code>, <code>--warn-only</code>, <code>--output</code> CI flags documentation</li>
-              <li><strong>README</strong> &mdash; Architecture diagram upgraded from ASCII art to Mermaid flowchart</li>
+              <li><strong>GitHub format fix</strong>: <code>--format github</code>: confidence now reads from the lint result, replacing the old hardcoded <code>n/a</code></li>
+              <li><strong>Severity fix</strong>: Passing prompts now emit the correct <code>::notice</code> severity level</li>
+              <li><strong>Annotation fix</strong>: Confidence included in error annotations too</li>
+              <li><strong>README</strong>: Added <code>pcp demo</code>, <code>pcp badge</code>, <code>pcp report</code> to CLI examples; <code>demo</code>/<code>badge</code>/<code>report</code> now listed under &ldquo;All subcommands&rdquo;</li>
+              <li><strong>README</strong>: Added <code>--format github</code>, <code>--warn-only</code>, <code>--output</code> CI flags documentation</li>
+              <li><strong>README</strong>: Architecture diagram upgraded from ASCII art to Mermaid flowchart</li>
             </ul>
           </div>
         </div>
@@ -405,19 +212,19 @@
             </div>
             <div class="release-title">CLI Expansion + Modular Architecture</div>
             <ul class="release-changes">
-              <li><strong><code>pcp demo</code></strong> &mdash; Guided first-run experience with example prompts</li>
-              <li><strong><code>pcp badge</code></strong> &mdash; Generates shields.io PQS badge markdown for README</li>
-              <li><strong><code>pcp report</code></strong> &mdash; Produces <code>prompt-quality.json</code> + <code>prompt-quality.md</code> artifacts</li>
-              <li><strong><code>--format github</code></strong> &mdash; Outputs <code>::warning</code>/<code>::error</code> annotations for PR inline display</li>
-              <li><strong><code>--warn-only</code></strong> &mdash; Advisory CI mode (exit 0 even on failures)</li>
-              <li><strong><code>--output &lt;dir&gt;</code></strong> &mdash; Custom output directory for report files</li>
-              <li><strong>GitHub Action step summary</strong> &mdash; Markdown quality table in <code>$GITHUB_STEP_SUMMARY</code></li>
-              <li><strong>Confidence levels</strong> &mdash; Shown in check, score, and preflight human output</li>
-              <li><strong>PQS branding</strong> &mdash; &ldquo;Prompt Quality Score&rdquo; consistent branding throughout CLI output</li>
-              <li><strong>Modular tools architecture</strong> &mdash; Split 1957-line <code>tools.ts</code> into 6 focused files in <code>src/tools/</code></li>
-              <li><strong>MIGRATION.md</strong> &mdash; Step-by-step migration guide from old package names</li>
-              <li><strong>PQS_SPEC.md</strong> &mdash; Formal scoring specification</li>
-              <li><strong>Examples directory</strong> &mdash; 6 real-world prompt examples covering various quality levels</li>
+              <li><strong><code>pcp demo</code></strong>: Guided first-run experience with example prompts</li>
+              <li><strong><code>pcp badge</code></strong>: Generates shields.io PQS badge markdown for README</li>
+              <li><strong><code>pcp report</code></strong>: Produces <code>prompt-quality.json</code> + <code>prompt-quality.md</code> artifacts</li>
+              <li><strong><code>--format github</code></strong>: Outputs <code>::warning</code>/<code>::error</code> annotations for PR inline display</li>
+              <li><strong><code>--warn-only</code></strong>: Advisory CI mode (exit 0 even on failures)</li>
+              <li><strong><code>--output &lt;dir&gt;</code></strong>: Custom output directory for report files</li>
+              <li><strong>GitHub Action step summary</strong>: Markdown quality table in <code>$GITHUB_STEP_SUMMARY</code></li>
+              <li><strong>Confidence levels</strong>: Shown in check, score, and preflight human output</li>
+              <li><strong>PQS branding</strong>: &ldquo;Prompt Quality Score&rdquo; consistent branding throughout CLI output</li>
+              <li><strong>Modular tools architecture</strong>: Split 1957-line <code>tools.ts</code> into 6 focused files in <code>src/tools/</code></li>
+              <li><strong>MIGRATION.md</strong>: Step-by-step migration guide from old package names</li>
+              <li><strong>PQS_SPEC.md</strong>: Formal scoring specification</li>
+              <li><strong>Examples directory</strong>: 6 real-world prompt examples covering various quality levels</li>
               <li>8 golden snapshot tests for CLI output format stability</li>
             </ul>
           </div>
@@ -438,8 +245,8 @@
               <li><strong>CI pipeline</strong> added with Node 18/20/22 matrix testing</li>
               <li><strong>ReDoS protection</strong> for custom regex rules</li>
               <li><strong>Fail-closed enforcement</strong> in enterprise enforce mode</li>
-              <li><strong>Scoring honesty</strong> &mdash; quality score reflects input prompt only, compiled output gets structural checklist</li>
-              <li><strong>Documentation accuracy</strong> &mdash; fixed dependency count (3, not 2), model count (10, not 11), version alignment</li>
+              <li><strong>Scoring honesty</strong>: quality score reflects input prompt only, compiled output gets structural checklist</li>
+              <li><strong>Documentation accuracy</strong>: fixed dependency count (3, not 2), model count (10, not 11), version alignment</li>
               <li><strong>USD pricing</strong> added alongside INR</li>
               <li>CLAUDE.md and CONTRIBUTING.md added</li>
             </ul>
@@ -488,8 +295,8 @@
             </div>
             <div class="release-title">CLI Auto-Check Hooks</div>
             <ul class="release-changes">
-              <li><strong>CLI auto-check hooks</strong> &mdash; <code>pcp hook install</code> for UserPromptSubmit integration</li>
-              <li><strong><code>pcp doctor</code></strong> &mdash; installation health checker</li>
+              <li><strong>CLI auto-check hooks</strong>: <code>pcp hook install</code> for UserPromptSubmit integration</li>
+              <li><strong><code>pcp doctor</code></strong>: installation health checker</li>
               <li><strong><code>pcp hook</code></strong> subcommands for managing prompt hooks</li>
               <li>787 tests passing</li>
             </ul>
@@ -506,7 +313,7 @@
             </div>
             <div class="release-title">Enterprise Console Integration</div>
             <ul class="release-changes">
-              <li><strong>Tool 20 &mdash; <code>save_custom_rules</code></strong>: Deploy custom governance rules from the Enterprise Console to Prompt Control Plane. Validates, sorts deterministically, and returns a rule-set hash.</li>
+              <li><strong>Tool 20: <code>save_custom_rules</code></strong>: Deploy custom governance rules from the Enterprise Console to Prompt Control Plane. Validates, sorts deterministically, and returns a rule-set hash.</li>
               <li><strong>Enterprise Console &rarr; Product bridge</strong>: Build rules in the visual editor, click &ldquo;Copy &amp; Deploy&rdquo;, paste into any MCP-connected AI assistant. Works with any LLM.</li>
               <li>Consolidated Enterprise Features section in README with pricing table rows</li>
               <li>Terminology updated: &ldquo;Tamper-evident&rdquo; &rarr; &ldquo;Hash-chained&rdquo; across all public docs</li>
@@ -671,7 +478,7 @@
               <li>Reasoning complexity classifier with six complexity types for intelligent model selection</li>
               <li>Five optimization profiles: cost minimizer, balanced, quality first, creative, and enterprise safe</li>
               <li>Deterministic model routing with full decision path audit trail</li>
-              <li>Dimensional risk scoring across four axes, scored 0&ndash;100</li>
+              <li>Dimensional risk scoring across four axes, scored 0-100</li>
               <li>Perplexity provider support for research-oriented prompts</li>
               <li>Three new tools: <code>classify_task</code>, <code>route_model</code>, and <code>pre_flight</code></li>
             </ul>
@@ -723,7 +530,7 @@
             <div class="release-title">Monetization</div>
             <ul class="release-changes">
               <li>Three-tier pricing: Free, Pro, and Power with usage-based metering</li>
-              <li>Ed25519 offline license activation &mdash; no accounts, no network calls</li>
+              <li>Ed25519 offline license activation: no accounts, no network calls</li>
               <li>Multi-LLM output targets: Claude XML, OpenAI system/user, and generic Markdown</li>
               <li>Six new tools bringing the total to 11</li>
             </ul>
@@ -741,10 +548,10 @@
             <div class="release-title">Initial Release</div>
             <ul class="release-changes">
               <li>Five core MCP tools for prompt analysis, scoring, compilation, refinement, and approval</li>
-              <li>Quality scoring on a 0&ndash;100 scale across five dimensions</li>
+              <li>Quality scoring on a 0-100 scale across five dimensions</li>
               <li>Structured prompt compilation targeting Claude&rsquo;s XML format</li>
               <li>Session management for iterative prompt refinement</li>
-              <li>Zero LLM calls &mdash; fully deterministic, runs entirely offline</li>
+              <li>Zero LLM calls: fully deterministic, runs entirely offline</li>
             </ul>
           </div>
         </div>

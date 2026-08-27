@@ -1,8 +1,8 @@
 {
   "name": "pcp-engine",
-  "version": "5.3.3",
+  "version": "5.3.4",
   "type": "module",
-  "description": "PCP — the prompt quality engine. Deterministic scoring, compilation, cost estimation & governance for AI prompts. Zero LLM calls.",
+  "description": "PCP: the prompt quality engine. Deterministic scoring, compilation, cost estimation & governance for AI prompts. Zero LLM calls.",
   "main": "dist/src/api.js",
   "types": "dist/src/api.d.ts",
   "exports": {
@@ -36,6 +36,13 @@
     "build": "tsc",
     "start": "node dist/src/index.js",
     "test": "node --test dist/test/*.test.js",
+    "security:sast": "node scripts/security-sast.mjs",
+    "security:dast": "node scripts/security-dast.mjs",
+    "security:zap": "node scripts/security-zap.mjs",
+    "security:html-parser": "node --test scripts/html-security.test.mjs",
+    "security:audit": "npm audit --audit-level=moderate",
+    "security:audit:video": "npm audit --audit-level=moderate --prefix video-explainer",
+    "security:all": "npm run security:audit && npm run security:audit:video && npm run security:sast && npm run security:dast && npm run security:zap && npm run security:html-parser",
     "prepublishOnly": "npm run build"
   },
   "keywords": [
@@ -76,15 +83,16 @@
   "author": "Rishi Banerjee",
   "license": "Elastic-2.0",
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.25.2",
+    "@modelcontextprotocol/sdk": "^1.29.0",
     "fast-glob": "^3.3.3",
-    "zod": "^4.3.6"
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@types/node": "^25.3.5",
+    "parse5": "8.0.1",
     "typescript": "^5.8.0"
   },
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=20.0.0"
   }
 }

@@ -2,6 +2,7 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import * as fs from 'node:fs/promises';
+import { mkdtempSync } from 'node:fs';
 import * as path from 'node:path';
 import { tmpdir } from 'node:os';
 import { randomUUID } from 'node:crypto';
@@ -34,7 +35,7 @@ describe('sessionLifecycle', async () => {
   // ─── deleteSession ────────────────────────────────────────────────────────
 
   it('1. deleteSession: returns true for existing session', async () => {
-    const dir = path.join(tmpdir(), `lifecycle-${randomUUID()}`);
+    const dir = mkdtempSync(path.join(tmpdir(), 'lifecycle-'));
     const mgr = new SessionHistoryManager(dir);
 
     const session = createMockSession();
@@ -46,9 +47,8 @@ describe('sessionLifecycle', async () => {
   });
 
   it('2. deleteSession: returns false for missing session', async () => {
-    const dir = path.join(tmpdir(), `lifecycle-${randomUUID()}`);
+    const dir = mkdtempSync(path.join(tmpdir(), 'lifecycle-'));
     const mgr = new SessionHistoryManager(dir);
-    await fs.mkdir(dir, { recursive: true });
 
     const result = await mgr.deleteSession('nonexistent-id');
     assert.equal(result, false);
@@ -57,7 +57,7 @@ describe('sessionLifecycle', async () => {
   });
 
   it('3. deleteSession: idempotent (second delete returns false)', async () => {
-    const dir = path.join(tmpdir(), `lifecycle-${randomUUID()}`);
+    const dir = mkdtempSync(path.join(tmpdir(), 'lifecycle-'));
     const mgr = new SessionHistoryManager(dir);
 
     const session = createMockSession();
@@ -69,7 +69,7 @@ describe('sessionLifecycle', async () => {
   });
 
   it('4. deleteSession: file actually removed from disk', async () => {
-    const dir = path.join(tmpdir(), `lifecycle-${randomUUID()}`);
+    const dir = mkdtempSync(path.join(tmpdir(), 'lifecycle-'));
     const mgr = new SessionHistoryManager(dir);
 
     const session = createMockSession();
@@ -85,7 +85,7 @@ describe('sessionLifecycle', async () => {
   // ─── purgeByPolicy ────────────────────────────────────────────────────────
 
   it('5. purgeByPolicy: no-op when no params provided (mode=by_policy, no older_than_days)', async () => {
-    const dir = path.join(tmpdir(), `lifecycle-${randomUUID()}`);
+    const dir = mkdtempSync(path.join(tmpdir(), 'lifecycle-'));
     const mgr = new SessionHistoryManager(dir);
 
     const session = createMockSession();
@@ -99,7 +99,7 @@ describe('sessionLifecycle', async () => {
   });
 
   it('6. purgeByPolicy: purge_all (mode=all) deletes everything', async () => {
-    const dir = path.join(tmpdir(), `lifecycle-${randomUUID()}`);
+    const dir = mkdtempSync(path.join(tmpdir(), 'lifecycle-'));
     const mgr = new SessionHistoryManager(dir);
 
     for (let i = 0; i < 3; i++) {
@@ -114,7 +114,7 @@ describe('sessionLifecycle', async () => {
   });
 
   it('7. purgeByPolicy: older_than_days filters correctly', async () => {
-    const dir = path.join(tmpdir(), `lifecycle-${randomUUID()}`);
+    const dir = mkdtempSync(path.join(tmpdir(), 'lifecycle-'));
     const mgr = new SessionHistoryManager(dir);
     const now = Date.now();
 
@@ -131,7 +131,7 @@ describe('sessionLifecycle', async () => {
   });
 
   it('8. purgeByPolicy: keep_last preserves newest N', async () => {
-    const dir = path.join(tmpdir(), `lifecycle-${randomUUID()}`);
+    const dir = mkdtempSync(path.join(tmpdir(), 'lifecycle-'));
     const mgr = new SessionHistoryManager(dir);
     const now = Date.now();
 
@@ -147,7 +147,7 @@ describe('sessionLifecycle', async () => {
   });
 
   it('9. purgeByPolicy: both filters combined (age + keep_last)', async () => {
-    const dir = path.join(tmpdir(), `lifecycle-${randomUUID()}`);
+    const dir = mkdtempSync(path.join(tmpdir(), 'lifecycle-'));
     const mgr = new SessionHistoryManager(dir);
     const now = Date.now();
 
@@ -168,9 +168,8 @@ describe('sessionLifecycle', async () => {
   });
 
   it('10. purgeByPolicy: empty dir returns no-op', async () => {
-    const dir = path.join(tmpdir(), `lifecycle-${randomUUID()}`);
+    const dir = mkdtempSync(path.join(tmpdir(), 'lifecycle-'));
     const mgr = new SessionHistoryManager(dir);
-    await fs.mkdir(dir, { recursive: true });
 
     const result = await mgr.purgeByPolicy({ mode: 'all' });
     assert.equal(result.no_op, true);
@@ -180,7 +179,7 @@ describe('sessionLifecycle', async () => {
   });
 
   it('11. purgeByPolicy: dry_run does not delete files', async () => {
-    const dir = path.join(tmpdir(), `lifecycle-${randomUUID()}`);
+    const dir = mkdtempSync(path.join(tmpdir(), 'lifecycle-'));
     const mgr = new SessionHistoryManager(dir);
 
     const session = createMockSession();
@@ -198,7 +197,7 @@ describe('sessionLifecycle', async () => {
   });
 
   it('12. purgeByPolicy: correct counts returned', async () => {
-    const dir = path.join(tmpdir(), `lifecycle-${randomUUID()}`);
+    const dir = mkdtempSync(path.join(tmpdir(), 'lifecycle-'));
     const mgr = new SessionHistoryManager(dir);
 
     for (let i = 0; i < 4; i++) {
@@ -215,7 +214,7 @@ describe('sessionLifecycle', async () => {
   });
 
   it('13. purgeByPolicy: deleted_session_ids always sorted lexicographic', async () => {
-    const dir = path.join(tmpdir(), `lifecycle-${randomUUID()}`);
+    const dir = mkdtempSync(path.join(tmpdir(), 'lifecycle-'));
     const mgr = new SessionHistoryManager(dir);
 
     for (let i = 0; i < 5; i++) {
@@ -231,8 +230,7 @@ describe('sessionLifecycle', async () => {
   });
 
   it('14. purgeByPolicy: only deletes session-*.json — does NOT touch other files', async () => {
-    const dir = path.join(tmpdir(), `lifecycle-${randomUUID()}`);
-    await fs.mkdir(dir, { recursive: true });
+    const dir = mkdtempSync(path.join(tmpdir(), 'lifecycle-'));
 
     // Create non-session files that must survive purge
     const protectedFiles = ['audit.log', 'config.json', 'usage.json', 'license.json', 'custom-rules.json'];
@@ -256,7 +254,7 @@ describe('sessionLifecycle', async () => {
   });
 
   it('15. purgeByPolicy: keep_last protects even when all sessions old', async () => {
-    const dir = path.join(tmpdir(), `lifecycle-${randomUUID()}`);
+    const dir = mkdtempSync(path.join(tmpdir(), 'lifecycle-'));
     const mgr = new SessionHistoryManager(dir);
     const now = Date.now();
 
@@ -268,6 +266,45 @@ describe('sessionLifecycle', async () => {
     const result = await mgr.purgeByPolicy({ mode: 'by_policy', older_than_days: 30, keep_last: 2 });
     assert.equal(result.deleted_count, 1, 'should delete only 1 (keep_last=2 protects 2 newest)');
     assert.equal(result.retained_count, 2);
+
+    await fs.rm(dir, { recursive: true });
+  });
+
+  // ─── Security regression: atomic write (CodeQL js/insecure-temporary-file) ──
+
+  it('16. saveSession writes atomically — no .tmp- files remain on disk', async () => {
+    const dir = mkdtempSync(path.join(tmpdir(), 'lifecycle-'));
+    const mgr = new SessionHistoryManager(dir);
+    const session = createMockSession();
+
+    const success = await mgr.saveSession(session);
+    assert.ok(success, 'saveSession should succeed');
+
+    // Verify no leftover temp files
+    const files = await fs.readdir(dir);
+    const tmpFiles = files.filter(f => f.includes('.tmp-'));
+    assert.equal(tmpFiles.length, 0, 'No temp files should remain after atomic write');
+
+    // Verify the session file has correct permissions on POSIX
+    const sessionFiles = files.filter(f => f.startsWith('session-'));
+    assert.equal(sessionFiles.length, 1);
+
+    await fs.rm(dir, { recursive: true });
+  });
+
+  it('17. saveSession file has restrictive permissions on POSIX', async () => {
+    if (process.platform === 'win32') return;
+    const dir = mkdtempSync(path.join(tmpdir(), 'lifecycle-'));
+    const mgr = new SessionHistoryManager(dir);
+    await mgr.saveSession(createMockSession());
+
+    const files = await fs.readdir(dir);
+    const sessionFile = files.find(f => f.startsWith('session-'));
+    assert.ok(sessionFile, 'Session file should exist');
+
+    const stat = await fs.stat(path.join(dir, sessionFile!));
+    const mode = stat.mode & 0o777;
+    assert.equal(mode, 0o600, `File permissions should be 600, got ${mode.toString(8)}`);
 
     await fs.rm(dir, { recursive: true });
   });

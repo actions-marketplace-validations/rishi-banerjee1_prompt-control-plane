@@ -3,7 +3,7 @@
 // Reuses pure API functions from api.ts. No MCP server, no sessions.
 // CLI reads governance config (written by Enterprise Console) — never writes it.
 
-import { readFileSync, writeFileSync, statSync, readdirSync, existsSync, mkdirSync, chmodSync, unlinkSync } from 'node:fs';
+import { readFileSync, writeFileSync, statSync, readdirSync, existsSync, mkdirSync, chmodSync, unlinkSync, renameSync } from 'node:fs';
 import { resolve, extname, dirname, basename, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { randomUUID } from 'node:crypto';
@@ -265,8 +265,8 @@ function parseSubcommandArgs(argv: string[]): SubcommandArgs {
       i++;
       if (i >= argv.length) fatal('--target requires a value', result.json);
       const val = argv[i];
-      if (val !== 'claude' && val !== 'openai' && val !== 'generic') {
-        fatal(`--target must be claude, openai, or generic, got: ${val}`, result.json);
+      if (val !== 'claude' && val !== 'openai' && val !== 'google' && val !== 'perplexity' && val !== 'generic') {
+        fatal(`--target must be claude, openai, google, perplexity, or generic, got: ${val}`, result.json);
       }
       result.target = val as OutputTarget;
     } else if (arg === '--context') {
@@ -1077,13 +1077,16 @@ async function handleHookCommand(rawArgs: string[]): Promise<void> {
       writeFileSync(scriptPath, generateHookScript(threshold), 'utf-8');
       try { chmodSync(scriptPath, 0o755); } catch { /* Windows */ }
 
-      // Read or create settings.json
+      // Read or create settings.json (no TOCTOU: try read directly, catch ENOENT)
       let settings: Record<string, unknown> = {};
       try {
-        if (existsSync(settingsPath)) {
-          settings = JSON.parse(readFileSync(settingsPath, 'utf-8'));
+        settings = JSON.parse(readFileSync(settingsPath, 'utf-8'));
+      } catch (err: unknown) {
+        // File doesn't exist or is invalid JSON — start fresh
+        if (err && typeof err === 'object' && 'code' in err && (err as {code: string}).code !== 'ENOENT') {
+          // JSON parse error on existing file — still start fresh but that's expected
         }
-      } catch { /* start fresh */ }
+      }
 
       // Merge hook — remove old PCP entries first, then add
       if (!settings.hooks) settings.hooks = {};
@@ -1095,8 +1098,11 @@ async function handleHookCommand(rawArgs: string[]): Promise<void> {
       if (!Array.isArray(hooks.UserPromptSubmit)) hooks.UserPromptSubmit = [];
       (hooks.UserPromptSubmit as unknown[]).push(buildHookEntry(relativeScriptPath));
 
+      // Atomic write: write to temp file then rename to avoid partial writes
       mkdirSync(dirname(settingsPath), { recursive: true });
-      writeFileSync(settingsPath, JSON.stringify(settings, null, 2) + '\n', 'utf-8');
+      const tmpSettingsPath = settingsPath + '.tmp.' + process.pid;
+      writeFileSync(tmpSettingsPath, JSON.stringify(settings, null, 2) + '\n', 'utf-8');
+      renameSync(tmpSettingsPath, settingsPath);
 
       if (isJson) {
         writeJson(envelope('hook', {
@@ -1118,26 +1124,30 @@ async function handleHookCommand(rawArgs: string[]): Promise<void> {
     case 'uninstall': {
       let removed = false;
 
-      // Remove hook script
-      if (existsSync(scriptPath)) {
+      // Remove hook script (no TOCTOU: just try unlink, catch ENOENT)
+      try {
         unlinkSync(scriptPath);
         removed = true;
+      } catch (err: unknown) {
+        if (err && typeof err === 'object' && 'code' in err && (err as {code: string}).code !== 'ENOENT') throw err;
       }
 
-      // Remove from settings.json
-      if (existsSync(settingsPath)) {
-        try {
-          const settings = JSON.parse(readFileSync(settingsPath, 'utf-8')) as Record<string, unknown>;
-          const hooks = settings.hooks as Record<string, unknown> | undefined;
-          if (hooks && Array.isArray(hooks.UserPromptSubmit)) {
-            hooks.UserPromptSubmit = (hooks.UserPromptSubmit as Array<Record<string, unknown>>)
-              .filter(h => !isPcpHook(h));
-            if ((hooks.UserPromptSubmit as unknown[]).length === 0) delete hooks.UserPromptSubmit;
-            if (Object.keys(hooks).length === 0) delete settings.hooks;
-            writeFileSync(settingsPath, JSON.stringify(settings, null, 2) + '\n', 'utf-8');
-            removed = true;
-          }
-        } catch { /* ignore */ }
+      // Remove from settings.json (no TOCTOU: try read directly, catch ENOENT)
+      try {
+        const settings = JSON.parse(readFileSync(settingsPath, 'utf-8')) as Record<string, unknown>;
+        const hooks = settings.hooks as Record<string, unknown> | undefined;
+        if (hooks && Array.isArray(hooks.UserPromptSubmit)) {
+          hooks.UserPromptSubmit = (hooks.UserPromptSubmit as Array<Record<string, unknown>>)
+            .filter(h => !isPcpHook(h));
+          if ((hooks.UserPromptSubmit as unknown[]).length === 0) delete hooks.UserPromptSubmit;
+          if (Object.keys(hooks).length === 0) delete settings.hooks;
+          const tmpPath = settingsPath + '.tmp.' + process.pid;
+          writeFileSync(tmpPath, JSON.stringify(settings, null, 2) + '\n', 'utf-8');
+          renameSync(tmpPath, settingsPath);
+          removed = true;
+        }
+      } catch (err: unknown) {
+        if (err && typeof err === 'object' && 'code' in err && (err as {code: string}).code !== 'ENOENT') { /* ignore other errors */ }
       }
 
       if (isJson) {
@@ -1582,7 +1592,7 @@ Options:
   --json                 Structured JSON output with request_id envelope
   --quiet, -q            Suppress non-essential output
   --pretty               Pretty-print JSON output
-  --target <format>      claude | openai | generic (default: claude)
+  --target <target>      claude | openai | google | perplexity | generic (default: claude)
   --context "text"       Additional context for the prompt
   --context-file <path>  Read context from a file
   --file, -f <path>      Read prompt from a file (or glob for check)

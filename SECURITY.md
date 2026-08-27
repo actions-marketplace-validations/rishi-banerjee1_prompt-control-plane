@@ -77,10 +77,34 @@ All data is stored locally at `~/.prompt-control-plane/`:
 
 ### Supply chain
 
-- **3 runtime dependencies:** `@modelcontextprotocol/sdk`, `zod`, `fast-glob`
-- **CI runs `npm audit`** on every push (moderate+ severity threshold)
-- **Dependabot** enabled for automated dependency updates
+- **3 runtime dependencies:** `@modelcontextprotocol/sdk` (^1.29.0), `zod`, `fast-glob`
+- **CI runs SCA, SAST, DAST-style header/CSP checks, and dependency review** on every development path where GitHub checks are enforced
+- **Root and video explainer dependency trees are audited** with a moderate+ severity threshold
+- **Dependabot** enabled for root npm, video explainer npm, and GitHub Actions dependencies
+- **CodeQL security-extended** runs on pull requests, main pushes, and a weekly schedule
+- **CODEOWNERS** maps repository ownership for security-sensitive surfaces
+- **All third-party GitHub Actions are pinned to immutable commit SHAs** with readable version comments
+- **CycloneDX 1.5 SBOMs** for the root and video explainer dependency trees are generated on every CI run and retained as evidence for 90 days
 - **No postinstall scripts** — the package runs no code during installation
+
+### Required security gates
+
+```bash
+npm run security:all
+```
+
+This gate runs:
+
+- `npm audit --audit-level=moderate`
+- `npm audit --audit-level=moderate --prefix video-explainer`
+- deterministic SAST checks for browser parsing sinks, code execution sinks, wildcard `postMessage`, and high-confidence secrets
+- deterministic DAST-style checks for Cloudflare Pages security headers and CSP baselines
+
+Live header verification can be run against production:
+
+```bash
+DAST_BASE_URL=https://getpcp.site npm run security:dast
+```
 
 ## Security-Related Configuration
 
